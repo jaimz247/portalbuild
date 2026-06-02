@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "application": {
+      "title": "Application",
+      "description": "A client application for a free branded prototype",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "businessType": { "type": "string" },
+        "phone": { "type": "string" },
+        "website": { "type": "string" },
+        "revenue": { "type": "string" },
+        "bottlenecks": {
+          "type": "array",
+          "description": "Selected operational bottlenecks (e.g., Scattered files, WhatsApp chaos)"
+        },
+        "features": {
+          "type": "array",
+          "description": "Selected desired features in white-label portal"
+        },
+        "theme": { "type": "string" },
+        "notes": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "reviewed", "approved", "rejected"]
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "businessType", "revenue", "bottlenecks", "features"]
+    },
+    "admin": {
+      "title": "Admin",
+      "description": "Authorized administrator",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/applications/{applicationId}": {
+      "schema": "#/entities/application",
+      "description": "Submissions for custom client portal prototypes"
+    },
+    "/admins/{adminId}": {
+      "schema": "#/entities/admin",
+      "description": "List of authorized administrators"
+    }
+  }
+}

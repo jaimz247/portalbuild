@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default-deny catch-all safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primary Auth Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "elevatemensah@gmail.com" && 
+        request.auth.token.email_verified == true
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Application validation helper - enforces exact schemas and bounds to defend against denial-of-wallet
+    function isValidApplication(data) {
+      return data.keys().hasAll(['name', 'email', 'businessType', 'revenue', 'bottlenecks', 'features', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().size() <= 13
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 300
+        && data.businessType is string && data.businessType.size() > 0 && data.businessType.size() <= 100
+        && data.revenue is string && data.revenue.size() > 0 && data.revenue.size() <= 100
+        && data.bottlenecks is list && data.bottlenecks.size() <= 20
+        && data.features is list && data.features.size() <= 20
+        && data.status is string && (data.status == 'pending' || data.status == 'reviewed' || data.status == 'approved' || data.status == 'rejected')
+        // Optional Fields
+        && (!data.keys().contains('phone') || (data.phone is string && data.phone.size() <= 50))
+        && (!data.keys().contains('website') || (data.website is string && data.website.size() <= 200))
+        && (!data.keys().contains('theme') || (data.theme is string && data.theme.size() <= 100))
+        && (!data.keys().contains('notes') || (data.notes is string && data.notes.size() <= 2000));
+    }
+
+    match /applications/{applicationId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      
+      allow create: if isValidId(applicationId) 
+        && isValidApplication(incoming())
+        && incoming().status == 'pending'
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+        
+      allow update: if isAdmin()
+        && isValidApplication(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time;
+
+      allow delete: if isAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

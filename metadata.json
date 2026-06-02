@@ -1,0 +1,6 @@
+{
+  "name": "PortalBuild Landing Page",
+  "description": "A high-conversion, premium SaaS landing page for custom client portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
