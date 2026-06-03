@@ -36,10 +36,13 @@
       "description": "Authorized administrator",
       "type": "object",
       "properties": {
+        "name": { "type": "string" },
         "email": { "type": "string", "format": "email" },
-        "role": { "type": "string" }
+        "role": { "type": "string", "enum": ["read_only", "full_control"] },
+        "invitedBy": { "type": "string" },
+        "invitedAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["email", "role"]
+      "required": ["name", "email", "role", "invitedBy", "invitedAt"]
     }
   },
   "firestore": {
