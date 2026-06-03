@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Loader2, X, ChevronLeft, ChevronRight, Check, Sparkles, 
   Building, GraduationCap, Briefcase, HelpCircle, AlertCircle,
-  TrendingUp, CircleDot, ShieldCheck, Mail, User, Phone, Globe
+  TrendingUp, CircleDot, ShieldCheck, Mail, User, Phone, Globe,
+  Instagram, Users
 } from 'lucide-react';
 import FocusTrap from 'focus-trap-react';
 import { OPEN_MODAL_EVENT, CLOSE_MODALS_EVENT } from '../lib/events';
@@ -23,6 +24,8 @@ export default function ApplicationForm() {
     email: '',
     phone: '',
     website: '',
+    instagram: '',
+    skool: '',
     businessType: '',
     revenue: '',
     bottlenecks: [] as string[],
@@ -35,17 +38,52 @@ export default function ApplicationForm() {
   const [showToast, setShowToast] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [draftRestored, setDraftRestored] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => {
       setIsOpen(true);
       setIsSuccess(false);
+
+      // Check for saved draft in localStorage
+      const savedDraft = localStorage.getItem('portalbuild_form_draft');
+      if (savedDraft) {
+        try {
+          const parsed = JSON.parse(savedDraft);
+          if (parsed && typeof parsed === 'object') {
+            setFormData(parsed.formData || {
+              name: '',
+              email: '',
+              phone: '',
+              website: '',
+              instagram: '',
+              skool: '',
+              businessType: '',
+              revenue: '',
+              bottlenecks: [],
+              features: [],
+              theme: 'Obsidian Charcoal',
+              notes: '',
+            });
+            setStep(parsed.step || 1);
+            setErrors({});
+            setDraftRestored(true);
+            document.body.style.overflow = 'hidden';
+            return;
+          }
+        } catch (e) {
+          console.error("Failed to restore draft", e);
+        }
+      }
+
       setStep(1);
       setFormData({
         name: '',
         email: '',
         phone: '',
         website: '',
+        instagram: '',
+        skool: '',
         businessType: '',
         revenue: '',
         bottlenecks: [],
@@ -54,6 +92,7 @@ export default function ApplicationForm() {
         notes: '',
       });
       setErrors({});
+      setDraftRestored(false);
       document.body.style.overflow = 'hidden';
     };
 
@@ -84,6 +123,34 @@ export default function ApplicationForm() {
       document.body.style.overflow = 'auto';
     };
   }, []);
+
+  // Auto-save progress to local storage
+  useEffect(() => {
+    if (isOpen && !isSuccess) {
+      localStorage.setItem('portalbuild_form_draft', JSON.stringify({ formData, step }));
+    }
+  }, [formData, step, isOpen, isSuccess]);
+
+  const handleClearDraft = () => {
+    localStorage.removeItem('portalbuild_form_draft');
+    setStep(1);
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      website: '',
+      instagram: '',
+      skool: '',
+      businessType: '',
+      revenue: '',
+      bottlenecks: [],
+      features: [],
+      theme: 'Obsidian Charcoal',
+      notes: '',
+    });
+    setErrors({});
+    setDraftRestored(false);
+  };
 
   const closeForm = () => {
     setIsOpen(false);
@@ -135,6 +202,19 @@ export default function ApplicationForm() {
       if (!formData.email.trim() || !/^\S+@\S+\.\S+$/.test(formData.email)) {
         newErrors.email = language === 'es' ? 'Por favor ingresa un correo electrónico válido.' : 'Please enter a valid email address.';
       }
+      if (!formData.phone.trim()) {
+        newErrors.phone = language === 'es' ? 'Por favor ingresa tu número de de teléfono.' : 'Please enter your phone number.';
+      } else if (!/^\+?[\d\s\-()]{7,}$/.test(formData.phone)) {
+        newErrors.phone = language === 'es' ? 'Por favor ingresa un número de teléfono válido (mín. 7 dígitos).' : 'Please enter a valid phone number (min 7 digits).';
+      }
+      if (formData.website.trim()) {
+        const urlOrHandle = formData.website.trim();
+        const isIg = urlOrHandle.startsWith('@');
+        const isUrl = urlOrHandle.includes('.');
+        if (!isIg && !isUrl) {
+          newErrors.website = language === 'es' ? 'Por favor ingresa una URL válida, usuario de Instagram (@usuario) o link de Skool.' : 'Please enter a valid URL, Instagram handle (@username), or Skool community link.';
+        }
+      }
     } else if (currentStep === 2) {
       if (!formData.businessType) {
         newErrors.businessType = language === 'es' ? 'Por favor selecciona el tipo de negocio.' : 'Please select your business type.';
@@ -145,6 +225,10 @@ export default function ApplicationForm() {
     } else if (currentStep === 3) {
       if (formData.bottlenecks.length === 0) {
         newErrors.bottlenecks = language === 'es' ? 'Selecciona al menos una dificultad para continuar.' : 'Please select at least one bottleneck to continue.';
+      }
+    } else if (currentStep === 4) {
+      if (formData.features.length === 0) {
+        newErrors.features = language === 'es' ? 'Por favor selecciona al menos un módulo para definir el alcance del proyecto.' : 'Please select at least one core module to establish your project scope.';
       }
     }
 
@@ -169,29 +253,138 @@ export default function ApplicationForm() {
     setIsSubmitting(true);
     const path = 'applications';
 
+    const applicationPayload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || '',
+      website: formData.website || '',
+      instagram: formData.instagram || '',
+      skool: formData.skool || '',
+      businessType: formData.businessType,
+      revenue: formData.revenue,
+      bottlenecks: formData.bottlenecks,
+      features: formData.features,
+      theme: formData.theme || 'Obsidian Charcoal',
+      notes: formData.notes || '',
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const triggerNotifications = (id: string) => {
+      // 1. Browser Native Push Notification if permitted
+      if (typeof window !== 'undefined' && 'Notification' in window) {
+        if (Notification.permission === 'granted') {
+          new Notification('New PortalBuild Submission!', {
+            body: `Applicant: ${formData.name} • ${formData.email}\nRevenue: ${formData.revenue}`,
+            badge: '/favicon.ico'
+          });
+        } else if (Notification.permission !== 'denied') {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              new Notification('New PortalBuild Submission!', {
+                body: `Applicant: ${formData.name} • ${formData.email}\nRevenue: ${formData.revenue}`,
+                badge: '/favicon.ico'
+              });
+            }
+          });
+        }
+      }
+
+      // 2. Dispatch live page event for manager's in-app toast alerts
+      window.dispatchEvent(new CustomEvent('new-application-submitted', { 
+        detail: { ...applicationPayload, id } 
+      }));
+    };
+
     try {
       // 1. Create unique document reference inside applications collection
       const newDocRef = doc(collection(db, path));
       
-      // 2. Prepare payload passing security checks
-      const applicationPayload = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || '',
-        website: formData.website || '',
-        businessType: formData.businessType,
-        revenue: formData.revenue,
-        bottlenecks: formData.bottlenecks,
-        features: formData.features,
-        theme: formData.theme || 'Obsidian Charcoal',
-        notes: formData.notes || '',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      // 3. Save document
+      // 2. Save document to firestore
       await setDoc(newDocRef, { ...applicationPayload, id: newDocRef.id });
+
+      // 3. Create real Trigger-Email document in firestore 'mail' collection
+      try {
+        const mailDocRef = doc(collection(db, 'mail'));
+        await setDoc(mailDocRef, {
+          to: formData.email,
+          message: {
+            subject: language === 'es' 
+              ? `¡Recibimos tu solicitud para PortalBuild, ${formData.name}! 🚀` 
+              : `Confirming your PortalBuild client portal request, ${formData.name}! 🚀`,
+            text: language === 'es'
+              ? `Hola ${formData.name},\n\nHemos recibido tu solicitud de portal personalizado para tu negocio (${formData.businessType}). Analizaremos tus detalles y preparemos tu demo de marca blanca en 24 horas.\n\nSaludos,\nEl Equipo de PortalBuild`
+              : `Hello ${formData.name},\n\nWe have received your portal request for your business (${formData.businessType}). We are reviewing your specifications and will build your bespoke white-label client portal pilot in less than 24 hours.\n\nBest regards,\nThe PortalBuild Team`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0b0f19; color: #f1f5f9; padding: 30px; border: 1px solid #1e293b; border-radius: 8px;">
+                <div style="text-align: center; margin-bottom: 25px;">
+                  <span style="font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #f97316; text-transform: uppercase; font-family: monospace;">PORTALBUILD</span>
+                  <div style="color: #64748b; font-size: 11px; margin-top: 5px; text-transform: uppercase; letter-spacing: 2px;">Bespoke Client Portals • White-Label CRM Sprints</div>
+                </div>
+                <h2 style="color: #ffffff; font-size: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-top: 0;">
+                  ${language === 'es' ? `¡Hola ${formData.name}! 👋` : `Hello ${formData.name}! 👋`}
+                </h2>
+                <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1;">
+                  ${language === 'es' 
+                    ? `Gracias por solicitar tu piloto de portal de clientes interactivo personalizado de marca blanca.` 
+                    : `Thank you for requesting your bespoke interactive white-label client portal pilot demo.`}
+                </p>
+                <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1;">
+                  ${language === 'es'
+                    ? `Nuestros ingenieros ya están analizando tus especificaciones, activos y cuellos de botella para ensamblar un sistema demo adaptado a tu marca.`
+                    : `Our team is analyzing your specifications, workflows, and brand aesthetics to hand-craft a live interactive system tailored for you.`}
+                </p>
+                
+                <div style="background-color: #020617; border: 1px solid #1e293b; padding: 20px; border-radius: 6px; margin: 25px 0;">
+                  <div style="font-size: 10px; color: #f97316; font-family: monospace; text-transform: uppercase; letter-spacing: 2.5px; font-weight: bold; margin-bottom: 12px;">Submitted Specifications</div>
+                  
+                  <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #cbd5e1;">
+                    <tr>
+                      <td style="padding: 6px 0; font-weight: bold; color: #94a3b8; width: 40%; font-family: monospace;">APPLICANT</td>
+                      <td style="padding: 6px 0;">${formData.name}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 6px 0; font-weight: bold; color: #94a3b8; font-family: monospace;">EMAIL</td>
+                      <td style="padding: 6px 0;">${formData.email}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 6px 0; font-weight: bold; color: #94a3b8; font-family: monospace;">BUSINESS TYPE</td>
+                      <td style="padding: 6px 0;">${formData.businessType}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 6px 0; font-weight: bold; color: #94a3b8; font-family: monospace;">MONTHLY REVENUE</td>
+                      <td style="padding: 6px 0; color: #10b981; font-weight: bold;">${formData.revenue}</td>
+                    </tr>
+                    ${formData.phone ? `<tr><td style="padding: 6px 0; font-weight: bold; color: #94a3b8; font-family: monospace;">TELEPHONE</td><td style="padding: 6px 0;">${formData.phone}</td></tr>` : ''}
+                    ${formData.website ? `<tr><td style="padding: 6px 0; font-weight: bold; color: #94a3b8; font-family: monospace;">WEBSITE / LINK</td><td style="padding: 6px 0;">${formData.website}</td></tr>` : ''}
+                    ${formData.instagram ? `<tr><td style="padding: 6px 0; font-weight: bold; color: #94a3b8; font-family: monospace;">INSTAGRAM</td><td style="padding: 6px 0;">${formData.instagram}</td></tr>` : ''}
+                    ${formData.skool ? `<tr><td style="padding: 6px 0; font-weight: bold; color: #94a3b8; font-family: monospace;">SKOOL</td><td style="padding: 6px 0;">${formData.skool}</td></tr>` : ''}
+                  </table>
+                  
+                  <div style="font-size: 11px; color: #94a3b8; font-weight: bold; margin-top: 15px; margin-bottom: 5px; font-family: monospace; text-transform: uppercase;">Requested Modules:</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    ${formData.features.map(f => `<span style="background-color: #1e1b4b; color: #c084fc; border: 1px solid #4338ca; font-size: 11px; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-right: 5px; margin-bottom: 5px;">${f}</span>`).join('')}
+                  </div>
+                </div>
+                
+                <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin-top: 25px;">
+                  ${language === 'es'
+                    ? `Recibirás un enlace directo por correo electrónico para acceder y probar tu demostración interactiva en menos de 24 horas.`
+                    : `You will receive a direct access link via email to access, log in, and test drive your pilot application in less than 24 hours.`}
+                </p>
+                <hr style="border: 0; border-top: 1px solid #1e293b; margin: 25px 0;" />
+                <div style="text-align: center; font-size: 11px; color: #475569; font-family: monospace;">
+                  PortalBuild • Secured Cloud Run container cluster port 3000
+                </div>
+              </div>
+            `
+          }
+        });
+        console.log("Trigger Email document created in Firestore!");
+      } catch (e) {
+        console.warn("Failed to create Trigger Email record", e);
+      }
 
       // Save locally as well just for instant local state sync or backup offline mode
       const existingLocal = localStorage.getItem('local_applications');
@@ -199,14 +392,14 @@ export default function ApplicationForm() {
       localList.unshift({ ...applicationPayload, id: newDocRef.id });
       localStorage.setItem('local_applications', JSON.stringify(localList));
 
-      // Transition
+      // Trigger notifications & clear draft
+      triggerNotifications(newDocRef.id);
+      localStorage.removeItem('portalbuild_form_draft');
+
       setIsSubmitting(false);
       setIsSuccess(true);
-      setTimeout(() => {
-        closeForm();
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 4000);
-      }, 3500);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 5000);
 
     } catch (error) {
       console.error("Submission failed. Retrying in sandbox local simulation model...");
@@ -214,33 +407,19 @@ export default function ApplicationForm() {
       // If server write fails, fallback gracefully to offline state model instead of crashing
       try {
         const fallbackId = 'local-' + Math.random().toString(36).substr(2, 9);
-        const applicationPayload = {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || '',
-          website: formData.website || '',
-          businessType: formData.businessType,
-          revenue: formData.revenue,
-          bottlenecks: formData.bottlenecks,
-          features: formData.features,
-          theme: formData.theme || 'Obsidian Charcoal',
-          notes: formData.notes || '',
-          status: 'pending',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
         const existingLocal = localStorage.getItem('local_applications');
         let localList = existingLocal ? JSON.parse(existingLocal) : [];
         localList.unshift({ ...applicationPayload, id: fallbackId });
         localStorage.setItem('local_applications', JSON.stringify(localList));
 
+        // Trigger notifications & clear draft
+        triggerNotifications(fallbackId);
+        localStorage.removeItem('portalbuild_form_draft');
+
         setIsSubmitting(false);
         setIsSuccess(true);
-        setTimeout(() => {
-          closeForm();
-          setShowToast(true);
-          setTimeout(() => setShowToast(false), 4000);
-        }, 3500);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 5000);
       } catch (err) {
         handleFirestoreError(error, OperationType.CREATE, path);
       }
@@ -352,12 +531,20 @@ export default function ApplicationForm() {
                       
                       <div className="w-full max-w-sm bg-slate-950/80 border border-white/5 p-4 rounded text-left space-y-2">
                         <div className="text-[10px] uppercase font-mono tracking-widest font-bold text-slate-500">{isSpanish ? 'Próximos Pasos en 24 Horas' : 'Our Kickoff Check Protocol'}</div>
-                        <p className="text-xs text-slate-300 leading-normal">
+                        <p className="text-xs text-slate-300 leading-normal whitespace-pre-line">
                           {isSpanish 
-                            ? '1. Revisamos tu sitio web y tus puntos críticos de soporte.\n2. Diseñamos un wireframe preliminar en Figma.\n3. Recibirás un enlace por correo electrónico para acceder a tu demostración interactiva totalmente personalizada de marca blanca.'
-                            : '1. We review your current workflow specs and bottlenecks.\n2. We hand-craft your bespoke interactive white-label client portal.\n3. You will receive an exclusive access link to view, log into, and click through your custom system.'}
+                            ? '1. Analizamos tus redes o tus especificaciones de trabajo.\n2. Diseñamos un prototipo interactivo personalizado.\n3. Recibirás un correo directo para acceder a tu demostración de marca blanca.'
+                            : '1. We analyze your website, community link, or social specs.\n2. We hand-craft your custom interactive white-label client portal.\n3. You will receive an email to access, log in, and test your pilot app.'}
                         </p>
                       </div>
+
+                      <button
+                        type="button"
+                        onClick={closeForm}
+                        className="mt-6 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 cursor-pointer transition-all hover:scale-[1.02] active:scale-95 rounded"
+                      >
+                        <span>{isSpanish ? 'Entendido, Cerrar' : 'Got It, Close'}</span>
+                      </button>
                     </motion.div>
                   ) : (
                     /* The Interactive Multi-step Form Content */
@@ -366,17 +553,37 @@ export default function ApplicationForm() {
                       {/* Step & Progress Tracking Header */}
                       <div className="mb-6 pb-4 border-b border-white/5 flex justify-between items-center text-xs text-slate-400 tracking-wider uppercase font-mono font-bold">
                         <span>{isSpanish ? `Paso ${step} de 4` : `Step ${step} of 4`}</span>
-                        <div className="flex gap-1 items-center">
-                          {[1, 2, 3, 4].map((i) => (
-                            <div 
-                              key={i} 
-                              className={`h-1.5 transition-all duration-300 rounded-full ${
-                                i === step ? 'w-8 bg-orange-500' : i < step ? 'w-3 bg-orange-500/50' : 'w-2 bg-slate-800'
-                              }`}
-                            />
-                          ))}
+                        <div className="flex gap-2 items-center">
+                          {draftRestored && (
+                            <button
+                              type="button"
+                              onClick={handleClearDraft}
+                              className="text-[9px] text-orange-500 border border-orange-500/25 bg-orange-500/5 px-2 py-0.5 hover:bg-orange-500 hover:text-slate-950 font-semibold tracking-wider hover:border-orange-500 uppercase transition-all duration-200 cursor-pointer rounded mr-2"
+                              title={isSpanish ? "Borrar progreso guardado y empezar de cero" : "Reset saved progress and start over"}
+                            >
+                              {isSpanish ? "Borrar Borrador" : "Reset Draft"}
+                            </button>
+                          )}
+                          <div className="flex gap-1 items-center">
+                            {[1, 2, 3, 4].map((i) => (
+                              <div 
+                                key={i} 
+                                className={`h-1.5 transition-all duration-300 rounded-full ${
+                                  i === step ? 'w-8 bg-orange-500' : i < step ? 'w-3 bg-orange-500/50' : 'w-2 bg-slate-800'
+                                }`}
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
+
+                      {/* Draft alert notice banner */}
+                      {draftRestored && step === 1 && (
+                        <div className="mb-4 bg-orange-500/5 border border-orange-500/10 p-2.5 text-[10px] font-mono text-orange-400 font-semibold rounded flex items-center justify-between shrink-0">
+                          <span>✨ Progress auto-saved locally and restored upon reload.</span>
+                          <span className="text-[8px] opacity-70 tracking-widest uppercase">Safe draft mode</span>
+                        </div>
+                      )}
 
                       {/* Dynamic Steps Viewport */}
                       <div className="min-h-[380px] flex flex-col justify-between">
@@ -388,20 +595,21 @@ export default function ApplicationForm() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
-                            className="space-y-6"
+                            className="space-y-4"
                           >
                             <div>
-                              <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-2 mb-1.5">
+                              <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-2 mb-1">
                                 <Sparkles className="w-5 h-5 text-orange-500 text-none" />
                                 <span>{isSpanish ? 'Dinos quién eres' : 'Let\'s claim your custom pilot'}</span>
                               </h2>
                               <p className="text-xs text-slate-400">{isSpanish ? 'Por favor introduce tus datos de contacto básicos.' : 'Provide basic connection details so we can provision your credentials.'}</p>
                             </div>
 
-                            <div className="space-y-4">
-                              <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
-                                  <User className="w-3.5 h-3.5 text-slate-500" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3.5">
+                              {/* Full Name */}
+                              <div className="space-y-1 bg-slate-950/20 p-1 border border-white/[0.02]">
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                                  <User className="w-3 h-3 text-slate-500" />
                                   <span>{t('form_name')} <span className="text-orange-500">*</span></span>
                                 </label>
                                 <input 
@@ -409,15 +617,16 @@ export default function ApplicationForm() {
                                   name="name" 
                                   value={formData.name} 
                                   onChange={handleInputChange} 
-                                  className={`w-full bg-slate-950/80 border ${errors.name ? 'border-red-500' : 'border-white/10 hover:border-white/20 focus:border-orange-500/50 focus:shadow-[0_0_15px_rgba(249,115,22,0.15)]'} px-4 py-3 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm`} 
+                                  className={`w-full bg-slate-950/80 border ${errors.name ? 'border-red-500' : 'border-white/10 hover:border-white/20 focus:border-orange-500/50'} px-3.5 py-2.5 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm`} 
                                   placeholder={isSpanish ? 'Ej. Alejandro Mensah' : 'E.g. Alexander Jenkins'} 
                                 />
-                                {errors.name && <p className="text-red-500 text-xs mt-1 font-medium">{errors.name}</p>}
+                                {errors.name && <p className="text-red-500 text-[10px] mt-0.5 font-medium">{errors.name}</p>}
                               </div>
 
-                              <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
-                                  <Mail className="w-3.5 h-3.5 text-slate-500" />
+                              {/* Email Address */}
+                              <div className="space-y-1 bg-slate-950/20 p-1 border border-white/[0.02]">
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                                  <Mail className="w-3 h-3 text-slate-500" />
                                   <span>{t('form_email')} <span className="text-orange-500">*</span></span>
                                 </label>
                                 <input 
@@ -425,42 +634,76 @@ export default function ApplicationForm() {
                                   name="email" 
                                   value={formData.email} 
                                   onChange={handleInputChange} 
-                                  className={`w-full bg-slate-950/80 border ${errors.email ? 'border-red-500' : 'border-white/10 hover:border-white/20 focus:border-orange-500/50 focus:shadow-[0_0_15px_rgba(249,115,22,0.15)]'} px-4 py-3 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm`} 
+                                  className={`w-full bg-slate-950/80 border ${errors.email ? 'border-red-500' : 'border-white/10 hover:border-white/20 focus:border-orange-500/50'} px-3.5 py-2.5 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm`} 
                                   placeholder="john@company.com" 
                                 />
-                                {errors.email && <p className="text-red-500 text-xs mt-1 font-medium">{errors.email}</p>}
+                                {errors.email && <p className="text-red-500 text-[10px] mt-0.5 font-medium">{errors.email}</p>}
                               </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
-                                    <Phone className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>{isSpanish ? 'Teléfono (Opcional)' : 'Phone Number (Optional)'}</span>
-                                  </label>
-                                  <input 
-                                    type="tel" 
-                                    name="phone" 
-                                    value={formData.phone} 
-                                    onChange={handleInputChange} 
-                                    className="w-full bg-slate-950/80 border border-white/10 hover:border-white/20 focus:border-orange-500/50 px-4 py-3 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm" 
-                                    placeholder="+1 555-019-2834" 
-                                  />
-                                </div>
+                              {/* Phone Number */}
+                              <div className="space-y-1 bg-slate-950/20 p-1 border border-white/[0.02]">
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                                  <Phone className="w-3 h-3 text-slate-500" />
+                                  <span>{isSpanish ? 'Teléfono *' : 'Phone Number *'}</span>
+                                </label>
+                                <input 
+                                  type="tel" 
+                                  name="phone" 
+                                  value={formData.phone} 
+                                  onChange={handleInputChange} 
+                                  className={`w-full bg-slate-950/80 border ${errors.phone ? 'border-red-500' : 'border-white/10 hover:border-white/20 focus:border-orange-500/50'} px-3.5 py-2.5 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm`} 
+                                  placeholder="+1 555-019-2834" 
+                                />
+                                {errors.phone && <p className="text-red-500 text-[10px] mt-0.5 font-medium">{errors.phone}</p>}
+                              </div>
 
-                                <div className="space-y-2">
-                                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
-                                    <Globe className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>{isSpanish ? 'Sitio Web / URL (Opcional)' : 'Website / Company URL (Optional)'}</span>
-                                  </label>
-                                  <input 
-                                    type="text" 
-                                    name="website" 
-                                    value={formData.website} 
-                                    onChange={handleInputChange} 
-                                    className="w-full bg-slate-950/80 border border-white/10 hover:border-white/20 focus:border-orange-500/50 px-4 py-3 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm" 
-                                    placeholder="www.company.com" 
-                                  />
-                                </div>
+                              {/* Website */}
+                              <div className="space-y-1 bg-slate-950/20 p-1 border border-white/[0.02]">
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                                  <Globe className="w-3 h-3 text-slate-500" />
+                                  <span>{isSpanish ? 'Sitio Web / URL (Opcional)' : 'Website URL (Optional)'}</span>
+                                </label>
+                                <input 
+                                  type="text" 
+                                  name="website" 
+                                  value={formData.website} 
+                                  onChange={handleInputChange} 
+                                  className={`w-full bg-slate-950/80 border ${errors.website ? 'border-red-500' : 'border-white/10 hover:border-white/20 focus:border-orange-500/50'} px-3.5 py-2.5 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm`} 
+                                  placeholder={isSpanish ? 'Ej. www.empresa.com' : 'E.g., www.site.com'} 
+                                />
+                                {errors.website && <p className="text-red-500 text-[10px] mt-0.5 font-medium">{errors.website}</p>}
+                              </div>
+
+                              {/* Instagram Profile */}
+                              <div className="space-y-1 bg-slate-950/20 p-1 border border-white/[0.02]">
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                                  <Instagram className="w-3 h-3 text-slate-500" />
+                                  <span>Instagram (Optional)</span>
+                                </label>
+                                <input 
+                                  type="text" 
+                                  name="instagram" 
+                                  value={formData.instagram} 
+                                  onChange={handleInputChange} 
+                                  className="w-full bg-slate-950/80 border border-white/10 hover:border-white/20 focus:border-orange-500/50 px-3.5 py-2.5 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm" 
+                                  placeholder={isSpanish ? 'Ej. @david_coach' : 'E.g., @david_coach'} 
+                                />
+                              </div>
+
+                              {/* Skool Community */}
+                              <div className="space-y-1 bg-slate-950/20 p-1 border border-white/[0.02]">
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                                  <Users className="w-3 h-3 text-slate-500" />
+                                  <span>Skool Community / Link (Optional)</span>
+                                </label>
+                                <input 
+                                  type="text" 
+                                  name="skool" 
+                                  value={formData.skool} 
+                                  onChange={handleInputChange} 
+                                  className="w-full bg-slate-950/80 border border-white/10 hover:border-white/20 focus:border-orange-500/50 px-3.5 py-2.5 text-white focus:outline-none transition-all placeholder:text-slate-600 rounded text-sm" 
+                                  placeholder={isSpanish ? 'Ej. skool.com/mi-grupo' : 'E.g., skool.com/group'} 
+                                />
                               </div>
                             </div>
                           </motion.div>
@@ -621,7 +864,7 @@ export default function ApplicationForm() {
                             {/* Desired portal modules */}
                             <div className="space-y-2">
                               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">
-                                {isSpanish ? '¿Qué módulos deseas incluir en la demo?' : 'Core Modules to Build (Optional)'}
+                                {isSpanish ? '¿Qué módulos deseas incluir en la demo? *' : 'Core Modules to Build (Project Scope) *'}
                               </label>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[160px] overflow-y-auto pr-1 scrollbar-thin">
                                 {featuresList.map((feat) => {
@@ -649,6 +892,7 @@ export default function ApplicationForm() {
                                   );
                                 })}
                               </div>
+                              {errors.features && <p className="text-red-500 text-xs mt-1 font-medium">{errors.features}</p>}
                             </div>
 
                             {/* Theme Choice Swatches */}

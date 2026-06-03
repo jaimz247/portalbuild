@@ -44,6 +44,15 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('pb_theme', theme);
+    if (theme === 'light') {
+      document.documentElement.classList.add('theme-light-active');
+      document.body.style.backgroundColor = '#f8fafc';
+      document.body.style.color = '#0f172a';
+    } else {
+      document.documentElement.classList.remove('theme-light-active');
+      document.body.style.backgroundColor = '#020617';
+      document.body.style.color = '#ffffff';
+    }
   }, [theme]);
 
   useEffect(() => {

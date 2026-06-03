@@ -27,6 +27,194 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Premium Light Theme Colors and Contrast Re-engineering */
+html.theme-light-active {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html.theme-light-active body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Base Headings & Text Shadows */
+html.theme-light-active h1,
+html.theme-light-active h2,
+html.theme-light-active h3,
+html.theme-light-active h4,
+html.theme-light-active h5,
+html.theme-light-active h6,
+html.theme-light-active .text-slate-100,
+html.theme-light-active .text-slate-200,
+html.theme-light-active .text-white {
+  color: #0d1527 !important;
+}
+
+/* Base body or description text */
+html.theme-light-active p,
+html.theme-light-active .text-slate-300,
+html.theme-light-active .text-slate-400,
+html.theme-light-active .text-slate-500,
+html.theme-light-active .text-slate-600 {
+  color: #334155 !important;
+}
+
+/* Explicit text-white cases - buttons, badges and solid colored cards should keep white text */
+html.theme-light-active .text-white:not(button):not(.btn):not(.bg-orange-600):not(.bg-slate-950):not(.bg-slate-900):not(.bg-orange-700):not(.bg-indigo-600) {
+  color: #0f172a !important;
+}
+
+/* Solid white elements for buttons text safety */
+html.theme-light-active button.bg-orange-600,
+html.theme-light-active button.bg-orange-600 *,
+html.theme-light-active .bg-orange-600,
+html.theme-light-active .bg-orange-600 * {
+  color: #ffffff !important;
+}
+
+/* Background overrides - turn dark slate into glorious off-white and pure white blocks */
+html.theme-light-active .bg-slate-950,
+html.theme-light-active .bg-slate-900,
+html.theme-light-active .bg-slate-900\/50,
+html.theme-light-active .bg-slate-950\/80,
+html.theme-light-active .bg-slate-950\/50,
+html.theme-light-active .bg-slate-950\/40,
+html.theme-light-active .bg-black\/40 {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 8px -1px rgba(15, 23, 42, 0.02) !important;
+}
+
+/* Dynamic subtle panels and checklist option swatches */
+html.theme-light-active .bg-slate-800,
+html.theme-light-active .bg-slate-950\/20,
+html.theme-light-active .bg-white\/5,
+html.theme-light-active .bg-white\/\[0\.02\] {
+  background-color: #f1f5f9 !important;
+}
+
+/* Navigation translucent white header with clean slate border */
+html.theme-light-active nav {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+}
+html.theme-light-active nav .text-white {
+  color: #0f172a !important;
+}
+html.theme-light-active nav span.bg-clip-text {
+  background: none !important;
+  -webkit-text-fill-color: #0f172a !important;
+  color: #0f172a !important;
+}
+html.theme-light-active nav button:not(.bg-orange-600) {
+  color: #334155 !important;
+}
+html.theme-light-active nav button:not(.bg-orange-600):hover {
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Dividers styling */
+html.theme-light-active .my-4 .bg-gradient-to-r,
+html.theme-light-active .my-8 .bg-gradient-to-r,
+html.theme-light-active .w-full .bg-gradient-to-r {
+  background-image: linear-gradient(to right, transparent, rgba(15, 23, 42, 0.08), transparent) !important;
+}
+
+/* Border line light colors */
+html.theme-light-active .border-white\/5,
+html.theme-light-active .border-white\/10,
+html.theme-light-active .border-white\/15,
+html.theme-light-active .border-white\/20,
+html.theme-light-active .border-slate-800,
+html.theme-light-active .border-slate-700 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Glow effects in light mode - more subtle but premium orange glows */
+html.theme-light-active .blur-\[120px\] {
+  opacity: 0.15 !important;
+  background-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+/* Modals overlays background dark tint */
+html.theme-light-active .fixed.inset-0.z-\[100\] {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+}
+
+/* Checked step/preference states inside form */
+html.theme-light-active .border-orange-500\/30 {
+  border-color: #ea580c !important;
+}
+
+/* Admin Dashboard Specific Overrides */
+html.theme-light-active .AdminDashboard {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html.theme-light-active .AdminDashboard input,
+html.theme-light-active .AdminDashboard textarea,
+html.theme-light-active .AdminDashboard select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+html.theme-light-active .AdminDashboard input::placeholder,
+html.theme-light-active .AdminDashboard textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Adjust general panels with dark bg and active logs list */
+html.theme-light-active .AdminDashboard .bg-slate-900,
+html.theme-light-active .AdminDashboard .bg-slate-950,
+html.theme-light-active .AdminDashboard .bg-slate-900\/50,
+html.theme-light-active .AdminDashboard .bg-slate-950\/80,
+html.theme-light-active .AdminDashboard .bg-slate-950\/40,
+html.theme-light-active .AdminDashboard .bg-slate-950\/30 {
+  background-color: #ffffff !important;
+}
+
+html.theme-light-active .AdminDashboard .bg-slate-900\/80 {
+  background-color: #f1f5f9 !important;
+}
+
+html.theme-light-active .AdminDashboard table th {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+html.theme-light-active .AdminDashboard .border-b {
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html.theme-light-active .AdminDashboard .text-orange-500,
+html.theme-light-active .AdminDashboard .text-orange-400 {
+  color: #c2410c !important; /* Premium deep orange */
+}
+
+html.theme-light-active .AdminDashboard .border-orange-500 {
+  border-color: #ea580c !important;
+}
+
+/* Ensure the audit log details retain high legible contrast */
+html.theme-light-active .AdminDashboard .font-mono {
+  color: #0f172a !important;
+}
+
+html.theme-light-active .AdminDashboard .text-slate-500,
+html.theme-light-active .AdminDashboard .text-slate-400 {
+  color: #475569 !important;
+}
+
+/* Custom scrollbars inside lights layout */
+html.theme-light-active .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(15, 23, 42, 0.1) !important;
+}
+html.theme-light-active .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(15, 23, 42, 0.2) !important;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
