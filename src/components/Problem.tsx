@@ -1,58 +1,59 @@
-import { ArrowRight } from 'lucide-react';
-
 export default function Problem() {
-  const panels = [
+  const beats = [
     {
-      title: "Reality Gap",
-      desc: "Clients cannot see the true value you are creating when it is buried inside a spreadsheet or an attached PDF report they will never open."
+      step: "Beat 1",
+      title: "The Stakes",
+      headline: "Silent drop-offs cost you refund requests and non-renewals.",
+      desc: "Members don't announce that they've checked out. They go quiet in week three, stop opening links, and surface as a refund request or a silent non-renewal. Scattered delivery doesn't just look unprofessional — it hides the people you're about to lose.",
+      accent: "border-rose-500/30 bg-rose-950/20 text-rose-400"
     },
     {
-      title: "Perception Tax",
-      desc: "You are charging premium fees, but your client delivery infrastructure looks like a messy link collection a beginner made on YouTube."
+      step: "Beat 2",
+      title: "The Fix",
+      headline: "Intervene in week three instead of finding out in week nine.",
+      desc: "One branded portal where every member sees their cohort, their modules, their progress and what's next. And one operator screen where you see everyone's — so you intervene in week three instead of finding out in week nine.",
+      accent: "border-orange-500/30 bg-orange-950/20 text-orange-400"
     },
     {
-      title: "Retention Risk",
-      desc: "When clients cancel, it is rarely because your strategy was bad. It is usually because they felt lost, confused, or lacked clear visibility into their progress."
-    },
-    {
-      title: "Scaling Bottleneck",
-      desc: "Your premium offer should not depend on a chaotic, manual system that forces you to repeat instructions and manually chase every client."
+      step: "Beat 3",
+      title: "The Window",
+      headline: "You get one chance at the first 48 hours.",
+      desc: "A cohort start date is a hard deadline. Members form their impression of your program in the first 48 hours and you only get one. Live before day one, or wait for the next cohort.",
+      accent: "border-emerald-500/30 bg-emerald-950/20 text-emerald-400"
     }
   ];
 
   return (
-    <section className="py-12 md:py-16 px-6 max-w-6xl mx-auto" id="problem">
-      <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-        <div className="lg:col-span-5">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tighter text-white mb-6 leading-tight">
-            High-ticket experts are losing client retention over low-end presentation.
-          </h2>
-          <div className="text-slate-400 space-y-6 text-lg leading-relaxed">
-            <p>
-              You are delivering world-class value and real results to your clients. But the moment your client closes the Zoom call and has to search through email threads, WhatsApp messages, Google Drive folders, and confusing spreadsheets, the premium experience breaks down.
-            </p>
-            <p>
-              <strong className="text-slate-200 font-medium">Presentation is trust.</strong> Right now, a messy backend system might be costing you the client retention and premium positioning you have already earned.
-            </p>
-          </div>
-        </div>
-        
-        <div className="lg:col-span-7 grid md:grid-cols-2 gap-4">
-          {panels.map((panel, idx) => (
-            <div key={idx} className="bg-white/5 backdrop-blur-lg border border-white/10 p-6 flex flex-col gap-3 group hover:border-orange-500/50 hover:scale-[1.02] transform transition-all duration-300 relative overflow-hidden">
-              <div className="text-[10px] text-orange-500 font-mono uppercase tracking-widest relative z-10">
-                0{idx + 1} / {panel.title}
+    <section className="py-16 md:py-24 px-6 max-w-6xl mx-auto" id="argument">
+      <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          Why high-ticket cohort programs lose members they could have saved.
+        </h2>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+        {beats.map((beat, idx) => (
+          <div
+            key={idx}
+            className="p-6 md:p-8 rounded-2xl bg-slate-900/60 border border-white/10 hover:border-white/20 transition-all duration-300 flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider border ${beat.accent}`}>
+                  0{idx + 1} · {beat.title}
+                </span>
               </div>
-              <p className="text-sm text-slate-300 leading-snug group-hover:text-white transition-colors relative z-10">
-                {panel.desc}
+              <h3 className="text-xl font-bold text-white mb-3 leading-snug">
+                {beat.headline}
+              </h3>
+              <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+                {beat.desc}
               </p>
-              <div className="absolute right-6 bottom-6 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-orange-500">
-                <ArrowRight className="w-5 h-5" />
-              </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </section>
   );
 }
+

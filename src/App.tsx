@@ -1,34 +1,27 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { useState, useEffect } from 'react';
-import Topbar from './components/Topbar';
+import { useEffect, useState } from 'react';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
-import SocialProof from './components/SocialProof';
+import LiveDemoPortal from './components/LiveDemoPortal';
 import Problem from './components/Problem';
-import Sprint from './components/Sprint';
-import Features from './components/Features';
 import Transformation from './components/Transformation';
-import Audience from './components/Audience';
-import MidPageIntercept from './components/MidPageIntercept';
-import ClientSuccessStories from './components/ClientSuccessStories';
-import Guarantee from './components/Guarantee';
+import Features from './components/Features';
+import Sprint from './components/Sprint';
+import WhyNotSkool from './components/WhyNotSkool';
+import SocialProof from './components/SocialProof';
 import Pricing from './components/Pricing';
-import ApplicationForm from './components/ApplicationForm';
-import AdminDashboard from './components/AdminDashboard';
 import FAQ from './components/FAQ';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
+import StickyMobileCTA from './components/StickyMobileCTA';
+import ApplicationForm from './components/ApplicationForm';
 import FadeIn from './components/FadeIn';
 import CursorTracker from './components/CursorTracker';
 import SEO from './components/SEO';
-import ExitIntentModal from './components/ExitIntentModal';
-import FloatingChat from './components/FloatingChat';
 import ScrollProgressBar from './components/ScrollProgressBar';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 import { closeAllModals } from './lib/events';
+import { initGA4 } from './lib/analytics';
 
 const Divider = () => (
   <div className="w-full flex justify-center opacity-60 my-4 lg:my-8 relative z-10">
@@ -37,32 +30,31 @@ const Divider = () => (
 );
 
 export default function App() {
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    const saved = localStorage.getItem('pb_theme');
-    return saved === 'light' ? 'light' : 'dark';
-  });
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
   useEffect(() => {
-    localStorage.setItem('pb_theme', theme);
-    if (theme === 'light') {
-      document.documentElement.classList.add('theme-light-active');
-      document.body.style.backgroundColor = '#f8fafc';
-      document.body.style.color = '#0f172a';
-    } else {
-      document.documentElement.classList.remove('theme-light-active');
-      document.body.style.backgroundColor = '#020617';
-      document.body.style.color = '#ffffff';
-    }
-  }, [theme]);
+    // Deferred GA4 Initialization for Performance
+    initGA4();
 
-  useEffect(() => {
+    // Enforce dark mode #020617 background as per rules
+    document.documentElement.classList.remove('theme-light-active');
+    document.body.style.backgroundColor = '#020617';
+    document.body.style.color = '#ffffff';
+
+    const handleLocationChange = () => {
+      setCurrentPath(window.location.pathname);
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+
     const handleKeyDown = (e: KeyboardEvent) => {
       // 1. ESC to close all modals
       if (e.key === 'Escape') {
         closeAllModals();
       }
 
-      // 2. SPACE to scroll to the next section
+      // 2. SPACE to scroll to next section
       if (e.key === ' ' || e.key === 'Spacebar') {
         const active = document.activeElement;
         const isTyping = active && (
@@ -78,8 +70,7 @@ export default function App() {
           if (mainContainer) {
             const sections = Array.from(mainContainer.querySelectorAll('section, main > div'));
             if (sections.length > 0) {
-              const currentScroll = mainContainer.scrollTop;
-              // Find the first section whose offset top is strictly greater than currentScroll + 20
+              const currentScroll = mainContainer.scrollTop || window.scrollY;
               const nextSection = sections.find((sec) => {
                 const element = sec as HTMLElement;
                 return element.offsetTop > currentScroll + 20;
@@ -88,8 +79,7 @@ export default function App() {
               if (nextSection) {
                 nextSection.scrollIntoView({ behavior: 'smooth' });
               } else {
-                // If we is at bottom, loop back to top
-                mainContainer.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }
           }
@@ -100,54 +90,97 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('popstate', handleLocationChange);
     };
   }, []);
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
-  };
+  if (currentPath === '/privacy') {
+    return (
+      <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
+        <SEO />
+        <PrivacyPage />
+        <Footer />
+      </div>
+    );
+  }
+
+  if (currentPath === '/terms') {
+    return (
+      <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
+        <SEO />
+        <TermsPage />
+        <Footer />
+      </div>
+    );
+  }
 
   return (
-    <div className={`min-h-screen ${theme === 'light' ? 'theme-light bg-slate-50 text-slate-900' : 'bg-slate-950 text-white'} selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased relative overflow-hidden transition-colors duration-300`}>
+    <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased relative overflow-x-hidden transition-colors duration-300">
       <ScrollProgressBar />
       <SEO />
       <CursorTracker />
-      <ExitIntentModal />
-      <div className={`absolute top-[-10%] right-[-10%] w-[600px] h-[600px] ${theme === 'light' ? 'bg-orange-500/5' : 'bg-orange-500/10'} blur-[120px] rounded-full pointer-events-none -z-10`}></div>
+      
+      {/* Background glow accents */}
+      <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-orange-500/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/20 to-transparent pointer-events-none -z-10"></div>
-      <Topbar />
-      <Navigation theme={theme} toggleTheme={toggleTheme} />
+
+      {/* Navigation */}
+      <Navigation />
+
+      {/* Main Target Structure */}
       <main>
+        {/* 1. Hero */}
         <FadeIn><Hero /></FadeIn>
         <Divider />
-        <FadeIn><SocialProof /></FadeIn>
+
+        {/* 2. Interactive Demo */}
+        <FadeIn><LiveDemoPortal /></FadeIn>
         <Divider />
+
+        {/* 3. Problem / Core Argument */}
         <FadeIn><Problem /></FadeIn>
         <Divider />
-        <FadeIn><Sprint /></FadeIn>
-        <Divider />
-        <FadeIn><Features /></FadeIn>
-        <Divider />
+
+        {/* 4. Operator Command Center */}
         <FadeIn><Transformation /></FadeIn>
         <Divider />
-        <FadeIn><Audience /></FadeIn>
+
+        {/* 5. Member Experience / 9-Screen Grid */}
+        <FadeIn><Features /></FadeIn>
         <Divider />
-        <FadeIn><MidPageIntercept /></FadeIn>
+
+        {/* 6. 5-Step Sprint */}
+        <FadeIn><Sprint /></FadeIn>
         <Divider />
-        <FadeIn><ClientSuccessStories /></FadeIn>
+
+        {/* 7. Why Not Skool / Circle / Kajabi? */}
+        <FadeIn><WhyNotSkool /></FadeIn>
         <Divider />
-        <FadeIn><Guarantee /></FadeIn>
+
+        {/* 8. Founding Client Proof */}
+        <FadeIn><SocialProof /></FadeIn>
         <Divider />
+
+        {/* 9. Pricing */}
         <FadeIn><Pricing /></FadeIn>
         <Divider />
+
+        {/* 10. FAQ */}
         <FadeIn><FAQ /></FadeIn>
         <Divider />
+
+        {/* 11. Final CTA */}
         <FadeIn><FinalCTA /></FadeIn>
       </main>
-      <ApplicationForm />
-      <AdminDashboard />
-      <FloatingChat />
+
+      {/* Footer */}
       <Footer />
+
+      {/* Sticky Mobile CTA */}
+      <StickyMobileCTA />
+
+      {/* Preview Request Modal Form */}
+      <ApplicationForm />
     </div>
   );
 }

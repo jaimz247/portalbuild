@@ -1,155 +1,172 @@
+import { useEffect } from 'react';
+import { Check, Sparkles } from 'lucide-react';
 import { openApplicationModal } from '../lib/events';
-import { useTranslation } from '../context/LanguageContext';
+import { trackPricingView } from '../lib/analytics';
 
-export default function Pricing() {
-  const { language, t } = useTranslation();
+interface PricingProps {
+  onOpenModal?: () => void;
+}
 
-  const tiersEn = [
+export default function Pricing({ onOpenModal }: PricingProps) {
+  useEffect(() => {
+    trackPricingView('Founding Cohort Special Tier');
+  }, []);
+
+  const handleCTA = (tierName?: string) => {
+    trackPricingView(tierName || 'Pricing CTA Click');
+    if (onOpenModal) {
+      onOpenModal();
+    } else {
+      openApplicationModal();
+    }
+  };
+
+  const cards = [
     {
-      name: "The Pilot Phase",
-      price: "FREE",
-      sub: "(For qualified providers only)",
-      timeline: "Delivered in 72 hours.",
+      name: "Free Preview",
+      price: "$0",
+      sub: "No credit card required",
+      timeline: "Delivered in 24 hours",
       features: [
-        "Core dashboard layout",
-        "2–4 customized screens matching your exact brand identity",
-        "Video walkthrough presentation on delivery"
+        "High-fidelity portal preview built from your sales page URL",
+        "Sample 9-screen member interface layout with your logo & colors",
+        "Interactive walk-through recording & live staging link",
+        "Zero obligation — you keep the preview regardless"
       ],
-      highlight: false
+      highlight: false,
+      ctaText: "Get Free Preview"
     },
     {
-      name: "The Full Client Portal",
+      name: "Full Cohort Build",
       pop: "Most Popular",
       price: "$1,500 – $3,500",
-      sub: "Flat project fee",
-      timeline: "Fully deployed in 7–14 days.",
+      sub: "One-time flat project fee",
+      timeline: "Live before your next cohort starts",
       features: [
-        "Complete secure client authentication and login systems",
-        "Live automatic data feeds via APIs from your existing tools",
-        "Fully customized matching domain, colors, and logo",
-        "Mobile-responsive layouts across all modern devices",
-        "Step-by-step handoff and deployment documentation",
-        "2 weeks of dedicated revision support included"
+        "Complete 9-screen member home & operator command dashboard",
+        "Custom domain configuration (portal.yourdomain.com)",
+        "Database setup for member progress & deliverable submissions",
+        "Automated operator inactivity alerts & at-risk flags",
+        "Full mobile-responsive optimization across all screens",
+        "2 dedicated revision rounds included",
+        "30 days of post-launch technical support"
       ],
-      highlight: true
+      highlight: true,
+      ctaText: "Get my free portal preview"
     },
     {
-      name: "Monthly Optimization",
+      name: "Managed Cohort Portal",
       price: "$400 – $800",
-      sub: "/ month (Optional rolling monthly agreement)",
-      timeline: "Rolling monthly agreement.",
+      sub: "/ month (Optional rolling agreement)",
+      timeline: "Ongoing cohort management",
       features: [
-        "Rolling feature additions",
-        "Interface, layout, and data source updates",
-        "API integration maintenance",
-        "Priority developer response time execution"
+        "New cohort rollover setup & member database resets",
+        "Module updates, asset additions & curriculum shifts",
+        "Continuous operator alert threshold tuning",
+        "Priority 24-hour turnaround on interface modifications",
+        "Cancel or pause anytime between cohorts"
       ],
-      highlight: false
+      highlight: false,
+      ctaText: "Get my free portal preview"
     }
   ];
-
-  const tiersEs = [
-    {
-      name: "La Fase Piloto",
-      price: "GRATIS",
-      sub: "(Solo para proveedores calificados)",
-      timeline: "Entregado en 72 horas.",
-      features: [
-        "Estructura principal del panel",
-        "2-4 pantallas personalizadas que coinciden con su identidad de marca",
-        "Presentación de video recorrido al momento de la entrega"
-      ],
-      highlight: false
-    },
-    {
-      name: "El Portal de Clientes Completo",
-      pop: "Más Popular",
-      price: "$1,500 – $3,500",
-      sub: "Tarifa plana del proyecto",
-      timeline: "Completamente desplegado en 7-14 días.",
-      features: [
-        "Sistemas de inicio de sesión y autenticación segura de clientes",
-        "Feeds de datos automáticos en vivo a través de APIs de sus herramientas",
-        "Dominio, colores y logotipo totalmente personalizados a juego",
-        "Diseños optimizados para móviles en todos los dispositivos modernos",
-        "Documentación de despliegue y lanzamiento paso a paso",
-        "2 semanas de asistencia directa y revisiones incluidas"
-      ],
-      highlight: true
-    },
-    {
-      name: "Optimización Mensual",
-      price: "$400 – $800",
-      sub: "/ mes (Acuerdo mensual opcional renovable)",
-      timeline: "Acuerdo mensual renovable.",
-      features: [
-        "Adiciones periódicas de nuevas funciones",
-        "Actualizaciones de interfaz, diseño y fuentes de datos",
-        "Mantenimiento continuo de las integraciones de API",
-        "Tiempo de respuesta prioritario del desarrollador"
-      ],
-      highlight: false
-    }
-  ];
-
-  const tiers = language === 'es' ? tiersEs : tiersEn;
 
   return (
-    <section className="py-12 md:py-16 px-6 max-w-7xl mx-auto" id="pricing">
-      <div className="text-center mb-16">
-        <span className="text-orange-500 font-mono tracking-widest text-[10px] uppercase mb-4 block">
-          {language === 'es' ? 'Precios Transparentes' : 'Transparent pricing'}
-        </span>
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tighter text-white mb-6">
-          {language === 'es' ? 'Precios simples y fijos. Sin sorpresas.' : 'Simple, flat pricing. No surprises.'}
-        </h2>
-        <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
-          {language === 'es' 
-            ? 'Estás invirtiendo en velocidad, presentación de lujo y un activo operativo, no en un registro de horas abierto.' 
-            : 'You are investing in speed, luxury presentation, and an operational asset—not an open-ended timesheet.'}
+    <section className="py-16 md:py-24 px-6 max-w-6xl mx-auto" id="pricing">
+      {/* Promotional Banner */}
+      <div className="mb-12 max-w-3xl mx-auto p-4 rounded-xl bg-gradient-to-r from-orange-950/80 via-slate-900 to-orange-950/80 border border-orange-500/40 text-center shadow-lg flex items-center justify-center gap-3">
+        <Sparkles className="w-5 h-5 text-orange-400 shrink-0 animate-pulse" />
+        <p className="text-sm md:text-base font-bold text-white tracking-wide">
+          Founding Cohort Special: <span className="text-orange-400">Save $1,000 on your build</span> when you claim your preview this week.
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4 xl:gap-8 items-stretch pt-4">
-        {tiers.map((tier, idx) => (
-          <div key={idx} className={`relative flex flex-col p-8 md:p-10 transition-all duration-300 ${tier.highlight ? 'bg-white/[0.04] border border-orange-500 hover:border-orange-400 shadow-[0_0_30px_rgba(249,115,22,0.1)] z-10' : 'bg-white/[0.02] border border-white/10 hover:border-white/20 mt-0 lg:mt-4'}`}>
-            {tier.pop && (
-              <span className="absolute -top-3 left-8 bg-orange-500 text-slate-950 text-[10px] font-bold px-3 py-1 tracking-widest uppercase shadow-[0_0_15px_rgba(249,115,22,0.5)]">
-                {language === 'es' ? 'Más Popular' : tier.pop}
+      {/* Header */}
+      <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-3">
+          <span>Transparent Pricing</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight mb-4">
+          Flat fees. No open-ended hourly logs.
+        </h2>
+        <p className="text-slate-300 text-base md:text-lg">
+          You are investing in member retention, luxury presentation, and an operator asset.
+        </p>
+      </div>
+
+      {/* Pricing Cards Grid */}
+      <div className="grid lg:grid-cols-3 gap-6 items-stretch mb-12">
+        {cards.map((card, idx) => (
+          <div
+            key={idx}
+            className={`relative rounded-2xl flex flex-col p-6 md:p-8 transition-all duration-300 ${
+              card.highlight
+                ? 'bg-slate-900/90 border-2 border-orange-500 shadow-[0_0_40px_rgba(249,115,22,0.15)] z-10 scale-[1.02]'
+                : 'bg-slate-900/50 border border-white/10 hover:border-white/20'
+            }`}
+          >
+            {card.pop && (
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full tracking-wider uppercase shadow-md">
+                {card.pop}
               </span>
             )}
-            <h3 className="text-sm font-bold tracking-widest uppercase text-slate-400 mb-6 font-mono">{tier.name}</h3>
-            <div className="mb-2 text-white">
-              <span className="text-4xl md:text-5xl font-bold tracking-tighter">{tier.price}</span>
-            </div>
-            <div className="text-[11px] font-medium text-slate-500 mb-8 pb-8 border-b border-white/10 uppercase tracking-widest">{tier.sub}</div>
-            
-            <div className="text-slate-300 font-medium text-xs mb-6 flex items-center gap-2 uppercase tracking-wide">
-              <span className="text-orange-500">→</span> {tier.timeline}
+
+            <div className="mb-6">
+              <h3 className="text-xs font-bold tracking-widest uppercase text-slate-400 font-mono mb-2">{card.name}</h3>
+              <div className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{card.price}</div>
+              <p className="text-xs text-slate-400 mt-1">{card.sub}</p>
             </div>
 
-            <ul className="space-y-4 mb-8 flex-grow">
-              {tier.features.map((feat, fidx) => (
-                <li key={fidx} className="flex items-start gap-3 text-slate-400 text-sm leading-relaxed">
-                  <span className="text-orange-500 mt-1 font-mono text-[10px]">/</span>
-                  {feat}
+            <div className="text-xs font-semibold text-orange-400 mb-6 pb-4 border-b border-white/10 flex items-center gap-2">
+              <span>⚡ {card.timeline}</span>
+            </div>
+
+            <ul className="space-y-3 mb-8 flex-grow">
+              {card.features.map((feat, fidx) => (
+                <li key={fidx} className="flex items-start gap-2.5 text-slate-300 text-xs md:text-sm leading-relaxed">
+                  <Check className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
+                  <span>{feat}</span>
                 </li>
               ))}
             </ul>
-            {tier.highlight && (
-                 <button onClick={openApplicationModal} className="bg-orange-600 text-white px-6 py-4 font-bold text-xs tracking-tight transition-all duration-300 hover:bg-orange-700 hover:scale-[1.02] w-full mt-4 cursor-pointer">
-                     {language === 'es' ? 'Solicitar Prototipo Gratis →' : 'Apply for Your Free Prototype →'}
-                 </button>
-            )}
+
+            <button
+              onClick={() => handleCTA(card.name)}
+              className={`w-full py-3.5 px-4 rounded-lg font-bold text-sm tracking-tight transition-all duration-300 cursor-pointer min-h-[44px] ${
+                card.highlight
+                  ? 'bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/30'
+                  : 'bg-white/10 hover:bg-white/20 text-white border border-white/15'
+              }`}
+            >
+              {card.ctaText}
+            </button>
           </div>
         ))}
       </div>
 
-      <p className="text-center text-[10px] text-slate-500 mt-16 max-w-xl mx-auto uppercase tracking-widest leading-relaxed">
-        {language === 'es'
-          ? 'Condiciones de Pago para Desarrollo Completo: 50% por adelantado antes de iniciar, 25% tras la aprobación del prototipo, y 25% antes del lanzamiento final. Se acepta Stripe, PayPal y transferencias históricas.'
-          : 'Payment Terms for Full Build: 50% upfront before work begins, 25% upon prototype approval, and 25% prior to final launch. Stripe, PayPal, and wire transfer accepted.'}
-      </p>
+      {/* Value Framing Box */}
+      <div className="max-w-3xl mx-auto p-6 md:p-8 rounded-2xl bg-slate-900/80 border border-emerald-500/30 text-center mb-12">
+        <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+          "Save one member from dropping out and your portal has paid for itself."
+        </h3>
+        <p className="text-slate-300 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
+          At a $3,000 – $10,000 cohort ticket size, retaining just a single member who would have quietly checked out in week three covers the entire cost of your portal. Everything after that is pure margin and improved program reputation.
+        </p>
+      </div>
+
+      {/* CTA #3 */}
+      <div className="text-center">
+        <button
+          onClick={() => handleCTA('Bottom Pricing CTA')}
+          className="inline-flex items-center justify-center bg-orange-600 hover:bg-orange-500 text-white px-8 py-4 text-base md:text-lg font-bold tracking-tight rounded-md shadow-lg shadow-orange-600/25 transition-all duration-300 cursor-pointer min-h-[48px]"
+        >
+          Get my free portal preview
+        </button>
+        <p className="text-xs text-slate-400 mt-2 font-medium">
+          Free. No credit card required. Built from your public page in 24 hours.
+        </p>
+      </div>
     </section>
   );
 }
+

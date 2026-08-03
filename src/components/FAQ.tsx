@@ -1,50 +1,65 @@
-import { Plus } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 export default function FAQ() {
   const faqs = [
     {
-      q: "What software tools do you build these portals with?",
-      a: "We use elite, lightweight no-code and low-code architecture—including platforms like Softr, Glide, Bubble, and Airtable—tailored entirely to your stack. The tech stack is invisible to your clients; they simply experience a premium, branded web application via their standard browser with no downloads required."
+      q: "How does the free preview work?",
+      a: "Paste your program sales page URL or curriculum outline. Within 24 hours, we build a high-fidelity, interactive portal preview styled with your logo and colors. There is zero cost, no credit card required, and no phone call needed. You review it at your own pace."
     },
     {
-      q: "How is this better than a Looker Studio link or a standard template?",
-      a: "Looker Studio or generic Notion templates look exactly like what they are: free, shared links. A custom portal signals permanence, premium enterprise investment, and security. It is an exclusive, white-label product owned under your domain that instantly elevates your brand value."
+      q: "Will my portal be ready before my next cohort starts?",
+      a: "Yes. Once you approve your preview, the full portal build takes under a week. We deploy on your custom domain with full database setup before day one of your next cohort."
     },
     {
-      q: "Can clients securely log in and see live, real-time data?",
-      a: "Yes. While the free 72-hour prototype uses representative data structures to map out layout and user experience, the full paid build introduces live client authentication, secure individual logins, and real-time automated data integrations from your tools via API."
+      q: "Do I need technical skills to run or update the portal?",
+      a: "None at all. Your portal is designed for zero-maintenance operation. Adding modules, updating live call links, or reviewing operator health alerts takes seconds via a simple dashboard."
     },
     {
-      q: "Who owns the portal architecture once the full build is done?",
-      a: "You do. You own the entire build asset outright with no developer lock-in. We supply complete handoff and maintenance documentation so your internal team can update it seamlessly without us, though you can always opt for our ongoing support package."
+      q: "How is this different from Skool, Circle, or Kajabi?",
+      a: "Skool and Circle bury your curriculum inside noisy social feeds where members get distracted. Kajabi is a basic 2015 video locker. Your Portal gives your members a distraction-free, high-ticket home on your own domain, plus gives you an Operator Radar to flag at-risk members in week three."
     },
     {
-      q: "What's the catch behind the free prototype?",
-      a: "There is no catch, but there is a strict quality filter. Because we spend real development hours mapping out your layout, we only build prototypes for operators who have active client workflows and real intent to scale if the design delivers."
+      q: "What happens after I receive my free preview?",
+      a: "If you love the preview and want it live for your upcoming cohort, we proceed with the full build under a fixed fee. If you decide not to proceed, you walk away with zero obligations and keep the preview."
     },
     {
-      q: "What about security protocols and enterprise-grade data handling?",
-      a: "Our portals leverage enterprise-grade security protocols, including end-to-end encryption, strict role-based access controls, and secure tokenized authentication. All architecture complies with modern data handling regulations, ensuring that your clients' sensitive information remains isolated, protected, and fully within your control at all times."
+      q: "Can I use my own custom domain?",
+      a: "Yes. Your portal deploys live on your custom domain (e.g. portal.yourprogram.com) with full SSL security, custom favicon, and your exact brand styling."
+    },
+    {
+      q: "How does operator health tracking work?",
+      a: "Your portal automatically monitors member progress behind the scenes. If a member hasn't opened modules for 4+ days or misses two consecutive worksheets, the Operator Radar flags them on your admin dashboard so you can intervene."
+    },
+    {
+      q: "What if I need changes or updates later?",
+      a: "Every full build includes 2 revision rounds before launch and 30 days of post-launch technical support. You can also opt for our Managed Cohort plan for rolling maintenance and cohort resets."
     }
   ];
 
   return (
-    <section className="py-12 md:py-16 px-6 max-w-4xl mx-auto">
-       <span className="text-orange-500 font-mono tracking-widest text-[10px] uppercase mb-4 block text-center">F.A.Q</span>
-      <h2 className="text-4xl md:text-5xl font-bold tracking-tighter text-white mb-16 text-center">
-        Everything you need to know before applying.
-      </h2>
-      
+    <section className="py-16 md:py-24 px-6 max-w-4xl mx-auto" id="faq">
+      <div className="text-center mb-12 md:mb-16">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-3">
+          <span>Frequently Asked Questions</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          Everything you need to know before requesting your preview.
+        </h2>
+      </div>
+
       <div className="space-y-4">
         {faqs.map((faq, idx) => (
-          <details key={idx} className="group bg-white/[0.02] border border-white/10 hover:border-orange-500/50 transition-colors [&_summary::-webkit-details-marker]:hidden">
-            <summary className="cursor-pointer p-6 flex items-center justify-between text-sm font-bold tracking-wide text-slate-200 group-hover:text-white transition-colors list-none select-none">
-              {faq.q}
-              <span className="ml-6 flex-shrink-0 text-slate-600 group-open:rotate-45 transition-transform duration-300 transform group-hover:text-orange-500">
-                 <Plus className="w-4 h-4" />
+          <details
+            key={idx}
+            className="group bg-slate-900/60 border border-white/10 rounded-xl hover:border-orange-500/40 transition-all duration-300 [&_summary::-webkit-details-marker]:hidden"
+          >
+            <summary className="cursor-pointer p-6 flex items-center justify-between text-base font-bold tracking-wide text-slate-100 group-hover:text-white transition-colors list-none select-none">
+              <span>{faq.q}</span>
+              <span className="ml-4 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform duration-300 group-hover:text-orange-400">
+                <ChevronDown className="w-5 h-5" />
               </span>
             </summary>
-            <div className="px-6 pb-6 text-slate-400 leading-relaxed text-sm pt-4 mt-2">
+            <div className="px-6 pb-6 text-slate-300 leading-relaxed text-sm pt-2 border-t border-white/5">
               {faq.a}
             </div>
           </details>
@@ -53,3 +68,4 @@ export default function FAQ() {
     </section>
   );
 }
+

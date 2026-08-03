@@ -7,6 +7,31 @@ export default function Footer() {
         <p className="text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
           PortalBuild | Fast software. Zero developer bureaucracy. Premium retention.
         </p>
+        <div className="flex items-center justify-center md:justify-start gap-4 mt-2 text-xs font-medium text-slate-400">
+          <a
+            href="/privacy"
+            onClick={(e) => {
+              e.preventDefault();
+              window.history.pushState({}, '', '/privacy');
+              window.dispatchEvent(new Event('popstate'));
+            }}
+            className="hover:text-orange-400 transition-colors cursor-pointer"
+          >
+            Privacy Policy
+          </a>
+          <span className="text-slate-700">•</span>
+          <a
+            href="/terms"
+            onClick={(e) => {
+              e.preventDefault();
+              window.history.pushState({}, '', '/terms');
+              window.dispatchEvent(new Event('popstate'));
+            }}
+            className="hover:text-orange-400 transition-colors cursor-pointer"
+          >
+            Terms of Service
+          </a>
+        </div>
       </div>
       <div className="flex flex-col items-center md:items-end gap-1.5 text-center md:text-right">
         <button 

@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from '../context/LanguageContext';
 
 interface NavigationProps {
-  theme: 'dark' | 'light';
-  toggleTheme: () => void;
+  theme?: 'dark' | 'light';
+  toggleTheme?: () => void;
 }
 
-export default function Navigation({ theme, toggleTheme }: NavigationProps) {
+export default function Navigation({ theme = 'dark', toggleTheme }: NavigationProps) {
   const { language, setLanguage, t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 

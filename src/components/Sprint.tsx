@@ -1,58 +1,68 @@
-import { openApplicationModal } from '../lib/events';
-
 export default function Sprint() {
   const steps = [
     {
       step: "01",
-      title: "Submit the 5-Minute Application",
-      desc: "Tell us about your business, your current workflow, and what feels messy or manual. We review it and confirm your application within 24 hours."
+      title: "Free Preview Built From Your Page",
+      desc: "Paste your program sales page URL. We build a real, high-fidelity portal preview within 24 hours — no call required."
     },
     {
       step: "02",
-      title: "15-Minute Fit Call",
-      desc: "A short, zero-pitch scoping conversation to understand your client journey, resources, and specific expectations."
+      title: "30-Min Intake Call",
+      desc: "We walk through your preview, review your exact cohort dates, module schedule, assets, and operator health rules."
     },
     {
       step: "03",
-      title: "The 72-Hour Custom Build",
-      desc: "We build a real, clickable prototype matching your visual identity. Your logo, your colors, and your actual client data structure—not a generic template."
+      title: "The Rapid Build",
+      desc: "We build your complete 9-screen member home, operator dashboard, database architecture, and onboarding automations."
     },
     {
       step: "04",
-      title: "You See It. You Decide.",
-      desc: "We walk you through the portal layout via a short screen-share. If it solves your problem, we talk about the full deployment. If it doesn't, you walk away with zero obligations."
+      title: "One Revision Round",
+      desc: "We adjust branding, module links, copy, and operator alerts until every single detail meets your exact standard."
+    },
+    {
+      step: "05",
+      title: "Live On Your Domain",
+      desc: "Your portal deploys live on your domain before your cohort starts. Members log in seamlessly on day one."
     }
   ];
 
   return (
-    <section className="py-12 md:py-16 px-6 max-w-6xl mx-auto relative" id="sprint">
-      <div className="text-center mb-16">
-        <span className="text-orange-500 font-mono tracking-widest text-[10px] uppercase mb-4 block">How it works</span>
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tighter text-white mb-6">
-          A working client portal in 3 days. Not 3 months.
+    <section className="py-16 md:py-24 px-6 max-w-6xl mx-auto relative" id="how-it-works">
+      <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-3">
+          <span>Days, Not Weeks</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight mb-4">
+          Live before your next cohort starts. Under a week.
         </h2>
-        <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
-          Most businesses spend months evaluating complex enterprise software, waiting on expensive developer quotes, or settling for generic tools that almost fit. There is a faster path. We translate your existing, repeatable delivery process into a clean, professional, branded home for your clients—and let you see it live before you spend a single dollar.
+        <p className="text-slate-300 text-base md:text-lg leading-relaxed">
+          Cohort launch dates are hard deadlines. Our 5-step process gets your program portal live fast without taking up your operator bandwidth.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-4 gap-4 mb-16">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {steps.map((item, idx) => (
-          <div key={idx} className="bg-white/[0.02] border border-white/10 p-8 flex flex-col items-start text-left hover:border-orange-500/50 transition-colors">
-            <div className="text-[10px] text-orange-500 font-mono mb-6 uppercase tracking-widest border-b border-orange-500/20 pb-2 w-full">
-              Step {item.step}
+          <div
+            key={idx}
+            className="bg-slate-900/60 border border-white/10 p-5 rounded-xl flex flex-col justify-between hover:border-orange-500/40 transition-all duration-300 group"
+          >
+            <div>
+              <div className="text-xs text-orange-400 font-mono font-bold mb-3 uppercase tracking-widest flex items-center justify-between">
+                <span>Step {item.step}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+              </div>
+              <h3 className="text-slate-100 font-bold tracking-tight text-sm md:text-base mb-2 group-hover:text-orange-400 transition-colors">
+                {item.title}
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {item.desc}
+              </p>
             </div>
-            <h3 className="text-slate-200 font-bold tracking-tight text-lg mb-3">{item.title}</h3>
-            <p className="text-sm text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">{item.desc}</p>
           </div>
         ))}
-      </div>
-      
-      <div className="text-center">
-         <button onClick={openApplicationModal} className="inline-flex items-center justify-center bg-orange-600 text-white px-8 py-4 font-bold text-sm tracking-tight transition-all duration-300 hover:bg-orange-700 hover:scale-[1.02]">
-           Apply for Your Free Prototype →
-         </button>
       </div>
     </section>
   );
 }
+

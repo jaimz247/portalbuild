@@ -1,24 +1,47 @@
 import { openApplicationModal } from '../lib/events';
 
-export default function FinalCTA() {
+interface FinalCTAProps {
+  onOpenModal?: () => void;
+}
+
+export default function FinalCTA({ onOpenModal }: FinalCTAProps) {
+  const handleCTA = () => {
+    if (onOpenModal) {
+      onOpenModal();
+    } else {
+      openApplicationModal();
+    }
+  };
+
   return (
-    <section className="py-12 md:py-16 px-6 flex justify-center">
-      <div className="max-w-4xl mx-auto text-center w-full">
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-8 leading-[1.1]">
-          Ready to give your clients a true high-ticket experience?
-        </h2>
-        <p className="text-lg md:text-xl text-slate-400 mb-12 flex flex-col md:inline-block max-w-2xl mx-auto leading-relaxed">
-          Your clients shouldn't have to search through messy messages, email threads, and spreadsheets to find your work. Give them a single, stunning, professional destination.
-        </p>
-        <div>
-          <button onClick={openApplicationModal} className="inline-flex items-center justify-center px-8 py-5 font-bold text-sm tracking-tight bg-orange-600 text-white transition-all duration-300 hover:bg-orange-700 hover:scale-[1.02] mb-8">
-            Apply for Your Free Prototype →
-          </button>
+    <section id="final-cta" className="py-20 md:py-28 px-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-t border-white/10 relative overflow-hidden">
+      <div className="max-w-4xl mx-auto text-center relative z-10">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-6">
+          <span>Your Next Cohort Home</span>
         </div>
-        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest max-w-md mx-auto block leading-relaxed font-mono">
-          Free slots are highly competitive and reserved for serious providers with active operations.
+
+        <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+          Ready to stop losing members you could have saved?
+        </h2>
+
+        <p className="text-base md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+          Get a free, custom-branded portal preview built from your program page in 24 hours. No sales call, no credit card, no obligation.
         </p>
+
+        <div className="flex flex-col items-center">
+          <button
+            onClick={handleCTA}
+            className="inline-flex items-center justify-center px-10 py-5 text-lg font-bold tracking-tight bg-orange-600 hover:bg-orange-500 text-white rounded-md shadow-xl shadow-orange-600/30 transition-all duration-300 hover:scale-[1.02] cursor-pointer min-h-[52px]"
+          >
+            Get my free portal preview
+          </button>
+          
+          <p className="text-xs md:text-sm text-slate-400 mt-4 font-medium">
+            Free. No call required. No card. You keep the preview.
+          </p>
+        </div>
       </div>
     </section>
   );
 }
+

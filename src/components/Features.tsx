@@ -1,72 +1,108 @@
-import { LayoutDashboard, CheckSquare, Target, BookOpen, FolderTree, UploadCloud, Activity, CreditCard } from 'lucide-react';
+import { 
+  Home, 
+  Users, 
+  Map, 
+  Calendar, 
+  PlayCircle, 
+  FolderArchive, 
+  BarChart3, 
+  Video, 
+  Megaphone 
+} from 'lucide-react';
 
 export default function Features() {
-  const features = [
+  const screens = [
     {
-      icon: <LayoutDashboard className="w-5 h-5" />,
-      title: "Branded Client Dashboard",
-      desc: "A single, clean starting point customized with your agency or coaching brand."
+      icon: <Home className="w-5 h-5" />,
+      number: "Screen 01",
+      title: "Welcome / Home",
+      desc: "Personalized member dashboard displaying active week status, current deliverables, and next live call timer."
     },
     {
-      icon: <CheckSquare className="w-5 h-5" />,
-      title: "Onboarding Checklist",
-      desc: "Helps new clients complete the right intake steps instantly without confusion."
+      icon: <Users className="w-5 h-5" />,
+      number: "Screen 02",
+      title: "Your Cohort",
+      desc: "Private cohort member directory fostering peer accountability, networking, and group momentum."
     },
     {
-      icon: <Target className="w-5 h-5" />,
-      title: "Visual Progress Tracker",
-      desc: "Shows clients exactly where they are, what is completed, and what comes next."
+      icon: <Map className="w-5 h-5" />,
+      number: "Screen 03",
+      title: "Program Roadmap",
+      desc: "Interactive week-by-week curriculum timeline showing past achievements and locked upcoming milestones."
     },
     {
-      icon: <BookOpen className="w-5 h-5" />,
-      title: "Session Notes & Actions",
-      desc: "Keeps summaries, milestone assignments, and next steps in one central area."
+      icon: <Calendar className="w-5 h-5" />,
+      number: "Screen 04",
+      title: "Schedule",
+      desc: "Centralized live call schedule with direct Zoom links, calendar sync, and timezone adjustments."
     },
     {
-      icon: <FolderTree className="w-5 h-5" />,
-      title: "Centralized Resource Library",
-      desc: "Organizes your assets, templates, video modules, PDFs, and links natively."
+      icon: <PlayCircle className="w-5 h-5" />,
+      number: "Screen 05",
+      title: "Modules",
+      desc: "Curriculum video lessons paired directly with required worksheet submissions and action steps."
     },
     {
-      icon: <UploadCloud className="w-5 h-5" />,
-      title: "Secure Document Upload",
-      desc: "Lets clients submit files and deliverables without chasing messy email links."
+      icon: <FolderArchive className="w-5 h-5" />,
+      number: "Screen 06",
+      title: "Resources",
+      desc: "Organized library for slide decks, SOP templates, financial models, and downloadable frameworks."
     },
     {
-      icon: <Activity className="w-5 h-5" />,
-      title: "Automated Admin View",
-      desc: "Tracks client status, operational progress, and pending tasks from your side."
+      icon: <BarChart3 className="w-5 h-5" />,
+      number: "Screen 07",
+      title: "My Progress",
+      desc: "Individual member tracking showing submitted assignments, operator feedback, and completion status."
     },
     {
-      icon: <CreditCard className="w-5 h-5" />,
-      title: "Integrated Booking & Payments",
-      desc: "Seamlessly connects your existing calendars and payment tools into one UI."
+      icon: <Video className="w-5 h-5" />,
+      number: "Screen 08",
+      title: "Sessions",
+      desc: "Archive of past live call replays, AI call summaries, timestamps, and key takeaway notes."
+    },
+    {
+      icon: <Megaphone className="w-5 h-5" />,
+      number: "Screen 09",
+      title: "Announcements",
+      desc: "Operator broadcast feed for weekly focus priorities, schedule shifts, and cohort updates."
     }
   ];
 
   return (
-    <section className="py-12 md:py-16 px-6 max-w-6xl mx-auto">
-      <div className="mb-16 flex flex-col md:flex-row md:justify-between md:items-end gap-6 pb-12">
-        <div className="max-w-2xl">
-          <span className="text-orange-500 font-mono tracking-widest text-[10px] uppercase mb-4 block">Built around your actual client workflow</span>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tighter text-white leading-tight">
-            Engineered around your actual client workflow.
-          </h2>
+    <section className="py-16 md:py-24 px-6 max-w-6xl mx-auto" id="screens">
+      <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-3">
+          <span>Complete Member Experience</span>
         </div>
-        <p className="text-slate-400 text-lg md:text-right max-w-md border-l border-orange-500/30 pl-6">
-          Your portal is customized to make your client journey cleaner, smoother, and highly scalable. Depending on your business needs, your workspace can include:
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight mb-4">
+          The 9 Screens Built For Your Cohort
+        </h2>
+        <p className="text-slate-300 text-base md:text-lg">
+          Every screen is custom-branded with your logo, colors, and domain to create a seamless $10,000 member experience.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 bg-slate-950 border border-white/10 rounded-sm">
-        {features.map((feat, idx) => (
-          <div key={idx} className="p-8 md:p-10 flex gap-6 group hover:bg-white/[0.02] transition-colors border-b border-white/10 odd:border-r even:border-l-0">
-            <div className="flex-shrink-0 text-slate-500 group-hover:text-orange-500 transition-colors mt-1">
-              {feat.icon}
-            </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {screens.map((screen, idx) => (
+          <div
+            key={idx}
+            className="p-6 rounded-xl bg-slate-900/60 border border-white/10 hover:border-orange-500/40 transition-all duration-300 group flex flex-col justify-between"
+          >
             <div>
-              <h3 className="text-slate-200 font-bold tracking-tight text-lg mb-2">{feat.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors">{feat.desc}</p>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  {screen.icon}
+                </div>
+                <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-widest">
+                  {screen.number}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
+                {screen.title}
+              </h3>
+              <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
+                {screen.desc}
+              </p>
             </div>
           </div>
         ))}
@@ -74,3 +110,4 @@ export default function Features() {
     </section>
   );
 }
+
