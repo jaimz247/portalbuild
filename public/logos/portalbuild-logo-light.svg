@@ -1,0 +1,41 @@
+
+<svg width="2000" height="500" viewBox="0 0 2000 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="portalGlowL" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ea580c" stop-opacity="0.2"/>
+      <stop offset="70%" stop-color="#ea580c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="orangeGradL" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#c2410c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon Mark Section -->
+  <g transform="translate(40, 25)">
+    <!-- Ambient Glow -->
+    <circle cx="225" cy="225" r="200" fill="url(#portalGlowL)"/>
+
+    <!-- Outer Rounded Squircle Base -->
+    <rect x="75" y="75" width="300" height="300" rx="80" fill="#0f172a" stroke="#ea580c" stroke-opacity="0.3" stroke-width="6"/>
+
+    <!-- Portal Top-Right Aperture Bracket -->
+    <path d="M 225 130 L 300 130 C 314 130 325 141 325 155 L 325 225" fill="none" stroke="url(#orangeGradL)" stroke-width="14" stroke-linecap="round"/>
+
+    <!-- Portal Bottom-Left Aperture Bracket -->
+    <path d="M 225 320 L 150 320 C 136 320 125 309 125 295 L 125 225" fill="none" stroke="url(#orangeGradL)" stroke-width="14" stroke-linecap="round"/>
+
+    <!-- Secondary Brackets -->
+    <path d="M 225 130 L 150 130 C 136 130 125 141 125 155 L 125 190" fill="none" stroke="#ea580c" stroke-opacity="0.3" stroke-width="8" stroke-linecap="round"/>
+    <path d="M 225 320 L 300 320 C 314 320 325 309 325 295 L 325 260" fill="none" stroke="#ea580c" stroke-opacity="0.3" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Inner Core Dot -->
+    <circle cx="225" cy="225" r="12" fill="#ffffff"/>
+    <circle cx="225" cy="225" r="7" fill="#ea580c"/>
+  </g>
+
+  <!-- Typography Section -->
+  <text x="490" y="270" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="140" font-weight="900" letter-spacing="-3" fill="#0f172a">Portal<tspan fill="url(#orangeGradL)">Build</tspan></text>
+
+  <text x="496" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="28" font-weight="700" letter-spacing="12" fill="#475569">MEMBER RETENTION PORTALS</text>
+</svg>

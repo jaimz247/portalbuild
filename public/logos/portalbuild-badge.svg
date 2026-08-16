@@ -1,0 +1,51 @@
+
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="badgeBgGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+    <radialGradient id="portalGlowB" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.45"/>
+      <stop offset="70%" stop-color="#ea580c" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="orangeGradB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="50%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <filter id="coreGlowB" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Container Box -->
+  <rect width="1024" height="1024" rx="240" fill="url(#badgeBgGlow)"/>
+  <rect x="8" y="8" width="1008" height="1008" rx="232" stroke="#334155" stroke-width="16" stroke-opacity="0.6"/>
+
+  <!-- Ambient Glow -->
+  <circle cx="512" cy="460" r="360" fill="url(#portalGlowB)"/>
+
+  <!-- Center Icon Frame -->
+  <rect x="232" y="180" width="560" height="560" rx="150" fill="#090d16" stroke="#ffffff" stroke-opacity="0.15" stroke-width="10"/>
+
+  <!-- Aperture Brackets -->
+  <path d="M 512 280 L 650 280 C 674 280 692 298 692 322 L 692 460" fill="none" stroke="url(#orangeGradB)" stroke-width="24" stroke-linecap="round"/>
+  <path d="M 512 640 L 374 640 C 350 640 332 622 332 598 L 332 460" fill="none" stroke="url(#orangeGradB)" stroke-width="24" stroke-linecap="round"/>
+
+  <path d="M 512 280 L 374 280 C 350 280 332 298 332 322 L 332 390" fill="none" stroke="#f97316" stroke-opacity="0.3" stroke-width="14" stroke-linecap="round"/>
+  <path d="M 512 640 L 650 640 C 674 640 692 622 692 598 L 692 530" fill="none" stroke="#f97316" stroke-opacity="0.3" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Inner Glowing Center Core -->
+  <circle cx="512" cy="460" r="26" fill="#ffffff" filter="url(#coreGlowB)"/>
+  <circle cx="512" cy="460" r="16" fill="#fb923c"/>
+  <circle cx="512" cy="460" r="8" fill="#ffffff"/>
+
+  <!-- Badge Bottom Brand Text -->
+  <text x="512" y="850" font-family="system-ui, -apple-system, sans-serif" font-size="76" font-weight="900" letter-spacing="-2" fill="#ffffff" text-anchor="middle">Portal<tspan fill="url(#orangeGradB)">Build</tspan></text>
+</svg>

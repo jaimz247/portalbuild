@@ -20,6 +20,7 @@ import SEO from './components/SEO';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
+import LogosPage from './pages/LogosPage';
 import { closeAllModals } from './lib/events';
 import { initGA4 } from './lib/analytics';
 
@@ -109,6 +110,16 @@ export default function App() {
       <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
         <SEO />
         <TermsPage />
+        <Footer />
+      </div>
+    );
+  }
+
+  if (currentPath === '/logos' || currentPath === '/brand') {
+    return (
+      <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
+        <SEO />
+        <LogosPage />
         <Footer />
       </div>
     );

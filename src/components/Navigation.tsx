@@ -21,7 +21,17 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
     <>
       <nav className="w-full px-6 py-4 flex flex-row justify-between items-center sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-white/5">
         <div className="flex-1 flex items-center justify-start">
-          <div className="text-xl font-bold tracking-tighter flex items-center gap-4 text-white cursor-pointer group select-none relative z-50">
+          <div 
+            onClick={() => {
+              if (window.location.pathname !== '/') {
+                window.history.pushState({}, '', '/');
+                window.dispatchEvent(new Event('popstate'));
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            className="text-xl font-bold tracking-tighter flex items-center gap-4 text-white cursor-pointer group select-none relative z-50"
+          >
             <div className="relative flex items-center justify-center w-8 h-8 shrink-0">
               <div className="absolute inset-0 bg-orange-500/20 blur-xl group-hover:bg-orange-500/40 group-hover:blur-2xl transition-all duration-700 ease-out"></div>
               

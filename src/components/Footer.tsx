@@ -9,6 +9,18 @@ export default function Footer() {
         </p>
         <div className="flex items-center justify-center md:justify-start gap-4 mt-2 text-xs font-medium text-slate-400">
           <a
+            href="/logos"
+            onClick={(e) => {
+              e.preventDefault();
+              window.history.pushState({}, '', '/logos');
+              window.dispatchEvent(new Event('popstate'));
+            }}
+            className="text-orange-400 hover:text-orange-300 font-semibold transition-colors cursor-pointer"
+          >
+            Brand &amp; Logo Kit
+          </a>
+          <span className="text-slate-700">•</span>
+          <a
             href="/privacy"
             onClick={(e) => {
               e.preventDefault();
