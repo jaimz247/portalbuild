@@ -31,7 +31,23 @@ const Divider = () => (
 );
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const getNormalizedRoute = () => {
+    const rawPath = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+    const hash = window.location.hash.toLowerCase().replace(/^#\/?/, '/').replace(/\/+$/, '');
+    
+    if (rawPath === '/logos' || rawPath === '/brand' || hash === '/logos' || hash === '/brand') {
+      return '/logos';
+    }
+    if (rawPath === '/privacy' || hash === '/privacy') {
+      return '/privacy';
+    }
+    if (rawPath === '/terms' || hash === '/terms') {
+      return '/terms';
+    }
+    return rawPath;
+  };
+
+  const [currentPath, setCurrentPath] = useState(getNormalizedRoute());
 
   useEffect(() => {
     // Deferred GA4 Initialization for Performance
@@ -43,11 +59,12 @@ export default function App() {
     document.body.style.color = '#ffffff';
 
     const handleLocationChange = () => {
-      setCurrentPath(window.location.pathname);
+      setCurrentPath(getNormalizedRoute());
       window.scrollTo(0, 0);
     };
 
     window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       // 1. ESC to close all modals
@@ -92,6 +109,7 @@ export default function App() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
     };
   }, []);
 
