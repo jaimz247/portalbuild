@@ -1,29 +1,43 @@
 import { useState } from 'react';
-import { ArrowLeft, Download, Check, Copy, Sparkles, Image as ImageIcon, Palette, Layers, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Download, Check, Copy, Sparkles, Image as ImageIcon, Palette, Layers, Loader2 } from 'lucide-react';
+import {
+  ICON_MARK_SVG,
+  FULL_DARK_SVG,
+  FULL_LIGHT_SVG,
+  APP_BADGE_SVG,
+} from '../lib/logosData';
+import { downloadPngFromSvg, downloadSvg } from '../lib/svgToPng';
 
-interface LogoItem {
+interface PngOption {
+  label: string;
+  width: number;
+  height: number;
+  filename: string;
+  resolution: string;
+}
+
+interface LogoCard {
   id: string;
   title: string;
   description: string;
-  previewUrl: string;
+  svg: string;
+  svgFilename: string;
   previewBg: 'dark' | 'light' | 'grid';
-  svgPath: string;
-  pngFormats: { label: string; url: string; resolution: string }[];
+  pngOptions: PngOption[];
 }
 
 export default function LogosPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [downloadingKey, setDownloadingKey] = useState<string | null>(null);
 
   const handleBackHome = () => {
     window.history.pushState({}, '', '/');
     window.dispatchEvent(new Event('popstate'));
   };
 
-  const handleCopySvg = async (svgPath: string, id: string) => {
+  const handleCopySvg = async (svgContent: string, id: string) => {
     try {
-      const response = await fetch(svgPath);
-      const svgText = await response.text();
-      await navigator.clipboard.writeText(svgText);
+      await navigator.clipboard.writeText(svgContent);
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 3000);
     } catch (err) {
@@ -31,57 +45,74 @@ export default function LogosPage() {
     }
   };
 
-  const logoAssets: LogoItem[] = [
+  const handleDownloadPng = async (
+    svg: string,
+    width: number,
+    height: number,
+    filename: string,
+    key: string
+  ) => {
+    try {
+      setDownloadingKey(key);
+      await downloadPngFromSvg(svg, width, height, filename);
+    } catch (err) {
+      console.error('Failed to download PNG:', err);
+    } finally {
+      setDownloadingKey(null);
+    }
+  };
+
+  const logoCards: LogoCard[] = [
     {
       id: 'full-dark',
       title: 'Full Horizontal Logo (Dark Background)',
       description: 'Primary lockup for dark dashboards, hero banners, and pitch decks. Transparent PNG & crisp vector SVG.',
-      previewUrl: '/logos/portalbuild-logo-dark-1000.png',
+      svg: FULL_DARK_SVG,
+      svgFilename: 'portalbuild-logo-dark.svg',
       previewBg: 'dark',
-      svgPath: '/logos/portalbuild-logo-dark.svg',
-      pngFormats: [
-        { label: 'PNG 2000px (Ultra-HD)', url: '/logos/portalbuild-logo-dark-2000.png', resolution: '2000 × 500 px' },
-        { label: 'PNG 1000px (Standard)', url: '/logos/portalbuild-logo-dark-1000.png', resolution: '1000 × 250 px' },
-        { label: 'PNG 600px (Compact)', url: '/logos/portalbuild-logo-dark-600.png', resolution: '600 × 150 px' },
+      pngOptions: [
+        { label: 'PNG 2000px (Ultra-HD)', width: 2000, height: 500, filename: 'portalbuild-logo-dark-2000.png', resolution: '2000 × 500 px' },
+        { label: 'PNG 1000px (Standard)', width: 1000, height: 250, filename: 'portalbuild-logo-dark-1000.png', resolution: '1000 × 250 px' },
+        { label: 'PNG 600px (Compact)', width: 600, height: 150, filename: 'portalbuild-logo-dark-600.png', resolution: '600 × 150 px' },
       ],
     },
     {
       id: 'full-light',
       title: 'Full Horizontal Logo (Light Background)',
       description: 'High-contrast lockup for white documents, PDF invoices, and light mode interfaces. Transparent PNG & SVG.',
-      previewUrl: '/logos/portalbuild-logo-light-1000.png',
+      svg: FULL_LIGHT_SVG,
+      svgFilename: 'portalbuild-logo-light.svg',
       previewBg: 'light',
-      svgPath: '/logos/portalbuild-logo-light.svg',
-      pngFormats: [
-        { label: 'PNG 2000px (Ultra-HD)', url: '/logos/portalbuild-logo-light-2000.png', resolution: '2000 × 500 px' },
-        { label: 'PNG 1000px (Standard)', url: '/logos/portalbuild-logo-light-1000.png', resolution: '1000 × 250 px' },
-        { label: 'PNG 600px (Compact)', url: '/logos/portalbuild-logo-light-600.png', resolution: '600 × 150 px' },
+      pngOptions: [
+        { label: 'PNG 2000px (Ultra-HD)', width: 2000, height: 500, filename: 'portalbuild-logo-light-2000.png', resolution: '2000 × 500 px' },
+        { label: 'PNG 1000px (Standard)', width: 1000, height: 250, filename: 'portalbuild-logo-light-1000.png', resolution: '1000 × 250 px' },
+        { label: 'PNG 600px (Compact)', width: 600, height: 150, filename: 'portalbuild-logo-light-600.png', resolution: '600 × 150 px' },
       ],
     },
     {
       id: 'icon-mark',
       title: 'Square Aperture Icon Mark (Transparent)',
       description: 'Geometric glowing portal mark for app icons, avatars, and UI navigation icons. Transparent PNG & SVG.',
-      previewUrl: '/logos/portalbuild-icon-1024.png',
+      svg: ICON_MARK_SVG,
+      svgFilename: 'portalbuild-icon.svg',
       previewBg: 'grid',
-      svgPath: '/logos/portalbuild-icon.svg',
-      pngFormats: [
-        { label: 'PNG 2048px (Master 2K)', url: '/logos/portalbuild-icon-2048.png', resolution: '2048 × 2048 px' },
-        { label: 'PNG 1024px (High-Res)', url: '/logos/portalbuild-icon-1024.png', resolution: '1024 × 1024 px' },
-        { label: 'PNG 512px (Standard App)', url: '/logos/portalbuild-icon-512.png', resolution: '512 × 512 px' },
-        { label: 'PNG 256px (Icon)', url: '/logos/portalbuild-icon-256.png', resolution: '256 × 256 px' },
+      pngOptions: [
+        { label: 'PNG 2048px (Master 2K)', width: 2048, height: 2048, filename: 'portalbuild-icon-2048.png', resolution: '2048 × 2048 px' },
+        { label: 'PNG 1024px (High-Res)', width: 1024, height: 1024, filename: 'portalbuild-icon-1024.png', resolution: '1024 × 1024 px' },
+        { label: 'PNG 512px (Standard App)', width: 512, height: 512, filename: 'portalbuild-icon-512.png', resolution: '512 × 512 px' },
+        { label: 'PNG 256px (Icon)', width: 256, height: 256, filename: 'portalbuild-icon-256.png', resolution: '256 × 256 px' },
       ],
     },
     {
       id: 'app-badge',
       title: 'Official App Badge & Social Avatar',
       description: 'Square branded card with premium dark backdrop, outer bezel, and typography. Ready for Twitter/X, LinkedIn & Discord.',
-      previewUrl: '/logos/portalbuild-badge-1024.png',
+      svg: APP_BADGE_SVG,
+      svgFilename: 'portalbuild-badge.svg',
       previewBg: 'dark',
-      svgPath: '/logos/portalbuild-badge.svg',
-      pngFormats: [
-        { label: 'PNG 1024px (Master Avatar)', url: '/logos/portalbuild-badge-1024.png', resolution: '1024 × 1024 px' },
-        { label: 'PNG 512px (Social Profile)', url: '/logos/portalbuild-badge-512.png', resolution: '512 × 512 px' },
+      pngOptions: [
+        { label: 'PNG 1024px (Master Avatar)', width: 1024, height: 1024, filename: 'portalbuild-badge-1024.png', resolution: '1024 × 1024 px' },
+        { label: 'PNG 512px (Social Profile)', width: 512, height: 512, filename: 'portalbuild-badge-512.png', resolution: '512 × 512 px' },
       ],
     },
   ];
@@ -113,21 +144,21 @@ export default function LogosPage() {
           PortalBuild Logo &amp; Asset Kit
         </h1>
         <p className="text-slate-400 mt-3 text-base sm:text-lg max-w-3xl leading-relaxed">
-          Download crisp, high-resolution PNGs with transparent backgrounds, scalable vector SVGs, and web favicons. All assets are production-ready for light and dark environments.
+          Download crisp, high-resolution PNGs with transparent backgrounds, scalable vector SVGs, and web favicons. All assets render instantly and generate genuine pixel-perfect image files directly in your browser.
         </p>
       </div>
 
       {/* Grid of Logo Assets */}
       <div className="space-y-10">
-        {logoAssets.map((item) => (
+        {logoCards.map((item) => (
           <div
             key={item.id}
             className="bg-slate-900/90 border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl transition-all duration-300 hover:border-white/20"
           >
             <div className="flex flex-col lg:flex-row gap-8 items-stretch">
-              {/* Preview Canvas Box */}
+              {/* Preview Canvas Box - Rendered directly via inline SVG for 100% reliability */}
               <div
-                className={`lg:w-1/2 flex items-center justify-center p-8 rounded-xl border border-white/10 overflow-hidden relative min-h-[240px] ${
+                className={`lg:w-1/2 flex items-center justify-center p-8 rounded-xl border border-white/10 overflow-hidden relative min-h-[260px] ${
                   item.previewBg === 'light'
                     ? 'bg-slate-100'
                     : item.previewBg === 'grid'
@@ -135,10 +166,9 @@ export default function LogosPage() {
                     : 'bg-slate-950'
                 }`}
               >
-                <img
-                  src={item.previewUrl}
-                  alt={item.title}
-                  className={`max-h-48 w-auto object-contain drop-shadow-xl transition-transform duration-300 hover:scale-105`}
+                <div
+                  dangerouslySetInnerHTML={{ __html: item.svg }}
+                  className="w-full max-w-[380px] max-h-[200px] flex items-center justify-center drop-shadow-xl transition-transform duration-300 hover:scale-105"
                 />
               </div>
 
@@ -160,35 +190,51 @@ export default function LogosPage() {
                     Download PNG Formats (Transparent):
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {item.pngFormats.map((png) => (
-                      <a
-                        key={png.url}
-                        href={png.url}
-                        download
-                        className="flex items-center justify-between px-3.5 py-2.5 bg-slate-800/90 hover:bg-orange-600/20 hover:border-orange-500/50 border border-white/10 rounded-lg text-xs font-medium text-slate-200 hover:text-white transition-all group"
-                      >
-                        <span className="font-semibold text-white group-hover:text-orange-400">{png.label}</span>
-                        <div className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
-                          <Download className="w-3.5 h-3.5 text-orange-400 group-hover:translate-y-0.5 transition-transform" />
-                        </div>
-                      </a>
-                    ))}
+                    {item.pngOptions.map((png) => {
+                      const downloadKey = `${item.id}-${png.width}`;
+                      const isDownloading = downloadingKey === downloadKey;
+                      return (
+                        <button
+                          key={png.filename}
+                          onClick={() =>
+                            handleDownloadPng(item.svg, png.width, png.height, png.filename, downloadKey)
+                          }
+                          disabled={isDownloading}
+                          className="flex items-center justify-between px-3.5 py-2.5 bg-slate-800/90 hover:bg-orange-600/20 hover:border-orange-500/50 border border-white/10 rounded-lg text-xs font-medium text-slate-200 hover:text-white transition-all group cursor-pointer text-left"
+                        >
+                          <div>
+                            <span className="font-semibold text-white group-hover:text-orange-400 block">
+                              {png.label}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              {png.resolution}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
+                            {isDownloading ? (
+                              <Loader2 className="w-3.5 h-3.5 text-orange-400 animate-spin" />
+                            ) : (
+                              <Download className="w-3.5 h-3.5 text-orange-400 group-hover:translate-y-0.5 transition-transform" />
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* SVG Vector & Copy Action */}
                 <div className="pt-4 border-t border-white/10 flex flex-wrap items-center gap-3">
-                  <a
-                    href={item.svgPath}
-                    download
+                  <button
+                    onClick={() => downloadSvg(item.svg, item.svgFilename)}
                     className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-orange-600/20 transition-all cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download Vector SVG</span>
-                  </a>
+                  </button>
 
                   <button
-                    onClick={() => handleCopySvg(item.svgPath, item.id)}
+                    onClick={() => handleCopySvg(item.svg, item.id)}
                     className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-white/15 text-slate-200 hover:text-white font-semibold text-xs rounded-lg transition-all cursor-pointer"
                   >
                     {copiedId === item.id ? (
@@ -203,16 +249,6 @@ export default function LogosPage() {
                       </>
                     )}
                   </button>
-
-                  <a
-                    href={item.svgPath}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-orange-400 transition-colors ml-auto font-mono"
-                  >
-                    <span>View raw SVG</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
                 </div>
               </div>
             </div>
@@ -279,22 +315,28 @@ export default function LogosPage() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <a
-            href="/logos/favicon.png"
-            download
-            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-white rounded-lg inline-flex items-center gap-1.5"
+          <button
+            onClick={() => handleDownloadPng(ICON_MARK_SVG, 64, 64, 'favicon.png', 'fav-64')}
+            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-white rounded-lg inline-flex items-center gap-1.5 cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5 text-orange-400" />
-            <span>favicon.png (64px)</span>
-          </a>
-          <a
-            href="/logos/apple-touch-icon.png"
-            download
-            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-white rounded-lg inline-flex items-center gap-1.5"
+            {downloadingKey === 'fav-64' ? (
+              <Loader2 className="w-3.5 h-3.5 text-orange-400 animate-spin" />
+            ) : (
+              <Download className="w-3.5 h-3.5 text-orange-400" />
+            )}
+            <span>Download favicon.png (64px)</span>
+          </button>
+          <button
+            onClick={() => handleDownloadPng(ICON_MARK_SVG, 180, 180, 'apple-touch-icon.png', 'apple-180')}
+            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-white rounded-lg inline-flex items-center gap-1.5 cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5 text-orange-400" />
-            <span>apple-touch-icon.png (180px)</span>
-          </a>
+            {downloadingKey === 'apple-180' ? (
+              <Loader2 className="w-3.5 h-3.5 text-orange-400 animate-spin" />
+            ) : (
+              <Download className="w-3.5 h-3.5 text-orange-400" />
+            )}
+            <span>Download apple-touch-icon.png (180px)</span>
+          </button>
         </div>
       </div>
 
