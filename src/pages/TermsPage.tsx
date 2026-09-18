@@ -2,7 +2,8 @@ import { ArrowLeft, ShieldCheck, FileCheck, Scale, AlertCircle } from 'lucide-re
 
 export default function TermsPage() {
   const handleBackHome = () => {
-    window.location.href = '/';
+    window.history.pushState({}, '', '/');
+    window.dispatchEvent(new Event('popstate'));
   };
 
   return (

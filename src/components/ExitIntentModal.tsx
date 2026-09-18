@@ -66,7 +66,8 @@ export default function ExitIntentModal() {
           >
             <button 
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-orange-500 focus:outline-none"
+              aria-label="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
@@ -86,14 +87,15 @@ export default function ExitIntentModal() {
               <input 
                 type="email" 
                 required
+                aria-label="Work Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('exit_modal_input_placeholder')}
-                className="w-full bg-slate-950 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors text-sm"
+                className="w-full bg-slate-950 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-orange-500 focus-visible:ring-2 focus-visible:ring-orange-500 rounded-lg transition-colors text-sm"
               />
               <button 
                 type="submit"
-                className="w-full bg-orange-600 text-white font-bold py-4 text-sm tracking-tight transition-all duration-300 hover:bg-orange-700 hover:scale-[1.02]"
+                className="w-full bg-orange-600 text-white font-bold py-4 text-sm tracking-tight rounded-lg transition-all duration-300 hover:bg-orange-700 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-orange-400 focus:outline-none cursor-pointer"
               >
                 {t('exit_modal_cta')}
               </button>

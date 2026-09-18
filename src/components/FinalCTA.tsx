@@ -15,6 +15,7 @@ export default function FinalCTA({ onOpenModal }: FinalCTAProps) {
 
   return (
     <section id="final-cta" className="py-20 md:py-28 px-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-t border-white/10 relative overflow-hidden">
+      <span id="preview" className="absolute -top-12 opacity-0 pointer-events-none" aria-hidden="true"></span>
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-6">
           <span>Your Next Cohort Home</span>
@@ -25,7 +26,7 @@ export default function FinalCTA({ onOpenModal }: FinalCTAProps) {
         </h2>
 
         <p className="text-base md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-          Get a free, custom-branded portal preview built from your program page in 24 hours. No sales call, no credit card, no obligation.
+          Get a free, custom-branded portal preview built from your program page in 24 hours. No call required, no credit card, no obligation.
         </p>
 
         <div className="flex flex-col items-center">

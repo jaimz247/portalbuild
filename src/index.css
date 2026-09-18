@@ -8,29 +8,112 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 main {
-  scroll-snap-type: y proximity;
-  height: 100vh;
-  overflow-y: scroll;
+  width: 100%;
+  min-height: 100%;
 }
 
 section {
-  scroll-snap-align: start;
-  scroll-margin-top: 2rem;
+  scroll-margin-top: 5rem;
 }
 
 body {
   background-color: var(--color-slate-950, #020617);
   color: #ffffff;
   font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Premium Light Theme Colors and Contrast Re-engineering */
 html.theme-light-active {
   background-color: #f8fafc !important;
   color: #0f172a !important;
+}
+
+/* ==========================================================================
+   WCAG 2.1 AA / AAA Visible Focus Indicators for Keyboard Navigation
+   ========================================================================== */
+
+/* Universal keyboard focus indicator for all interactable elements */
+:focus-visible {
+  outline: 2px solid #f97316 !important;
+  outline-offset: 2px !important;
+}
+
+html.theme-light-active :focus-visible {
+  outline: 2px solid #ea580c !important;
+  outline-offset: 2px !important;
+}
+
+/* Elevated visual ring for core actionable elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid #fb923c !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.3) !important;
+}
+
+html.theme-light-active button:focus-visible,
+html.theme-light-active a:focus-visible,
+html.theme-light-active input:focus-visible,
+html.theme-light-active select:focus-visible,
+html.theme-light-active textarea:focus-visible,
+html.theme-light-active summary:focus-visible,
+html.theme-light-active [role="button"]:focus-visible,
+html.theme-light-active [role="tab"]:focus-visible,
+html.theme-light-active [tabindex="0"]:focus-visible {
+  outline: 2px solid #ea580c !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.25) !important;
+}
+
+/* WCAG 2.1 2.4.1 Bypass Blocks: Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -120px;
+  left: 1.5rem;
+  z-index: 9999;
+  padding: 0.75rem 1.25rem;
+  background-color: #ea580c;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+.skip-to-content:focus {
+  top: 1rem;
+  outline: 2px solid #ffffff !important;
+  outline-offset: 2px !important;
+}
+
+/* Dark mode button contrast safeguards */
+button.bg-orange-600,
+button.bg-orange-500,
+.btn-primary {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure secondary buttons and links have high contrast */
+.text-slate-400 {
+  color: #94a3b8; /* Luminance passes 4.5:1 against #020617 (6.5:1 ratio) */
 }
 
 html.theme-light-active body {

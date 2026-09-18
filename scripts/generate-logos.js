@@ -233,11 +233,55 @@ async function generateAllLogos() {
   await sharp(iconBuf).resize(1024, 1024).png().toFile(path.join(logosDir, 'portalbuild-icon-1024.png'));
   await sharp(iconBuf).resize(512, 512).png().toFile(path.join(logosDir, 'portalbuild-icon-512.png'));
   await sharp(iconBuf).resize(256, 256).png().toFile(path.join(logosDir, 'portalbuild-icon-256.png'));
-  await sharp(iconBuf).resize(64, 64).png().toFile(path.join(logosDir, 'favicon.png'));
   await sharp(iconBuf).resize(180, 180).png().toFile(path.join(logosDir, 'apple-touch-icon.png'));
+  await sharp(iconBuf).resize(32, 32).png().toFile(path.join(logosDir, 'favicon-32x32.png'));
+  await sharp(iconBuf).resize(16, 16).png().toFile(path.join(logosDir, 'favicon-16x16.png'));
+  await sharp(iconBuf).resize(32, 32).png().toFile(path.join(logosDir, 'favicon.png'));
 
-  // Also copy favicon.png to /public for browser tab
-  fs.copyFileSync(path.join(logosDir, 'favicon.png'), path.join(process.cwd(), 'public', 'favicon.png'));
+  // Also write all favicon formats directly to /public for instant browser discovery
+  const publicDir = path.join(process.cwd(), 'public');
+  await sharp(iconBuf).resize(32, 32).png().toFile(path.join(publicDir, 'favicon-32x32.png'));
+  await sharp(iconBuf).resize(16, 16).png().toFile(path.join(publicDir, 'favicon-16x16.png'));
+  await sharp(iconBuf).resize(32, 32).png().toFile(path.join(publicDir, 'favicon.png'));
+  await sharp(iconBuf).resize(180, 180).png().toFile(path.join(publicDir, 'apple-touch-icon.png'));
+  fs.writeFileSync(path.join(publicDir, 'favicon.svg'), iconMarkSvg);
+
+  // Generate multi-size ICO file containing 16x16 and 32x32 frames
+  const b16 = fs.readFileSync(path.join(publicDir, 'favicon-16x16.png'));
+  const b32 = fs.readFileSync(path.join(publicDir, 'favicon-32x32.png'));
+  
+  function createIco(pngBuffers) {
+    const count = pngBuffers.length;
+    const header = Buffer.alloc(6);
+    header.writeUInt16LE(0, 0); // reserved
+    header.writeUInt16LE(1, 2); // icon type (1 = ICO)
+    header.writeUInt16LE(count, 4); // count of images
+
+    let offset = 6 + count * 16;
+    const entries = [];
+    for (const item of pngBuffers) {
+      const entry = Buffer.alloc(16);
+      entry.writeUInt8(item.width >= 256 ? 0 : item.width, 0);
+      entry.writeUInt8(item.height >= 256 ? 0 : item.height, 1);
+      entry.writeUInt8(0, 2); // palette
+      entry.writeUInt8(0, 3); // reserved
+      entry.writeUInt16LE(1, 4); // color planes
+      entry.writeUInt16LE(32, 6); // bits per pixel
+      entry.writeUInt32LE(item.buffer.length, 8); // size of image data
+      entry.writeUInt32LE(offset, 12); // offset of image data
+      entries.push(entry);
+      offset += item.buffer.length;
+    }
+
+    return Buffer.concat([header, ...entries, ...pngBuffers.map(b => b.buffer)]);
+  }
+
+  const icoBuffer = createIco([
+    { width: 16, height: 16, buffer: b16 },
+    { width: 32, height: 32, buffer: b32 }
+  ]);
+  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), icoBuffer);
+  fs.writeFileSync(path.join(logosDir, 'favicon.ico'), icoBuffer);
 
   // 2. Full Horizontal Dark Logo PNGs (Transparent background)
   const fullDarkBuf = Buffer.from(fullDarkSvg);

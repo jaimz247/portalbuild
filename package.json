@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node scripts/generate-logos.js && vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build": "node scripts/generate-logos.js && node scripts/crawl-links.cjs && vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist server.js",
+    "crawl:links": "node scripts/crawl-links.cjs",
+    "verify:favicons": "node scripts/verify-favicons.cjs",
+    "verify:contrast": "node scripts/verify-contrast.cjs",
     "lint": "tsc --noEmit"
   },
   "reactSnap": {

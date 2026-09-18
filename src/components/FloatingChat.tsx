@@ -20,7 +20,7 @@ export default function FloatingChat() {
 
   return (
     <a
-      href="mailto:hello@example.com?subject=Quick%20question"
+      href="mailto:hello@getportalbuild.com?subject=Quick%20question"
       onClick={handleClick}
       className="fixed bottom-6 right-6 z-40 group flex items-center gap-3 bg-slate-900/80 backdrop-blur-md border border-white/10 rounded-full pr-1.5 pl-4 py-1.5 shadow-[0_0_20px_rgba(0,0,0,0.5)] hover:bg-slate-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer overflow-hidden"
     >

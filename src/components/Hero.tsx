@@ -52,6 +52,9 @@ export default function Hero({ onOpenModal }: HeroProps) {
         <p className="text-xs md:text-sm text-slate-400 mt-3 font-medium tracking-wide">
           Free. No call required. No card. You keep the preview.
         </p>
+        <p className="text-xs md:text-sm text-orange-400 mt-1.5 font-medium tracking-wide">
+          Live 7 days before your start date, or you don't pay.
+        </p>
 
         {/* Secondary Text Link */}
         <a

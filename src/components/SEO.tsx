@@ -6,91 +6,76 @@ interface SEOProps {
   type?: string;
   url?: string;
   image?: string;
+  locale?: string;
+  publishedTime?: string;
 }
 
 export default function SEO({ 
-  title = "PortalBuild | Premium Client Portals in 72 Hours", 
-  description = "Turn Your Service Delivery Into A Premium Client Portal In 72 Hours. Stop managing clients through chaotic WhatsApp threads and messy spreadsheets.",
+  title,
+  description,
   type = "website",
-  url = "https://portalbuild.com",
-  image = "/vite.svg"
+  url = "https://getportalbuild.com",
+  image = "https://getportalbuild.com/og-image.png",
+  locale = "en_US",
+  publishedTime = "2026-03-01T08:00:00+00:00"
 }: SEOProps) {
   useEffect(() => {
-    // Standard Meta
-    document.title = title;
-    document.querySelector('meta[name="description"]')?.setAttribute("content", description);
-    
-    // Canonical link
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonical);
+    if (title) {
+      document.title = title;
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute("content", title);
+      const twitterTitle = document.querySelector('meta[name="twitter:title"]') || document.querySelector('meta[property="twitter:title"]');
+      if (twitterTitle) twitterTitle.setAttribute("content", title);
     }
-    canonical.setAttribute('href', url);
     
-    // Open Graph
-    document.querySelector('meta[property="og:title"]')?.setAttribute("content", title);
-    document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
-    document.querySelector('meta[property="og:type"]')?.setAttribute("content", type);
-    
-    // Check if url tag exists, if not create it
-    let ogUrl = document.querySelector('meta[property="og:url"]');
-    if (!ogUrl) {
-      ogUrl = document.createElement('meta');
-      ogUrl.setAttribute('property', 'og:url');
-      document.head.appendChild(ogUrl);
+    if (description) {
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute("content", description);
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute("content", description);
+      const twitterDesc = document.querySelector('meta[name="twitter:description"]') || document.querySelector('meta[property="twitter:description"]');
+      if (twitterDesc) twitterDesc.setAttribute("content", description);
     }
-    ogUrl.setAttribute('content', url);
 
-    let ogImage = document.querySelector('meta[property="og:image"]');
-    if (!ogImage) {
-      ogImage = document.createElement('meta');
-      ogImage.setAttribute('property', 'og:image');
-      document.head.appendChild(ogImage);
+    if (url) {
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute("content", url);
+      const canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) canonical.setAttribute("href", url);
     }
-    ogImage.setAttribute('content', image);
 
-    // Twitter
-    document.querySelector('meta[property="twitter:title"]')?.setAttribute("content", title);
-    document.querySelector('meta[property="twitter:description"]')?.setAttribute("content", description);
-    
-    let twitterImage = document.querySelector('meta[property="twitter:image"]');
-    if (!twitterImage) {
-      twitterImage = document.createElement('meta');
-      twitterImage.setAttribute('property', 'twitter:image');
-      document.head.appendChild(twitterImage);
+    if (image) {
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      if (ogImage) ogImage.setAttribute("content", image);
+      const twitterImage = document.querySelector('meta[name="twitter:image"]') || document.querySelector('meta[property="twitter:image"]');
+      if (twitterImage) twitterImage.setAttribute("content", image);
     }
-    twitterImage.setAttribute('content', image);
 
-    // Schema.org JSON-LD data
-    let script = document.querySelector('script[type="application/ld+json"]');
-    if (!script) {
-      script = document.createElement('script');
-      script.setAttribute('type', 'application/ld+json');
-      document.head.appendChild(script);
+    if (type) {
+      const ogType = document.querySelector('meta[property="og:type"]');
+      if (ogType) ogType.setAttribute("content", type);
     }
-    
-    const schemaData = {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "PortalBuild | Premium Client Portal Development",
-      "url": "https://portalbuild.com",
-      "description": "Turn Your Service Delivery Into A Premium Client Portal In 72 Hours. Stop managing clients through chaotic WhatsApp threads and messy spreadsheets.",
-      "about": {
-        "@type": "Service",
-        "name": "Client Portal Development",
-        "description": "Bespoke, white-label client dashboards built for high-ticket services and agencies in 72 hours.",
-        "provider": {
-          "@type": "Organization",
-          "name": "PortalBuild"
-        }
+
+    if (locale) {
+      let ogLocale = document.querySelector('meta[property="og:locale"]');
+      if (!ogLocale) {
+        ogLocale = document.createElement('meta');
+        ogLocale.setAttribute('property', 'og:locale');
+        document.head.appendChild(ogLocale);
       }
-    };
-    
-    script.textContent = JSON.stringify(schemaData);
+      ogLocale.setAttribute('content', locale);
+    }
 
-  }, [title, description, type, url, image]);
+    if (publishedTime) {
+      let publishedMeta = document.querySelector('meta[property="article:published_time"]');
+      if (!publishedMeta) {
+        publishedMeta = document.createElement('meta');
+        publishedMeta.setAttribute('property', 'article:published_time');
+        document.head.appendChild(publishedMeta);
+      }
+      publishedMeta.setAttribute('content', publishedTime);
+    }
+  }, [title, description, type, url, image, locale, publishedTime]);
 
   return null;
 }

@@ -3,8 +3,44 @@ export const OPEN_DEMO_MODAL_EVENT = 'open-demo-modal';
 export const CLOSE_MODALS_EVENT = 'close-all-modals';
 export const OPEN_ADMIN_EVENT = 'open-admin-dashboard';
 
+export const PRIMARY_CTA_INTERACTED_KEY = 'portalbuild_primary_cta_interacted';
+export const EXIT_INTENT_TRIGGERED_KEY = 'portalbuild_exit_intent_triggered';
+
+export const markPrimaryCTAInteracted = () => {
+  try {
+    sessionStorage.setItem(PRIMARY_CTA_INTERACTED_KEY, 'true');
+  } catch {
+    // SessionStorage may be restricted in sandboxed iframes
+  }
+};
+
+export const hasInteractedWithPrimaryCTA = (): boolean => {
+  try {
+    return sessionStorage.getItem(PRIMARY_CTA_INTERACTED_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
+export const markExitIntentTriggered = () => {
+  try {
+    sessionStorage.setItem(EXIT_INTENT_TRIGGERED_KEY, 'true');
+  } catch {
+    // SessionStorage may be restricted
+  }
+};
+
+export const hasExitIntentTriggered = (): boolean => {
+  try {
+    return sessionStorage.getItem(EXIT_INTENT_TRIGGERED_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
 export const openApplicationModal = (e?: React.MouseEvent) => {
   if (e) e.preventDefault();
+  markPrimaryCTAInteracted();
   window.dispatchEvent(new Event(OPEN_MODAL_EVENT));
 };
 
@@ -21,4 +57,5 @@ export const openAdminDashboard = (e?: React.MouseEvent) => {
   if (e) e.preventDefault();
   window.dispatchEvent(new Event(OPEN_ADMIN_EVENT));
 };
+
 

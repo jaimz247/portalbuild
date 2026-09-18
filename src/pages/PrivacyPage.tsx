@@ -2,7 +2,8 @@ import { ArrowLeft, ShieldCheck, Mail, Lock, FileText } from 'lucide-react';
 
 export default function PrivacyPage() {
   const handleBackHome = () => {
-    window.location.href = '/';
+    window.history.pushState({}, '', '/');
+    window.dispatchEvent(new Event('popstate'));
   };
 
   return (

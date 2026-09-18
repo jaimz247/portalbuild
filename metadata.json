@@ -1,6 +1,6 @@
 {
-  "name": "PortalBuild Landing Page",
-  "description": "A high-conversion, premium SaaS landing page for custom client portals.",
+  "name": "PortalBuild",
+  "description": "One branded home for your program. One dashboard showing exactly who's falling behind. Live before your next cohort starts.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

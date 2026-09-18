@@ -20,7 +20,7 @@ const heroSvg = `
   <circle cx="180" cy="50" r="16" fill="#10b981"/>
   
   <rect x="700" y="25" width="1000" height="50" rx="12" fill="#020617" stroke="#334155" stroke-width="2"/>
-  <text x="1200" y="58" font-family="system-ui, sans-serif" font-size="22" font-weight="600" fill="#10b981" text-anchor="middle">🔒 portal.thegrowthcollective.com</text>
+  <text x="1200" y="58" font-family="system-ui, sans-serif" font-size="22" font-weight="600" fill="#10b981" text-anchor="middle">🔒 growthcollective.cohortroom.com</text>
 
   <!-- Sidebar -->
   <rect x="60" y="160" width="440" height="1130" rx="20" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
@@ -161,21 +161,21 @@ async function generate() {
   const heroBuffer = Buffer.from(heroSvg);
   await sharp(heroBuffer).resize(2400, 1350).webp({ quality: 90 }).toFile(path.join(publicImagesDir, 'hero-portal-2x.webp'));
   await sharp(heroBuffer).resize(1200, 675).webp({ quality: 85 }).toFile(path.join(publicImagesDir, 'hero-portal.webp'));
-  await sharp(heroBuffer).resize(2400, 1350).avif({ quality: 85 }).toFile(path.join(publicImagesDir, 'hero-portal-2x.avif'));
-  await sharp(heroBuffer).resize(1200, 675).avif({ quality: 80 }).toFile(path.join(publicImagesDir, 'hero-portal.avif'));
+  await sharp(heroBuffer).resize(2400, 1350).avif({ quality: 85, effort: 2 }).toFile(path.join(publicImagesDir, 'hero-portal-2x.avif'));
+  await sharp(heroBuffer).resize(1200, 675).avif({ quality: 80, effort: 2 }).toFile(path.join(publicImagesDir, 'hero-portal.avif'));
 
   // Dashboard Preview
   await sharp(heroBuffer).resize(2400, 1600, { fit: 'cover' }).webp({ quality: 90 }).toFile(path.join(publicImagesDir, 'dashboard-preview-2x.webp'));
   await sharp(heroBuffer).resize(1200, 800, { fit: 'cover' }).webp({ quality: 85 }).toFile(path.join(publicImagesDir, 'dashboard-preview.webp'));
-  await sharp(heroBuffer).resize(2400, 1600, { fit: 'cover' }).avif({ quality: 85 }).toFile(path.join(publicImagesDir, 'dashboard-preview-2x.avif'));
-  await sharp(heroBuffer).resize(1200, 800, { fit: 'cover' }).avif({ quality: 80 }).toFile(path.join(publicImagesDir, 'dashboard-preview.avif'));
+  await sharp(heroBuffer).resize(2400, 1600, { fit: 'cover' }).avif({ quality: 85, effort: 2 }).toFile(path.join(publicImagesDir, 'dashboard-preview-2x.avif'));
+  await sharp(heroBuffer).resize(1200, 800, { fit: 'cover' }).avif({ quality: 80, effort: 2 }).toFile(path.join(publicImagesDir, 'dashboard-preview.avif'));
 
   // Operator Radar
   const opBuffer = Buffer.from(operatorSvg);
   await sharp(opBuffer).resize(1600, 1000).webp({ quality: 90 }).toFile(path.join(publicImagesDir, 'operator-radar-2x.webp'));
   await sharp(opBuffer).resize(800, 500).webp({ quality: 85 }).toFile(path.join(publicImagesDir, 'operator-radar.webp'));
-  await sharp(opBuffer).resize(1600, 1000).avif({ quality: 85 }).toFile(path.join(publicImagesDir, 'operator-radar-2x.avif'));
-  await sharp(opBuffer).resize(800, 500).avif({ quality: 80 }).toFile(path.join(publicImagesDir, 'operator-radar.avif'));
+  await sharp(opBuffer).resize(1600, 1000).avif({ quality: 85, effort: 2 }).toFile(path.join(publicImagesDir, 'operator-radar-2x.avif'));
+  await sharp(opBuffer).resize(800, 500).avif({ quality: 80, effort: 2 }).toFile(path.join(publicImagesDir, 'operator-radar.avif'));
 
   console.log('Successfully generated AVIF & WebP assets in /public/images');
 }

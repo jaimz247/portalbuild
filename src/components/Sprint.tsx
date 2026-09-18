@@ -17,8 +17,8 @@ export default function Sprint() {
     },
     {
       step: "04",
-      title: "One Revision Round",
-      desc: "We adjust branding, module links, copy, and operator alerts until every single detail meets your exact standard."
+      title: "Two Revision Rounds",
+      desc: "Includes two rounds of revisions. We adjust branding, module links, copy, and operator alerts until every single detail meets your exact standard."
     },
     {
       step: "05",

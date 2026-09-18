@@ -3,32 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Member Portals for Cohort Programs &amp; Masterminds | PortalBuild</title>
-    
-    <!-- Meta Descriptions -->
-    <meta name="description" content="Branded member portals for high-ticket cohort programs — with an operator dashboard showing exactly who's falling behind. Live before your next cohort starts. See a free preview built for your program." />
-    <link rel="canonical" href="https://getportalbuild.com/" />
-    
+    <title>PortalBuild — Member Retention Layer for Cohort Programs</title>
+    <meta name="description" content="One branded home for your program. One dashboard showing exactly who's falling behind. Live before your next cohort starts." />
+    <meta name="keywords" content="cohort member portal, student retention dashboard, cohort-based course portal, member retention layer, operator dashboard, high-ticket cohort" />
+    <meta name="author" content="PortalBuild" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://getportalbuild.com/" />
+    <meta property="og:url" content="https://getportalbuild.com" />
+    <meta property="og:site_name" content="PortalBuild" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="en_GB" />
+    <meta property="article:published_time" content="2026-03-01T08:00:00+00:00" />
+    <meta property="article:modified_time" content="2026-09-18T14:20:00+00:00" />
     <meta property="og:title" content="Every cohort, you lose members you could have saved." />
-    <meta property="og:description" content="One branded home for your program. One dashboard showing who's falling behind. See a free preview of yours." />
+    <meta property="og:description" content="A branded member portal for your cohort, plus an operator dashboard that flags at-risk members in week three. Live before your next cohort starts." />
     <meta property="og:image" content="https://getportalbuild.com/og-image.png" />
+    <meta property="og:image:secure_url" content="https://getportalbuild.com/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A branded cohort member portal alongside an operator dashboard flagging at-risk members" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@PortalBuild" />
+    <meta name="twitter:creator" content="@PortalBuild" />
+    <meta name="twitter:title" content="Every cohort, you lose members you could have saved." />
+    <meta name="twitter:description" content="A branded member portal for your cohort, plus an operator dashboard that flags at-risk members in week three." />
+    <meta name="twitter:image" content="https://getportalbuild.com/og-image.png" />
+    <meta name="twitter:image:alt" content="A branded cohort member portal alongside an operator dashboard flagging at-risk members" />
+
+    <link rel="canonical" href="https://getportalbuild.com" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <!-- Performance Resource Hints: DNS Prefetch, Preconnect, Preload -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
+    <link rel="preload" as="image" href="/images/hero-portal.webp" type="image/webp" fetchpriority="high" />
     
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://getportalbuild.com/" />
-    <meta property="twitter:title" content="Every cohort, you lose members you could have saved." />
-    <meta property="twitter:description" content="One branded home for your program. One dashboard showing who's falling behind. See a free preview of yours." />
-    <meta property="twitter:image" content="https://getportalbuild.com/og-image.png" />
-    
-    <!-- Theme Color -->
+    <!-- Mobile & PWA Configuration -->
     <meta name="theme-color" content="#020617" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PortalBuild" />
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="alternate icon" href="/vite.svg" />
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -39,8 +69,8 @@
           "@type": "Organization",
           "@id": "https://getportalbuild.com/#organization",
           "name": "PortalBuild",
-          "url": "https://getportalbuild.com/",
-          "logo": "https://getportalbuild.com/vite.svg",
+          "url": "https://getportalbuild.com",
+          "logo": "https://getportalbuild.com/og-image.png",
           "contactPoint": {
             "@type": "ContactPoint",
             "email": "hello@getportalbuild.com",
@@ -50,103 +80,291 @@
         {
           "@type": "Service",
           "@id": "https://getportalbuild.com/#service",
-          "name": "PortalBuild Member Portals",
-          "description": "Branded member portals for high-ticket cohort programs — with an operator dashboard showing exactly who's falling behind.",
+          "name": "PortalBuild Cohort Member Portal Service",
+          "serviceType": "Custom Cohort Member Portal & Operator Dashboard Build",
+          "description": "One branded home for your program. One dashboard showing exactly who's falling behind. Live before your next cohort starts.",
           "provider": {
             "@id": "https://getportalbuild.com/#organization"
           },
           "areaServed": ["US", "GB", "CA", "AU"],
+          "subjectOf": {
+            "@id": "https://getportalbuild.com/#faq"
+          },
+          "breadcrumb": {
+            "@id": "https://getportalbuild.com/#breadcrumb"
+          },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "PortalBuild Deployment Tiers",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "@id": "https://getportalbuild.com/#offer-essential",
+                "name": "Essential Tier Offer",
+                "itemOffered": {
+                  "@id": "https://getportalbuild.com/#product-essential"
+                },
+                "price": "1997",
+                "priceCurrency": "USD",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock",
+                "url": "https://getportalbuild.com/#pricing"
+              },
+              {
+                "@type": "Offer",
+                "@id": "https://getportalbuild.com/#offer-signature",
+                "name": "Signature Tier Offer",
+                "itemOffered": {
+                  "@id": "https://getportalbuild.com/#product-signature"
+                },
+                "price": "3497",
+                "priceCurrency": "USD",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock",
+                "url": "https://getportalbuild.com/#pricing"
+              },
+              {
+                "@type": "Offer",
+                "@id": "https://getportalbuild.com/#offer-scale",
+                "name": "Scale Tier Offer",
+                "itemOffered": {
+                  "@id": "https://getportalbuild.com/#product-scale"
+                },
+                "price": "5997",
+                "priceCurrency": "USD",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock",
+                "url": "https://getportalbuild.com/#pricing"
+              }
+            ]
+          },
           "offers": [
             {
-              "@type": "Offer",
-              "name": "Launch Tier",
-              "price": "2497",
-              "priceCurrency": "USD",
-              "description": "9 core screens, custom branding, member login, up to 30 members."
+              "@id": "https://getportalbuild.com/#offer-essential"
             },
             {
-              "@type": "Offer",
-              "name": "Program Tier",
-              "price": "3997",
-              "priceCurrency": "USD",
-              "description": "Includes operator dashboard, unlimited members, onboarding automations & reminders."
+              "@id": "https://getportalbuild.com/#offer-signature"
             },
             {
-              "@type": "Offer",
-              "name": "Portfolio Tier",
-              "price": "6997",
-              "priceCurrency": "USD",
-              "description": "Multiple programs & concurrent cohorts, payment & booking embeds, custom integrations."
+              "@id": "https://getportalbuild.com/#offer-scale"
             }
           ]
         },
         {
+          "@type": "Product",
+          "@id": "https://getportalbuild.com/#product-essential",
+          "name": "PortalBuild Essential Tier",
+          "description": "Complete 9-screen member home and operator command dashboard for one program, one cohort at a time. Includes custom domain configuration, deliverable tracking database, automated operator inactivity alerts, 2 revision rounds, and 30 days of post-launch technical support.",
+          "brand": {
+            "@id": "https://getportalbuild.com/#organization"
+          },
+          "category": "Educational Software",
+          "image": "https://getportalbuild.com/og-image.png",
+          "isRelatedTo": {
+            "@id": "https://getportalbuild.com/#service"
+          },
+          "subjectOf": {
+            "@id": "https://getportalbuild.com/#faq"
+          },
+          "offers": {
+            "@id": "https://getportalbuild.com/#offer-essential"
+          }
+        },
+        {
+          "@type": "Product",
+          "@id": "https://getportalbuild.com/#product-signature",
+          "name": "PortalBuild Signature Tier",
+          "description": "Everything in Essential plus new cohort rollover setup, member database resets, retained alumni access, custom health rules and thresholds, priority 24-hour turnaround on interface modifications, and module updates included.",
+          "brand": {
+            "@id": "https://getportalbuild.com/#organization"
+          },
+          "category": "Educational Software",
+          "image": "https://getportalbuild.com/og-image.png",
+          "isRelatedTo": {
+            "@id": "https://getportalbuild.com/#service"
+          },
+          "subjectOf": {
+            "@id": "https://getportalbuild.com/#faq"
+          },
+          "offers": {
+            "@id": "https://getportalbuild.com/#offer-signature"
+          }
+        },
+        {
+          "@type": "Product",
+          "@id": "https://getportalbuild.com/#product-scale",
+          "name": "PortalBuild Scale Tier",
+          "description": "Everything in Signature plus multiple programs under one unified operator dashboard, concurrent cohort views with cross-cohort comparison, custom screens beyond standard nine, and same-day changes during live cohorts.",
+          "brand": {
+            "@id": "https://getportalbuild.com/#organization"
+          },
+          "category": "Educational Software",
+          "image": "https://getportalbuild.com/og-image.png",
+          "isRelatedTo": {
+            "@id": "https://getportalbuild.com/#service"
+          },
+          "subjectOf": {
+            "@id": "https://getportalbuild.com/#faq"
+          },
+          "offers": {
+            "@id": "https://getportalbuild.com/#offer-scale"
+          }
+        },
+        {
           "@type": "FAQPage",
           "@id": "https://getportalbuild.com/#faq",
+          "about": {
+            "@id": "https://getportalbuild.com/#service"
+          },
+          "isRelatedTo": [
+            {
+              "@id": "https://getportalbuild.com/#product-essential"
+            },
+            {
+              "@id": "https://getportalbuild.com/#product-signature"
+            },
+            {
+              "@id": "https://getportalbuild.com/#product-scale"
+            }
+          ],
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "How is this different from Skool, Circle or Kajabi?",
+              "name": "How does the free preview work?",
+              "about": {
+                "@id": "https://getportalbuild.com/#service"
+              },
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Those are community platforms — a feed and a course library built for evergreen, open-access membership. Your portal is built specifically for a cohort with a start date, end date, sequence, and milestone tracking. Plus, your portal gives you an operator view that flags at-risk members before they churn."
+                "text": "Paste your program sales page URL or curriculum outline. Within 24 hours, we build a high-fidelity, interactive portal preview styled with your logo and colors. There is zero cost, no credit card required, and no phone call needed. You review it at your own pace."
               }
             },
             {
               "@type": "Question",
-              "name": "Do I own it, or am I renting?",
+              "name": "Will my portal be ready before my next cohort starts?",
+              "about": {
+                "@id": "https://getportalbuild.com/#service"
+              },
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "You own it. Your database, your domain, your code. The monthly fee covers hosting, platform updates, server infrastructure, support, and two change requests a month."
+                "text": "Yes. Once you approve your preview, the full portal build takes under a week. We deploy on your custom domain with full database setup before day one of your next cohort."
               }
             },
             {
               "@type": "Question",
-              "name": "How long does it actually take?",
+              "name": "Do I need technical skills to run or update the portal?",
+              "about": {
+                "@id": "https://getportalbuild.com/#service"
+              },
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Your free preview arrives within 24 hours of requesting it. Once approved, your full custom program portal goes live in under a week."
+                "text": "None at all. Your portal is designed for zero-maintenance operation. Adding modules, updating live call links, or reviewing operator health alerts takes seconds via a simple dashboard."
               }
             },
             {
               "@type": "Question",
-              "name": "What if my cohort starts in two weeks?",
+              "name": "How is this different from Skool, Circle, or Kajabi?",
+              "about": {
+                "@id": "https://getportalbuild.com/#service"
+              },
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Rush delivery is available at +$750 for a 72-hour turnaround. Tell us your date when submitting your preview request."
+                "text": "Skool and Circle bury your curriculum inside noisy social feeds where members get distracted. Kajabi is a basic 2015 video locker. Your Portal gives your members a distraction-free, high-ticket home on your own domain, plus gives you an Operator Radar to flag at-risk members in week three."
               }
             },
             {
               "@type": "Question",
-              "name": "What happens after the build — how does support work?",
+              "name": "What happens after I receive my free preview?",
+              "about": [
+                {
+                  "@id": "https://getportalbuild.com/#product-essential"
+                },
+                {
+                  "@id": "https://getportalbuild.com/#product-signature"
+                },
+                {
+                  "@id": "https://getportalbuild.com/#product-scale"
+                }
+              ],
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Two change requests a month, 48-hour response, by email. Anything bigger is quoted separately so you always know the cost."
+                "text": "If you love the preview and want it live for your upcoming cohort, we proceed with the full build under a fixed fee from the three tiers below. If you decide not to proceed, you walk away with zero obligations and keep the preview."
               }
             },
             {
               "@type": "Question",
-              "name": "What if I want to leave?",
+              "name": "Can I use my own custom domain?",
+              "about": {
+                "@id": "https://getportalbuild.com/#service"
+              },
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "It's yours. Three-month minimum on the monthly, then month to month. You keep everything."
+                "text": "Yes. Your portal deploys live on your custom domain (e.g. portal.yourprogram.com) with full SSL security, custom favicon, and your exact brand styling."
               }
             },
             {
               "@type": "Question",
-              "name": "Can I add a second cohort or program later?",
+              "name": "How does operator health tracking work?",
+              "about": {
+                "@id": "https://getportalbuild.com/#service"
+              },
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. New cohort setup is $497. An additional program on the same portal is $1,497."
+                "text": "Your portal automatically monitors member progress behind the scenes. If a member hasn't opened modules for 4+ days or misses two consecutive worksheets, the Operator Radar flags them on your admin dashboard so you can intervene."
               }
             },
             {
               "@type": "Question",
-              "name": "Is my members' data secure?",
+              "name": "What if I need changes or updates later?",
+              "about": [
+                {
+                  "@id": "https://getportalbuild.com/#product-signature"
+                },
+                {
+                  "@id": "https://getportalbuild.com/#product-scale"
+                }
+              ],
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Every portal runs on your own database with private, signed-URL file storage. Nothing is shared between clients."
+                "text": "Every full build includes 2 revision rounds before launch and 30 days of post-launch technical support. You can also opt for our Managed Cohort plan for rolling maintenance and cohort resets."
               }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://getportalbuild.com/#breadcrumb",
+          "name": "PortalBuild Navigation Breadcrumbs",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://getportalbuild.com"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Cohort Portal Service",
+              "item": "https://getportalbuild.com/#service"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Interactive Demo",
+              "item": "https://getportalbuild.com/#live-demo"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Pricing Tiers",
+              "item": "https://getportalbuild.com/#pricing"
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "name": "Frequently Asked Questions",
+              "item": "https://getportalbuild.com/#faq"
             }
           ]
         }
@@ -154,8 +372,23 @@
     }
     </script>
   </head>
-  <body>
-    <div id="root"></div>
+  <body class="bg-[#020617] text-white">
+    <div id="root">
+      <header style="padding: 1.5rem 1rem; max-width: 72rem; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 800; font-size: 1.25rem; letter-spacing: -0.025em; color: #fff;">PORTALBUILD</span>
+        <a href="#preview" style="background-color: #ea580c; color: #fff; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; font-weight: 700; font-size: 0.875rem;">Get free preview</a>
+      </header>
+      <main style="max-width: 72rem; margin: 0 auto; padding: 3rem 1.5rem; text-align: center;">
+        <p style="color: #ea580c; font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">The member retention layer for high-ticket cohort programs</p>
+        <h1 style="font-size: 2.75rem; font-weight: 800; line-height: 1.15; color: #fff; max-width: 54rem; margin: 0 auto 1.5rem;">Every cohort, you lose members you could have saved.</h1>
+        <p style="font-size: 1.125rem; line-height: 1.6; color: #94a3b8; max-width: 42rem; margin: 0 auto 2rem;">One branded home for your program. One dashboard showing exactly who's falling behind. Live before your next cohort starts.</p>
+        <div style="margin: 0 auto; max-width: 28rem;">
+          <a href="#preview" style="display: block; background-color: #ea580c; color: #fff; padding: 1rem 2rem; border-radius: 0.375rem; text-decoration: none; font-weight: 700; font-size: 1.125rem;">Get my free portal preview</a>
+          <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 0.75rem;">Free. No call required. No card. You keep the preview.</p>
+          <p style="font-size: 0.875rem; color: #fb923c; margin-top: 0.375rem;">Live 7 days before your start date, or you don't pay.</p>
+        </div>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

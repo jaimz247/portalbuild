@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import LiveDemoPortal from './components/LiveDemoPortal';
 import Problem from './components/Problem';
 import Transformation from './components/Transformation';
+import DeadlineGuarantee from './components/DeadlineGuarantee';
 import Features from './components/Features';
 import Sprint from './components/Sprint';
 import WhyNotSkool from './components/WhyNotSkool';
@@ -14,6 +15,7 @@ import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import StickyMobileCTA from './components/StickyMobileCTA';
 import ApplicationForm from './components/ApplicationForm';
+import ExitIntentTrigger from './components/ExitIntentTrigger';
 import FadeIn from './components/FadeIn';
 import CursorTracker from './components/CursorTracker';
 import SEO from './components/SEO';
@@ -116,7 +118,12 @@ export default function App() {
   if (currentPath === '/privacy') {
     return (
       <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
-        <SEO />
+        <ScrollProgressBar />
+        <SEO 
+          title="Privacy Policy — PortalBuild"
+          description="Privacy policy, data handling, and regulatory compliance standards for PortalBuild cohort member portal services."
+          url="https://getportalbuild.com/privacy"
+        />
         <PrivacyPage />
         <Footer />
       </div>
@@ -126,7 +133,12 @@ export default function App() {
   if (currentPath === '/terms') {
     return (
       <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
-        <SEO />
+        <ScrollProgressBar />
+        <SEO 
+          title="Terms of Service — PortalBuild"
+          description="Terms of service, delivery timelines, and performance commitments for PortalBuild custom portal solutions."
+          url="https://getportalbuild.com/terms"
+        />
         <TermsPage />
         <Footer />
       </div>
@@ -136,7 +148,12 @@ export default function App() {
   if (currentPath === '/logos' || currentPath === '/brand') {
     return (
       <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
-        <SEO />
+        <ScrollProgressBar />
+        <SEO 
+          title="Official Logo & Brand Asset Kit — PortalBuild"
+          description="Official high-resolution vector logos, icons, badges, and brand assets for PortalBuild."
+          url="https://getportalbuild.com/logos"
+        />
         <LogosPage />
         <Footer />
       </div>
@@ -145,8 +162,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased relative overflow-x-hidden transition-colors duration-300">
+      <a href="#main-content" className="skip-to-content">
+        Skip to main content
+      </a>
       <ScrollProgressBar />
-      <SEO />
+      <SEO 
+        title="PortalBuild — Member Retention Layer for Cohort Programs"
+        description="One branded home for your program. One dashboard showing exactly who's falling behind. Live before your next cohort starts."
+        url="https://getportalbuild.com"
+      />
       <CursorTracker />
       
       {/* Background glow accents */}
@@ -157,7 +181,7 @@ export default function App() {
       <Navigation />
 
       {/* Main Target Structure */}
-      <main>
+      <main id="main-content" tabIndex={-1}>
         {/* 1. Hero */}
         <FadeIn><Hero /></FadeIn>
         <Divider />
@@ -172,6 +196,7 @@ export default function App() {
 
         {/* 4. Operator Command Center */}
         <FadeIn><Transformation /></FadeIn>
+        <FadeIn><DeadlineGuarantee /></FadeIn>
         <Divider />
 
         {/* 5. Member Experience / 9-Screen Grid */}
@@ -207,6 +232,9 @@ export default function App() {
 
       {/* Sticky Mobile CTA */}
       <StickyMobileCTA />
+
+      {/* Exit Intent Trigger */}
+      <ExitIntentTrigger />
 
       {/* Preview Request Modal Form */}
       <ApplicationForm />

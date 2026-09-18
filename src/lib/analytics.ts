@@ -90,3 +90,13 @@ export const trackDemoInteraction = (tabName: string, actionDetails?: string) =>
   }
   console.log('📊 [GA4] Demo Interaction Tracked:', tabName);
 };
+
+export const trackFAQExpansion = (question: string) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'faq_expand', {
+      question_title: question,
+    });
+  }
+  console.log('📊 [GA4] FAQ Expanded:', question);
+};
+

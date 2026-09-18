@@ -1,4 +1,5 @@
 import { ChevronDown } from 'lucide-react';
+import { trackFAQExpansion } from '../lib/analytics';
 
 export default function FAQ() {
   const faqs = [
@@ -20,7 +21,7 @@ export default function FAQ() {
     },
     {
       q: "What happens after I receive my free preview?",
-      a: "If you love the preview and want it live for your upcoming cohort, we proceed with the full build under a fixed fee. If you decide not to proceed, you walk away with zero obligations and keep the preview."
+      a: "If you love the preview and want it live for your upcoming cohort, we proceed with the full build under a fixed fee from the three tiers below. If you decide not to proceed, you walk away with zero obligations and keep the preview."
     },
     {
       q: "Can I use my own custom domain?",
@@ -51,6 +52,11 @@ export default function FAQ() {
         {faqs.map((faq, idx) => (
           <details
             key={idx}
+            onToggle={(e) => {
+              if ((e.currentTarget as HTMLDetailsElement).open) {
+                trackFAQExpansion(faq.q);
+              }
+            }}
             className="group bg-slate-900/60 border border-white/10 rounded-xl hover:border-orange-500/40 transition-all duration-300 [&_summary::-webkit-details-marker]:hidden"
           >
             <summary className="cursor-pointer p-6 flex items-center justify-between text-base font-bold tracking-wide text-slate-100 group-hover:text-white transition-colors list-none select-none">
