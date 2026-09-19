@@ -50,8 +50,20 @@ export default function App() {
   };
 
   const [currentPath, setCurrentPath] = useState(getNormalizedRoute());
+  const [programUrlFromQuery, setProgramUrlFromQuery] = useState<string>('');
 
   useEffect(() => {
+    // Check for program URL parameter in query string
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlParam = searchParams.get('programURL') || searchParams.get('url') || searchParams.get('site') || searchParams.get('program') || '';
+      if (urlParam) {
+        setProgramUrlFromQuery(urlParam);
+      }
+    } catch {
+      // safe fallback
+    }
+
     // Deferred GA4 Initialization for Performance
     initGA4();
 
@@ -187,7 +199,7 @@ export default function App() {
         <Divider />
 
         {/* 2. Interactive Demo */}
-        <FadeIn><LiveDemoPortal /></FadeIn>
+        <FadeIn><LiveDemoPortal programURL={programUrlFromQuery} /></FadeIn>
         <Divider />
 
         {/* 3. Problem / Core Argument */}

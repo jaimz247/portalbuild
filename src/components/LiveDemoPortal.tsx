@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ExternalLink, Lock } from 'lucide-react';
+import { ExternalLink, Lock, Sparkles, Globe, ArrowRight, Check } from 'lucide-react';
 import { trackDemoInteraction } from '../lib/analytics';
 
 interface DemoPortal {
@@ -9,14 +9,16 @@ interface DemoPortal {
   domain: string;
   url: string;
   isLive: boolean;
+  isSimulated?: boolean;
 }
 
 interface LiveDemoPortalProps {
   isLoading?: boolean;
+  programURL?: string;
 }
 
 // Multi-Demo Config: Unlaunched cohortroom demos are gated behind isLive flag defaulting to off
-const DEMO_PORTALS: DemoPortal[] = [
+const BASE_DEMO_PORTALS: DemoPortal[] = [
   {
     id: 'growth-collective',
     name: 'Growth Collective',
@@ -51,8 +53,35 @@ const DEMO_PORTALS: DemoPortal[] = [
   },
 ];
 
-export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
+function extractProgramInfo(inputUrl: string) {
+  if (!inputUrl || !inputUrl.trim()) return null;
+  const raw = inputUrl.trim();
+  const clean = raw.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+  
+  const parts = clean.split('/');
+  const host = parts[0] || 'yourprogram.com';
+  
+  let brand = host.replace(/^(www\.|app\.|portal\.)/i, '').split('.')[0] || 'Your Cohort';
+  brand = brand
+    .split(/[-_]/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+
+  const simulatedDomain = `portal.${host.replace(/^(www\.|app\.|portal\.)/i, '')}`;
+
+  return {
+    rawUrl: raw.startsWith('http') ? raw : `https://${raw}`,
+    cleanDomain: host,
+    brandName: brand || 'Your Program',
+    simulatedDomain,
+    cohortDescriptor: `${brand} Cohort · 10 weeks · 35 members`,
+  };
+}
+
+export default function LiveDemoPortal({ isLoading, programURL }: LiveDemoPortalProps) {
   const [isHydrated, setIsHydrated] = useState(false);
+  const [customUrl, setCustomUrl] = useState<string>(programURL || '');
+  const [activeCustomUrl, setActiveCustomUrl] = useState<string>(programURL || '');
 
   useEffect(() => {
     // Provides visual skeleton structure during initial client-side hydration
@@ -62,16 +91,54 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  const liveDemos = DEMO_PORTALS.filter((d) => d.isLive);
-  const [selectedDemoId, setSelectedDemoId] = useState<string>(liveDemos[0]?.id || 'growth-collective');
+  // Synchronize when programURL prop updates
+  useEffect(() => {
+    if (programURL) {
+      setCustomUrl(programURL);
+      setActiveCustomUrl(programURL);
+      setSelectedDemoId('simulated-custom');
+    }
+  }, [programURL]);
+
+  const parsedProgram = activeCustomUrl ? extractProgramInfo(activeCustomUrl) : null;
+
+  const simulatedPortal: DemoPortal | null = parsedProgram
+    ? {
+        id: 'simulated-custom',
+        name: parsedProgram.brandName,
+        descriptor: parsedProgram.cohortDescriptor,
+        domain: parsedProgram.simulatedDomain,
+        url: parsedProgram.rawUrl,
+        isLive: true,
+        isSimulated: true,
+      }
+    : null;
+
+  const availableDemos: DemoPortal[] = [
+    ...(simulatedPortal ? [simulatedPortal] : []),
+    ...BASE_DEMO_PORTALS.filter((d) => d.isLive),
+  ];
+
+  const [selectedDemoId, setSelectedDemoId] = useState<string>(
+    simulatedPortal ? 'simulated-custom' : availableDemos[0]?.id || 'growth-collective'
+  );
   const [activeTab, setActiveTab] = useState<'overview' | 'cohort' | 'roadmap' | 'operator'>('overview');
   const tabListRef = useRef<HTMLDivElement>(null);
 
-  const activeDemo = liveDemos.find((d) => d.id === selectedDemoId) || liveDemos[0] || DEMO_PORTALS[0];
+  const activeDemo = availableDemos.find((d) => d.id === selectedDemoId) || availableDemos[0] || BASE_DEMO_PORTALS[0];
 
   const handleDemoSwitch = (demo: DemoPortal) => {
     setSelectedDemoId(demo.id);
     trackDemoInteraction(demo.id, 'switch_demo_tab');
+  };
+
+  const handleSimulateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (customUrl.trim()) {
+      setActiveCustomUrl(customUrl.trim());
+      setSelectedDemoId('simulated-custom');
+      trackDemoInteraction('simulated-custom', 'submit_custom_url');
+    }
   };
 
   const handleOpenFullDemo = () => {
@@ -79,17 +146,17 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-    if (liveDemos.length <= 1) return;
+    if (availableDemos.length <= 1) return;
     if (e.key === 'ArrowRight') {
       e.preventDefault();
-      const nextIndex = (index + 1) % liveDemos.length;
-      handleDemoSwitch(liveDemos[nextIndex]);
+      const nextIndex = (index + 1) % availableDemos.length;
+      handleDemoSwitch(availableDemos[nextIndex]);
       const nextBtn = tabListRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex];
       nextBtn?.focus();
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      const prevIndex = (index - 1 + liveDemos.length) % liveDemos.length;
-      handleDemoSwitch(liveDemos[prevIndex]);
+      const prevIndex = (index - 1 + availableDemos.length) % availableDemos.length;
+      handleDemoSwitch(availableDemos[prevIndex]);
       const prevBtn = tabListRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[prevIndex];
       prevBtn?.focus();
     }
@@ -215,27 +282,70 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
     <section id="live-demo" className="py-16 md:py-24 px-4 sm:px-6 max-w-6xl mx-auto transition-opacity duration-300">
       {/* Header */}
       <div className="text-center mb-8 md:mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono uppercase tracking-wider mb-3">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Interactive Preview</span>
-        </div>
-        <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+        <p className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-3">
+          Interactive Architecture Preview
+        </p>
+        <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
           These are real portals. Click around them.
         </h2>
         <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto mt-3">
-          Test the exact member experience — from week-by-week curriculum roadmaps to cohort schedule tracking and operator progress flags.
+          Experience the member journey firsthand — from milestone curriculum roadmaps to cohort schedule tracking and operator progress flags.
         </p>
       </div>
 
-      {/* Program Shape Selector Tabs (keyboard-accessible ARIA tablist) */}
-      {liveDemos.length > 1 && (
+      {/* Program Shape Selector Tabs (keyboard-accessible ARIA tablist) & Simulated URL Transform Bar */}
+      <div className="max-w-xl mx-auto mb-6">
+        <form onSubmit={handleSimulateSubmit} className="relative flex items-center gap-2 p-1.5 rounded-xl border border-white/[0.08] bg-slate-900/80 shadow-md focus-within:border-orange-500/50 transition-all">
+          <div className="pl-3 text-slate-400">
+            <Globe className="w-4 h-4 text-slate-400" aria-hidden="true" />
+          </div>
+          <input
+            type="text"
+            value={customUrl}
+            onChange={(e) => setCustomUrl(e.target.value)}
+            placeholder="Simulate your site URL (e.g. yourbrand.com/cohort)"
+            aria-label="Enter program URL to simulate transformation"
+            className="flex-1 bg-transparent text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none py-1.5"
+          />
+          <button
+            type="submit"
+            aria-label="Simulate custom portal transformation"
+            className="px-3 sm:px-4 py-2 bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white rounded-lg text-xs font-medium tracking-tight shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span className="hidden xs:inline">Simulate</span>
+            <span>Transform</span>
+          </button>
+        </form>
+        {activeCustomUrl && (
+          <div className="flex items-center justify-between px-3 py-1.5 mt-2 rounded-lg bg-orange-500/10 border border-orange-500/20 text-[11px] font-mono text-orange-300">
+            <div className="flex items-center gap-2 truncate">
+              <Sparkles className="w-3 h-3 text-orange-400 shrink-0" />
+              <span className="truncate">Simulating: {activeCustomUrl}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveCustomUrl('');
+                setCustomUrl('');
+                setSelectedDemoId('growth-collective');
+              }}
+              className="text-slate-400 hover:text-white underline ml-2 shrink-0 cursor-pointer"
+            >
+              Reset
+            </button>
+          </div>
+        )}
+      </div>
+
+      {availableDemos.length > 1 && (
         <div 
           ref={tabListRef}
           role="tablist" 
           aria-label="Demo Portal Programs"
           className="flex flex-wrap items-center justify-center gap-2 mb-6"
         >
-          {liveDemos.map((demo, idx) => {
+          {availableDemos.map((demo, idx) => {
             const isSelected = demo.id === activeDemo.id;
             return (
               <button
@@ -253,6 +363,7 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
                     : 'bg-slate-900/80 text-slate-300 hover:text-white hover:bg-slate-800 border border-white/10'
                 }`}
               >
+                {demo.isSimulated && <span className="mr-1.5 text-orange-300">✨</span>}
                 <span>{demo.name}</span>
                 <span className="hidden sm:inline-block ml-2 text-[11px] opacity-80 font-normal">
                   ({demo.descriptor.split('·')[0].trim()})
@@ -265,8 +376,10 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
 
       {/* Active Program Descriptor Badge */}
       <div className="flex items-center justify-center gap-2 mb-4 text-xs text-slate-400 font-mono">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-        <span>Active Demo: <strong className="text-slate-200">{activeDemo.name}</strong> · {activeDemo.descriptor}</span>
+        <span className={`w-1.5 h-1.5 rounded-full ${activeDemo.isSimulated ? 'bg-orange-400 animate-pulse' : 'bg-emerald-500'}`}></span>
+        <span>
+          Active Demo: <strong className="text-slate-200">{activeDemo.name}</strong> · {activeDemo.descriptor}
+        </span>
       </div>
 
       {/* Browser Chrome Container (Desktop / Tablet) */}
@@ -288,9 +401,13 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
           {/* Address Bar */}
           <div className="flex-1 max-w-xl mx-auto bg-slate-950 border border-white/10 rounded-md px-3 py-1.5 flex items-center gap-2 text-xs text-slate-300 font-mono shadow-inner">
             <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span className="text-slate-200 select-all font-semibold">{activeDemo.domain}</span>
-            <span className="ml-auto text-[10px] text-emerald-400 font-sans font-medium px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
-              Live Member Portal
+            <span className="text-slate-200 select-all font-semibold truncate">{activeDemo.domain}</span>
+            <span className={`ml-auto text-[10px] font-sans font-medium px-1.5 py-0.5 rounded border shrink-0 ${
+              activeDemo.isSimulated
+                ? 'text-orange-400 bg-orange-500/10 border-orange-500/20'
+                : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+            }`}>
+              {activeDemo.isSimulated ? '✨ Simulated Portal' : 'Live Member Portal'}
             </span>
           </div>
 
@@ -300,9 +417,9 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleOpenFullDemo}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-xs font-medium text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-xs font-medium text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500 shrink-0"
           >
-            <span>Open Full Demo</span>
+            <span>{activeDemo.isSimulated ? 'Source Site' : 'Open Full Demo'}</span>
             <ExternalLink className="w-3.5 h-3.5 text-orange-400" />
           </a>
         </div>
@@ -314,12 +431,14 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
             {/* Sidebar Navigation */}
             <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/10 bg-slate-900/50 p-3 md:p-4 flex flex-col gap-3 md:gap-6 shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-orange-600 flex items-center justify-center font-extrabold text-white text-base shrink-0">
+                <div className="w-9 h-9 rounded-lg bg-orange-600 flex items-center justify-center font-extrabold text-white text-base shrink-0 shadow-md">
                   {activeDemo.name.slice(0, 2).toUpperCase()}
                 </div>
-                <div>
-                  <h4 className="font-bold text-sm text-white">{activeDemo.name}</h4>
-                  <p className="text-[11px] text-orange-400 font-mono">Cohort 8 · Live</p>
+                <div className="overflow-hidden">
+                  <h4 className="font-bold text-sm text-white truncate">{activeDemo.name}</h4>
+                  <p className="text-[11px] text-orange-400 font-mono truncate">
+                    {activeDemo.isSimulated ? 'Simulated · 24h Build' : 'Cohort 8 · Live'}
+                  </p>
                 </div>
               </div>
 
@@ -394,11 +513,19 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
                   {/* Top Welcome Banner */}
                   <div className="p-6 rounded-xl bg-gradient-to-r from-orange-950/60 via-slate-900 to-slate-900 border border-orange-500/20">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-mono uppercase text-orange-400 tracking-wider">Cohort 8 · Week 4 Active</span>
+                      <span className="text-xs font-mono uppercase text-orange-400 tracking-wider">
+                        {activeDemo.isSimulated ? 'Custom Cohort · Week 1 Active' : 'Cohort 8 · Week 4 Active'}
+                      </span>
                       <span className="text-xs text-slate-400">Target Finish: Nov 15</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-white">Welcome back, Jordan</h3>
-                    <p className="text-slate-300 text-sm mt-1">You have 2 items due before Thursday's live Mastermind session.</p>
+                    <h3 className="text-2xl font-bold text-white">
+                      {activeDemo.isSimulated ? `Welcome to ${activeDemo.name} Portal` : 'Welcome back, Jordan'}
+                    </h3>
+                    <p className="text-slate-300 text-sm mt-1">
+                      {activeDemo.isSimulated
+                        ? `Custom branded workspace generated from ${activeDemo.url}. Members access tailored roadmaps and retention triggers.`
+                        : "You have 2 items due before Thursday's live Mastermind session."}
+                    </p>
                   </div>
 
                   {/* Progress Bar & Current Milestone */}
@@ -559,10 +686,14 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
           <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 space-y-4 text-left">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div>
-                <span className="text-[10px] font-mono text-orange-400 uppercase">{activeDemo.name}</span>
-                <h4 className="text-sm font-bold text-white">Jordan's Portal</h4>
+                <span className="text-[10px] font-mono text-orange-400 uppercase truncate block max-w-[170px]">{activeDemo.name}</span>
+                <h4 className="text-sm font-bold text-white">
+                  {activeDemo.isSimulated ? `${activeDemo.name} Mobile` : "Jordan's Portal"}
+                </h4>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-orange-600 text-white font-bold">Week 4</span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-orange-600 text-white font-bold">
+                {activeDemo.isSimulated ? 'Preview' : 'Week 4'}
+              </span>
             </div>
 
             <div className="p-3 rounded-lg bg-slate-950 border border-white/5 space-y-2">

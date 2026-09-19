@@ -38,10 +38,26 @@ export const hasExitIntentTriggered = (): boolean => {
   }
 };
 
-export const openApplicationModal = (e?: React.MouseEvent) => {
-  if (e) e.preventDefault();
+export const openApplicationModal = (e?: React.MouseEvent | React.SyntheticEvent | Event) => {
+  if (e) {
+    if (typeof e.preventDefault === 'function') e.preventDefault();
+    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+  }
   markPrimaryCTAInteracted();
-  window.dispatchEvent(new Event(OPEN_MODAL_EVENT));
+
+  // Try direct function invocation if ApplicationForm is mounted
+  if (typeof window !== 'undefined' && typeof (window as any).__openPortalApplicationModal === 'function') {
+    (window as any).__openPortalApplicationModal();
+  }
+
+  // Dispatch standard and custom window events
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent(OPEN_MODAL_EVENT));
+    } catch {
+      window.dispatchEvent(new Event(OPEN_MODAL_EVENT));
+    }
+  }
 };
 
 export const openDemoModal = (e?: React.MouseEvent) => {

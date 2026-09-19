@@ -38,17 +38,18 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="py-16 md:py-24 px-6 max-w-4xl mx-auto" id="faq">
+    <section className="py-16 md:py-28 px-6 max-w-4xl mx-auto" id="faq">
       <div className="text-center mb-12 md:mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-3">
-          <span>Frequently Asked Questions</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.08] bg-slate-900/60 backdrop-blur-md text-slate-300 text-xs font-mono uppercase tracking-wider mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+          <span className="text-orange-400">Frequently Asked Questions</span>
         </div>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-[-0.03em] text-white leading-tight">
           Everything you need to know before requesting your preview.
         </h2>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         {faqs.map((faq, idx) => (
           <details
             key={idx}
@@ -57,15 +58,20 @@ export default function FAQ() {
                 trackFAQExpansion(faq.q);
               }
             }}
-            className="group bg-slate-900/60 border border-white/10 rounded-xl hover:border-orange-500/40 transition-all duration-300 [&_summary::-webkit-details-marker]:hidden"
+            className="group bg-slate-900/40 border border-white/[0.08] rounded-2xl hover:border-white/[0.18] backdrop-blur-md transition-all duration-300 [&_summary::-webkit-details-marker]:hidden relative overflow-hidden"
           >
-            <summary className="cursor-pointer p-6 flex items-center justify-between text-base font-bold tracking-wide text-slate-100 group-hover:text-white transition-colors list-none select-none">
-              <span>{faq.q}</span>
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+
+            <summary className="cursor-pointer p-5 md:p-6 flex items-center justify-between text-base font-bold tracking-tight text-slate-200 group-hover:text-white transition-colors list-none select-none">
+              <span className="flex items-center gap-3">
+                <span className="font-mono text-xs text-orange-400/80">0{idx + 1}</span>
+                <span>{faq.q}</span>
+              </span>
               <span className="ml-4 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform duration-300 group-hover:text-orange-400">
-                <ChevronDown className="w-5 h-5" />
+                <ChevronDown className="w-4 h-4" />
               </span>
             </summary>
-            <div className="px-6 pb-6 text-slate-300 leading-relaxed text-sm pt-2 border-t border-white/5">
+            <div className="px-5 md:px-6 pb-6 text-slate-300/90 leading-relaxed text-sm pt-2 border-t border-white/[0.06]">
               {faq.a}
             </div>
           </details>

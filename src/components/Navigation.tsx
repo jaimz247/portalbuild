@@ -19,9 +19,15 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
 
   return (
     <>
-      <nav className="w-full px-6 py-4 flex flex-row justify-between items-center sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-white/5">
+      <nav 
+        role="navigation"
+        aria-label="Main Navigation"
+        className="w-full px-6 py-3.5 flex flex-row justify-between items-center sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-white/[0.08]"
+      >
         <div className="flex-1 flex items-center justify-start">
-          <div 
+          <button 
+            type="button"
+            aria-label="PortalBuild Home — Scroll to top of page"
             onClick={() => {
               if (window.location.pathname !== '/') {
                 window.history.pushState({}, '', '/');
@@ -30,60 +36,67 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            className="text-xl font-bold tracking-tighter flex items-center gap-4 text-white cursor-pointer group select-none relative z-50"
+            className="text-lg font-bold tracking-tight flex items-center gap-2.5 text-white cursor-pointer select-none relative z-50 bg-transparent border-0 p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-lg"
           >
-            <div className="relative flex items-center justify-center w-8 h-8 shrink-0">
-              <div className="absolute inset-0 bg-orange-500/20 blur-xl group-hover:bg-orange-500/40 group-hover:blur-2xl transition-all duration-700 ease-out"></div>
-              
-              <div className="absolute inset-0 border-[1.5px] border-white/10 rounded-xl group-hover:rotate-90 group-hover:border-orange-500/30 transition-all duration-700 ease-in-out bg-slate-900/50 backdrop-blur-sm z-10"></div>
-              
-              <div className="absolute inset-[4px] border-t-2 border-r-2 border-orange-500 rounded-[6px] group-hover:-rotate-90 transition-transform duration-700 ease-out z-20"></div>
-              
-              <div className="absolute inset-[4px] border-b-2 border-l-2 border-orange-500/30 rounded-[6px] group-hover:-rotate-90 transition-transform duration-700 ease-out z-20"></div>
-              
-              <div className="relative w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_12px_rgba(255,255,255,1)] group-hover:scale-150 group-hover:bg-orange-400 group-hover:shadow-[0_0_8px_rgba(249,115,22,1)] transition-all duration-500 z-30"></div>
+            <div className="w-7 h-7 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
+              <span className="w-2.5 h-2.5 rounded-sm bg-orange-500" />
             </div>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 group-hover:to-white transition-colors duration-500 tracking-tight">PortalBuild</span>
-          </div>
+            <span className="font-bold tracking-tight text-white">
+              PortalBuild
+            </span>
+          </button>
         </div>
-        <div className="flex-1 hidden md:flex justify-center flex-wrap items-center gap-6 text-[11px] font-medium tracking-[0.1em] uppercase text-slate-400">
-          <span className="flex items-center gap-2">🟠 {t('nav_slots')}</span>
+        <div className="flex-1 hidden md:flex justify-center flex-wrap items-center gap-6 text-[11px] font-mono tracking-wider uppercase text-slate-400">
+          <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.06]">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400/80"></span>
+            <span>{t('nav_slots')}</span>
+          </span>
         </div>
-        <div className="flex-1 hidden md:flex justify-end items-center gap-4">
+        <div className="flex-1 hidden md:flex justify-end items-center gap-3">
           {/* L10n Switcher */}
           <button 
+            type="button"
             onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-400 hover:text-white border border-transparent hover:border-white/10 rounded transition-all cursor-pointer"
-            aria-label="Switch Language"
-            title="Switch Language"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono font-medium uppercase tracking-wider text-slate-400 hover:text-white border border-white/[0.06] hover:border-white/20 bg-slate-900/40 rounded-lg transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+            aria-label={`Switch interface language to ${language === 'en' ? 'Spanish' : 'English'}`}
+            title={`Switch interface language to ${language === 'en' ? 'Spanish' : 'English'}`}
           >
-            <Globe className="w-3.5 h-3.5" />
+            <Globe className="w-3.5 h-3.5 text-slate-400" aria-hidden="true" />
             <span>{language.toUpperCase()}</span>
           </button>
 
           {/* Theme Switcher */}
           <button
+            type="button"
             onClick={toggleTheme}
-            className="p-2 text-slate-400 hover:text-white border border-transparent hover:border-white/10 rounded transition-all cursor-pointer"
-            aria-label="Toggle Theme"
-            title="Toggle Theme"
+            className="p-2 text-slate-400 hover:text-white border border-white/[0.06] hover:border-white/20 bg-slate-900/40 rounded-lg transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+            aria-label={theme === 'light' ? "Activate dark theme" : "Activate light theme"}
+            title={theme === 'light' ? "Activate dark theme" : "Activate light theme"}
           >
-            {theme === 'light' ? <Moon className="w-4 h-4 text-slate-600 hover:text-slate-900" /> : <Sun className="w-4 h-4 text-orange-400" />}
+            {theme === 'light' ? <Moon className="w-4 h-4 text-slate-600 hover:text-slate-900" aria-hidden="true" /> : <Sun className="w-4 h-4 text-orange-400" aria-hidden="true" />}
           </button>
 
-          <button onClick={openApplicationModal} className="bg-orange-600 text-white font-bold py-2.5 px-6 text-xs uppercase tracking-widest transition-all duration-300 hover:bg-orange-700 hover:scale-[1.02]">
-            {t('nav_apply')}
+          <button 
+            type="button"
+            onClick={(e) => openApplicationModal(e)} 
+            aria-label="Apply for free custom-branded portal preview"
+            className="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white font-medium py-2 px-4 text-xs tracking-tight rounded-lg shadow-sm transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+          >
+            <span>{t('nav_apply')}</span>
           </button>
         </div>
         
         {/* Mobile Hamburger Icon */}
         <div className="flex md:hidden justify-end flex-1 relative z-50">
           <button 
+            type="button"
             onClick={toggleMobileMenu} 
-            className="p-2 text-slate-300 hover:text-white transition-colors"
-            aria-label="Toggle menu"
+            className="p-2 text-slate-300 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-lg"
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation-menu"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
           </button>
         </div>
       </nav>
@@ -92,6 +105,9 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
+            id="mobile-navigation-menu"
+            role="region"
+            aria-label="Mobile Navigation Menu"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -106,26 +122,30 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
             <div className="flex items-center justify-center gap-6 mb-8 w-full border-y border-white/10 py-4">
               {/* L10n */}
               <button 
+                type="button"
                 onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-                className="flex items-center gap-2 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-300 hover:text-white border border-white/10 rounded transition-all cursor-pointer"
+                aria-label={`Switch interface language to ${language === 'en' ? 'Spanish' : 'English'}`}
+                className="flex items-center gap-2 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-300 hover:text-white border border-white/10 rounded-lg transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
               >
-                <Globe className="w-4 h-4 text-slate-400" />
+                <Globe className="w-4 h-4 text-slate-400" aria-hidden="true" />
                 <span>{language === 'en' ? 'English' : 'Español'}</span>
               </button>
 
               {/* Theme */}
               <button
+                type="button"
                 onClick={toggleTheme}
-                className="flex items-center gap-2 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-300 hover:text-white border border-white/10 rounded transition-all cursor-pointer"
+                aria-label={theme === 'light' ? "Activate dark theme" : "Activate light theme"}
+                className="flex items-center gap-2 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-300 hover:text-white border border-white/10 rounded-lg transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
               >
                 {theme === 'light' ? (
                   <>
-                    <Moon className="w-4 h-4 text-slate-400" />
+                    <Moon className="w-4 h-4 text-slate-400" aria-hidden="true" />
                     <span>Dark Mode</span>
                   </>
                 ) : (
                   <>
-                    <Sun className="w-4 h-4 text-orange-400" />
+                    <Sun className="w-4 h-4 text-orange-400" aria-hidden="true" />
                     <span>Light Mode</span>
                   </>
                 )}
@@ -133,11 +153,13 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
             </div>
             
             <button 
+              type="button"
               onClick={(e) => {
                 toggleMobileMenu();
                 openApplicationModal(e);
               }} 
-              className="bg-orange-600 text-white font-bold py-4 px-8 text-sm uppercase tracking-widest transition-all duration-300 hover:bg-orange-700 w-full"
+              aria-label="Open application form for free custom portal preview"
+              className="bg-orange-600 hover:bg-orange-500 text-white font-bold py-4 px-8 text-sm uppercase tracking-widest transition-all duration-300 w-full rounded-xl shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
             >
               {t('nav_apply')}
             </button>

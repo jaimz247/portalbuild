@@ -5,39 +5,48 @@ interface FinalCTAProps {
 }
 
 export default function FinalCTA({ onOpenModal }: FinalCTAProps) {
-  const handleCTA = () => {
+  const handleCTA = (e?: React.MouseEvent) => {
     if (onOpenModal) {
       onOpenModal();
     } else {
-      openApplicationModal();
+      openApplicationModal(e);
     }
   };
 
   return (
-    <section id="final-cta" className="py-20 md:py-28 px-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-t border-white/10 relative overflow-hidden">
+    <section 
+      id="final-cta" 
+      aria-labelledby="final-cta-heading"
+      className="py-20 md:py-28 px-6 bg-slate-950 border-t border-white/[0.08] relative"
+    >
       <span id="preview" className="absolute -top-12 opacity-0 pointer-events-none" aria-hidden="true"></span>
       <div className="max-w-4xl mx-auto text-center relative z-10">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-6">
-          <span>Your Next Cohort Home</span>
-        </div>
+        <p className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-4">
+          Ready for your next cohort
+        </p>
 
-        <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+        <h2 
+          id="final-cta-heading"
+          className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-6 leading-tight"
+        >
           Ready to stop losing members you could have saved?
         </h2>
 
-        <p className="text-base md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-base md:text-lg text-slate-300/80 mb-10 max-w-2xl mx-auto leading-relaxed">
           Get a free, custom-branded portal preview built from your program page in 24 hours. No call required, no credit card, no obligation.
         </p>
 
         <div className="flex flex-col items-center">
           <button
+            type="button"
             onClick={handleCTA}
-            className="inline-flex items-center justify-center px-10 py-5 text-lg font-bold tracking-tight bg-orange-600 hover:bg-orange-500 text-white rounded-md shadow-xl shadow-orange-600/30 transition-all duration-300 hover:scale-[1.02] cursor-pointer min-h-[52px]"
+            aria-label="Get my free custom portal preview built in 24 hours"
+            className="inline-flex items-center justify-center px-8 py-4 text-base md:text-lg font-semibold tracking-tight bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white rounded-xl border border-orange-400/30 shadow-sm transition-colors cursor-pointer min-h-[48px] focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
           >
-            Get my free portal preview
+            <span>Get my free portal preview</span>
           </button>
           
-          <p className="text-xs md:text-sm text-slate-400 mt-4 font-medium">
+          <p className="text-xs md:text-sm text-slate-400 mt-4 font-mono">
             Free. No call required. No card. You keep the preview.
           </p>
         </div>
@@ -45,4 +54,3 @@ export default function FinalCTA({ onOpenModal }: FinalCTAProps) {
     </section>
   );
 }
-
