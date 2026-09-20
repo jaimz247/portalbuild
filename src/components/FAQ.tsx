@@ -9,15 +9,19 @@ export default function FAQ() {
     },
     {
       q: "Will my portal be ready before my next cohort starts?",
-      a: "Yes. Once you approve your preview, the full portal build takes under a week. We deploy on your custom domain with full database setup before day one of your next cohort."
+      a: "Yes. Once you approve your preview, the full portal build takes under a week. Your portal goes live on your own domain, with your members' progress tracked from day one."
     },
     {
       q: "Do I need technical skills to run or update the portal?",
-      a: "None at all. Your portal is designed for zero-maintenance operation. Adding modules, updating live call links, or reviewing operator health alerts takes seconds via a simple dashboard."
+      a: "None at all. Module updates, session links, new resources and alert thresholds are handled for you on the monthly plan — you send them, they're live the same week."
     },
     {
       q: "How is this different from Skool, Circle, or Kajabi?",
       a: "Skool and Circle bury your curriculum inside noisy social feeds where members get distracted. Kajabi is a basic 2015 video locker. Your Portal gives your members a distraction-free, high-ticket home on your own domain, plus gives you an Operator Radar to flag at-risk members in week three."
+    },
+    {
+      q: "Do members get their own logins?",
+      a: "Not yet. Right now your members get one link to the cohort home, and your operator dashboard is kept current from the attendance and submission data you already collect — that's what the monthly plan covers. Individual member logins ship in the new year, and every existing client moves onto them at no extra cost and no price change."
     },
     {
       q: "What happens after I receive my free preview?",
@@ -29,11 +33,11 @@ export default function FAQ() {
     },
     {
       q: "How does operator health tracking work?",
-      a: "Your portal automatically monitors member progress behind the scenes. If a member hasn't opened modules for 4+ days or misses two consecutive worksheets, the Operator Radar flags them on your admin dashboard so you can intervene."
+      a: "Member progress and engagement are checked against your cohort milestones. If a member hasn't opened modules for 4+ days or misses two consecutive worksheets, the Operator Radar flags them on your admin dashboard so you can intervene."
     },
     {
       q: "What if I need changes or updates later?",
-      a: "Every full build includes 2 revision rounds before launch and 30 days of post-launch technical support. You can also opt for our Managed Cohort plan for rolling maintenance and cohort resets."
+      a: "Every full build includes two revision rounds before launch and full handover support. Module updates, new resources, and cohort rollovers are handled for you on your monthly plan."
     }
   ];
 

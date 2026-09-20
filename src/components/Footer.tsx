@@ -16,18 +16,6 @@ export default function Footer() {
           </a>
           <span className="text-slate-700">•</span>
           <a
-            href="/logos"
-            onClick={(e) => {
-              e.preventDefault();
-              window.history.pushState({}, '', '/logos');
-              window.dispatchEvent(new Event('popstate'));
-            }}
-            className="hover:text-slate-200 transition-colors cursor-pointer"
-          >
-            Brand Kit
-          </a>
-          <span className="text-slate-700">•</span>
-          <a
             href="/privacy"
             onClick={(e) => {
               e.preventDefault();
@@ -53,7 +41,9 @@ export default function Footer() {
         </div>
       </div>
       <div className="flex flex-col items-center md:items-end gap-1.5 text-center md:text-right font-mono">
-        <p className="text-[11px] text-slate-500">© 2026 PortalBuild. All rights reserved.</p>
+        <p className="text-[11px] text-slate-500">
+          © 2026 PortalBuild · A MorningCrest Solutions LLC business. All rights reserved.
+        </p>
         <p className="text-[10px] text-slate-500/80 tracking-tight">London · New York · San Francisco · Melbourne · Serving cohort programs worldwide</p>
       </div>
     </footer>

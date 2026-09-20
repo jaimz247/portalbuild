@@ -45,7 +45,7 @@ export default function PrivacyPage() {
               1. Overview &amp; Commitment
             </h2>
             <p>
-              PortalBuild ("we", "us", or "our") respects your privacy and is committed to protecting the personal and business information you share with us. This Privacy Policy outlines our data collection, handling, storage, and communication practices when you visit our website at <strong className="text-white">getportalbuild.com</strong> or request a custom portal preview.
+              PortalBuild ("we", "us", or "our"), a business operated by MorningCrest Solutions LLC, respects your privacy and is committed to protecting the personal and business information you share with us. This Privacy Policy outlines our data collection, handling, storage, and communication practices when you visit our website at <strong className="text-white">getportalbuild.com</strong> or request a custom portal preview.
             </p>
           </section>
 
@@ -110,7 +110,7 @@ export default function PrivacyPage() {
           <section className="space-y-3 pt-4 border-t border-white/10">
             <h2 className="text-lg font-bold text-white">Contact &amp; Legal Inquiries</h2>
             <p className="text-xs text-slate-400 font-mono">
-              PortalBuild Legal &amp; Data Protection Office<br />
+              PortalBuild / MorningCrest Solutions LLC<br />
               Email: legal@getportalbuild.com | privacy@getportalbuild.com<br />
               Domain: getportalbuild.com
             </p>
@@ -119,7 +119,7 @@ export default function PrivacyPage() {
 
         {/* Footer Return CTA */}
         <div className="pt-6 border-t border-white/10 flex justify-between items-center">
-          <p className="text-xs text-slate-400">© 2026 PortalBuild. All rights reserved.</p>
+          <p className="text-xs text-slate-400">© 2026 PortalBuild · MorningCrest Solutions LLC. All rights reserved.</p>
           <button
             onClick={handleBackHome}
             className="text-xs text-orange-400 hover:text-orange-300 font-bold uppercase tracking-wider cursor-pointer"

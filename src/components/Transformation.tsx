@@ -20,7 +20,7 @@ export default function Transformation({ onOpenModal }: TransformationProps) {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
           <p className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-3">
-            Operator Telemetry
+            Operator Radar
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-4">
             See who's falling behind. In week three, not week nine.
@@ -183,9 +183,9 @@ export default function Transformation({ onOpenModal }: TransformationProps) {
                 <div className="flex items-start gap-3">
                   <Clock className="w-4 h-4 text-slate-300 shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="text-sm font-semibold text-white tracking-tight">Passive Telemetry</h5>
+                    <h5 className="text-sm font-semibold text-white tracking-tight">Continuous Tracking</h5>
                     <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
-                      Telemetry runs in the background. Stop cross-referencing messy Google Sheets or guessing who is falling behind.
+                      Activity is logged continuously. Stop cross-referencing messy Google Sheets or guessing who is falling behind.
                     </p>
                   </div>
                 </div>

@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
-import { Check } from 'lucide-react';
+import { Check, Calendar } from 'lucide-react';
 import { motion, type Variants } from 'motion/react';
 import { openApplicationModal } from '../lib/events';
 import { trackPricingView } from '../lib/analytics';
+
+const CAL_URL = 'https://cal.com/morningcrest/portal-fit-call';
 
 interface PricingProps {
   onOpenModal?: () => void;
@@ -64,19 +66,19 @@ export default function Pricing({ onOpenModal }: PricingProps) {
     },
     {
       name: "Essential",
-      qualifier: "One program, one cohort at a time",
+      qualifier: "For one program running one cohort at a time",
       price: "$1,997",
-      sub: "One-time flat build fee",
+      sub: "one-time",
       timeline: "Live before day one",
-      monthly: "Optional $297/mo hosting & support · cancel anytime",
+      monthly: "$297/mo · 3-month minimum, then cancel anytime",
       features: [
-        "Complete 9-screen member portal & operator command center",
-        "Custom domain setup (portal.yourdomain.com)",
-        "Database provisioning for member progress tracking",
-        "Operator telemetry alerts & inactivity notifications",
-        "Responsive desktop, tablet, and mobile layout",
-        "Two revision cycles included",
-        "30 days of direct launch support"
+        "Complete 9-screen member portal and operator dashboard",
+        "Your branding, your modules, your dates, your domain",
+        "Member welcome sequence written for your first cohort",
+        "Two revision rounds and a full handover walkthrough",
+        "Member progress and attendance refreshed fortnightly",
+        "At-risk members flagged against thresholds you set",
+        "One change request per month, 72-hour response"
       ],
       highlight: false,
       ctaText: "Get my free portal preview"
@@ -84,35 +86,40 @@ export default function Pricing({ onOpenModal }: PricingProps) {
     {
       name: "Signature",
       pop: "Most Popular",
-      qualifier: "One program, running back-to-back cohorts",
+      qualifier: "For one program running cohorts back to back",
       price: "$3,497",
-      sub: "One-time flat build fee",
+      sub: "one-time",
       timeline: "Live before day one",
-      monthly: "Optional $497/mo hosting & support · cancel anytime",
+      monthly: "$497/mo · 3-month minimum, then cancel anytime",
       features: [
-        "Everything included in Essential",
-        "Cohort rollover architecture & clean database resets",
-        "Retained alumni access between cohorts",
-        "Custom operator health rules and threshold flags",
-        "Priority 24-hour turnaround on interface modifications",
-        "Ongoing curriculum, module, and asset adjustments"
+        "Everything in Essential, plus:",
+        "Alumni access retained between cohorts",
+        "Cohort rollover configured from day one",
+        "Custom operator health rules and flag thresholds",
+        "Progress refreshed weekly, plus a Monday note naming anyone who's gone quiet — with the check-in already drafted",
+        "Every new cohort set up for you. No setup fee, ever.",
+        "Module, asset and curriculum updates included",
+        "Three change requests per month, 48-hour response"
       ],
       highlight: true,
       ctaText: "Get my free portal preview"
     },
     {
       name: "Scale",
-      qualifier: "Multiple programs or concurrent cohorts",
+      qualifier: "For multiple programs, or cohorts running concurrently",
       price: "$5,997",
-      sub: "One-time flat build fee",
+      sub: "one-time",
       timeline: "Live before day one",
-      monthly: "Optional $797/mo hosting & support · cancel anytime",
+      monthly: "$797/mo · 3-month minimum, then cancel anytime",
       features: [
-        "Everything included in Signature",
-        "Multiple distinct programs under one operator view",
-        "Concurrent cohort views and cross-cohort progress metrics",
-        "Custom screen extensions tailored to your workflow",
-        "Direct emergency channel for same-day changes"
+        "Everything in Signature, plus:",
+        "Up to three distinct programs on one portal",
+        "Multi-cohort operator view with cross-cohort comparison",
+        "Custom screens beyond the standard nine",
+        "Priority build slot",
+        "Progress refreshed weekly across every active cohort",
+        "Five change requests per month, 24-hour response",
+        "A quarterly review call"
       ],
       highlight: false,
       ctaText: "Get my free portal preview"
@@ -224,15 +231,27 @@ export default function Pricing({ onOpenModal }: PricingProps) {
 
       {/* Bottom CTA */}
       <div className="text-center flex flex-col items-center">
-        <button
-          type="button"
-          onClick={(e) => handleCTA('Bottom Pricing CTA', e)}
-          className="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white px-8 py-4 text-base font-semibold tracking-tight rounded-xl border border-orange-400/30 shadow-sm transition-colors cursor-pointer min-h-[48px] focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
-        >
-          <span>Get my free portal preview</span>
-        </button>
-        <p className="text-xs text-slate-400 mt-2.5 font-mono">
-          Free. No credit card required. Built from your public page in 24 hours.
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-xl">
+          <button
+            type="button"
+            onClick={(e) => handleCTA('Bottom Pricing CTA', e)}
+            className="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white px-8 py-4 text-base font-semibold tracking-tight rounded-xl border border-orange-400/30 shadow-sm transition-colors cursor-pointer min-h-[48px] w-full sm:w-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+          >
+            <span>Get my free portal preview</span>
+          </button>
+          <a
+            href={CAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-6 py-4 text-sm md:text-base font-medium tracking-tight bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white rounded-xl border border-white/[0.12] hover:border-white/25 transition-all cursor-pointer min-h-[48px] w-full sm:w-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+          >
+            <Calendar className="w-4 h-4 text-orange-400" aria-hidden="true" />
+            <span>Book 20-Min Fit Call</span>
+            <span className="text-slate-500 text-xs">↗</span>
+          </a>
+        </div>
+        <p className="text-xs text-slate-400 mt-3 font-mono">
+          Free preview in 24h · No credit card required · Or book 20 minutes to discuss your custom setup
         </p>
       </div>
     </section>

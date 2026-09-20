@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { openApplicationModal } from '../lib/events';
-import { Menu, X, Sun, Moon, Globe } from 'lucide-react';
+import { Menu, X, Sun, Moon, Globe, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from '../context/LanguageContext';
+
+const CAL_URL = 'https://cal.com/morningcrest/portal-fit-call';
 
 interface NavigationProps {
   theme?: 'dark' | 'light';
@@ -75,6 +77,18 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
           >
             {theme === 'light' ? <Moon className="w-4 h-4 text-slate-600 hover:text-slate-900" aria-hidden="true" /> : <Sun className="w-4 h-4 text-orange-400" aria-hidden="true" />}
           </button>
+
+          {/* Book 20-Min Fit Call Link */}
+          <a
+            href={CAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white border border-white/[0.08] hover:border-white/20 bg-slate-900/50 hover:bg-slate-800/80 rounded-lg transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+          >
+            <Calendar className="w-3.5 h-3.5 text-orange-400" aria-hidden="true" />
+            <span>Book Call</span>
+            <span className="text-slate-500 text-[10px]">↗</span>
+          </a>
 
           <button 
             type="button"
@@ -163,6 +177,17 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
             >
               {t('nav_apply')}
             </button>
+
+            <a
+              href={CAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={toggleMobileMenu}
+              className="mt-4 flex items-center justify-center gap-2 py-3 px-6 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white border border-white/10 hover:border-white/20 rounded-xl transition-colors w-full cursor-pointer"
+            >
+              <Calendar className="w-4 h-4 text-orange-400" aria-hidden="true" />
+              <span>Prefer to talk first? Book 20-Min Call ↗</span>
+            </a>
           </motion.div>
         )}
       </AnimatePresence>

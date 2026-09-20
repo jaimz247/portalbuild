@@ -288,6 +288,26 @@ export default function ApplicationForm() {
       localList.unshift({ ...payload, id: newDocRef.id });
       localStorage.setItem('local_preview_requests', JSON.stringify(localList));
 
+      // Dispatch instant email notification to server
+      fetch('/api/notify-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, id: newDocRef.id }),
+      }).catch((err) => console.warn('Notification delivery background notice:', err));
+
+      // Trigger real-time alert in open admin dashboard
+      window.dispatchEvent(
+        new CustomEvent('new-application-submitted', {
+          detail: {
+            id: newDocRef.id,
+            name: payload.email,
+            email: payload.email,
+            revenue: payload.cohortStartDate,
+            businessType: 'cohort-program',
+          },
+        })
+      );
+
       setIsSubmitting(false);
       setIsSuccess(true);
       setShowToast(true);
@@ -301,6 +321,13 @@ export default function ApplicationForm() {
       let localList = existingLocal ? JSON.parse(existingLocal) : [];
       localList.unshift({ ...payload, id: fallbackId });
       localStorage.setItem('local_preview_requests', JSON.stringify(localList));
+
+      // Dispatch instant email notification even in fallback mode
+      fetch('/api/notify-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, id: fallbackId }),
+      }).catch((err) => console.warn('Notification delivery background notice:', err));
 
       setIsSubmitting(false);
       setIsSuccess(true);

@@ -76,6 +76,35 @@ service cloud.firestore {
         && (!data.keys().contains('notes') || (data.notes is string && data.notes.size() <= 2000));
     }
 
+    // Preview Request validation helper
+    function isValidPreviewRequest(data) {
+      return data.keys().hasAll(['email', 'programUrl', 'cohortStartDate', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().size() <= 9
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 300
+        && data.programUrl is string && data.programUrl.size() > 0 && data.programUrl.size() <= 500
+        && data.cohortStartDate is string && data.cohortStartDate.size() > 0 && data.cohortStartDate.size() <= 100
+        && data.status is string && (data.status == 'pending_preview' || data.status == 'reviewed' || data.status == 'contacted' || data.status == 'completed')
+        && data.createdAt is string && data.createdAt.size() <= 50
+        && data.updatedAt is string && data.updatedAt.size() <= 50
+        // Optional Fields
+        && (!data.keys().contains('id') || (data.id is string && data.id.size() <= 128))
+        && (!data.keys().contains('ref') || (data.ref is string && data.ref.size() <= 200))
+        && (!data.keys().contains('a') || (data.a is string && data.a.size() <= 200));
+    }
+
+    match /preview_requests/{requestId} {
+      allow get, list: if isAdmin();
+      
+      allow create: if isValidId(requestId)
+        && isValidPreviewRequest(incoming())
+        && incoming().status == 'pending_preview';
+        
+      allow update: if isFullControlAdmin()
+        && isValidPreviewRequest(incoming());
+
+      allow delete: if isFullControlAdmin();
+    }
+
     match /applications/{applicationId} {
       allow get: if isAdmin();
       allow list: if isAdmin();

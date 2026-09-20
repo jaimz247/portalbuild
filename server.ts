@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
+import { sendPreviewNotification } from "./server/notifier";
 
 async function startServer() {
   const app = express();
@@ -9,6 +10,31 @@ async function startServer() {
 
   // Middleware for parsing JSON requests
   app.use(express.json());
+
+  // API route: Preview Request Instant Notification
+  app.post("/api/notify-preview", async (req, res) => {
+    try {
+      const { email, programUrl, cohortStartDate, ref, a, createdAt, id } = req.body;
+      if (!email || !programUrl) {
+        return res.status(400).json({ error: "Email and programUrl are required." });
+      }
+
+      const result = await sendPreviewNotification({
+        email,
+        programUrl,
+        cohortStartDate: cohortStartDate || "Not specified",
+        ref,
+        a,
+        createdAt,
+        id,
+      });
+
+      return res.json({ success: true, ...result });
+    } catch (err: any) {
+      console.error("Preview notification error:", err);
+      return res.status(500).json({ error: err.message || "Failed to dispatch notification." });
+    }
+  });
 
   // API route: AI Notes Analysis
   app.post("/api/notes/analyze", async (req, res) => {

@@ -13,7 +13,7 @@ export default function Sprint() {
     {
       step: "03",
       title: "The Rapid Build",
-      desc: "We build your complete 9-screen member home, operator dashboard, database architecture, and onboarding automations."
+      desc: "We build your complete 9-screen member home, operator dashboard, and onboarding automations."
     },
     {
       step: "04",
@@ -23,7 +23,7 @@ export default function Sprint() {
     {
       step: "05",
       title: "Live On Your Domain",
-      desc: "Your portal deploys live on your domain before your cohort starts. Members log in seamlessly on day one."
+      desc: "Your portal goes live on your own domain, with your members' progress tracked from day one."
     }
   ];
 

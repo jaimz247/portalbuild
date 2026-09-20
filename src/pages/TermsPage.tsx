@@ -45,7 +45,7 @@ export default function TermsPage() {
               1. Acceptance of Terms
             </h2>
             <p>
-              By accessing, browsing, or utilizing the services provided at <strong className="text-white">getportalbuild.com</strong> ("PortalBuild"), requesting a custom portal preview, or engaging our engineering team, you confirm that you have read, understood, and agreed to be bound by these Terms of Service.
+              By accessing, browsing, or utilizing the services provided at <strong className="text-white">getportalbuild.com</strong> ("PortalBuild"), operated by MorningCrest Solutions LLC ("we", "us", or "our"), requesting a custom portal preview, or engaging our engineering team, you confirm that you have read, understood, and agreed to be bound by these Terms of Service.
             </p>
           </section>
 
@@ -104,7 +104,7 @@ export default function TermsPage() {
           <section className="space-y-3 pt-4 border-t border-white/10">
             <h2 className="text-lg font-bold text-white">Contact &amp; Support</h2>
             <p className="text-xs text-slate-400 font-mono">
-              PortalBuild Legal Operations<br />
+              PortalBuild / MorningCrest Solutions LLC Legal Operations<br />
               Email: legal@getportalbuild.com | support@getportalbuild.com<br />
               Domain: getportalbuild.com
             </p>
@@ -113,7 +113,7 @@ export default function TermsPage() {
 
         {/* Footer Return CTA */}
         <div className="pt-6 border-t border-white/10 flex justify-between items-center">
-          <p className="text-xs text-slate-400">© 2026 PortalBuild. All rights reserved.</p>
+          <p className="text-xs text-slate-400">© 2026 PortalBuild · MorningCrest Solutions LLC. All rights reserved.</p>
           <button
             onClick={handleBackHome}
             className="text-xs text-orange-400 hover:text-orange-300 font-bold uppercase tracking-wider cursor-pointer"

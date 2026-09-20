@@ -342,7 +342,7 @@ export default function LogosPage() {
 
       {/* Footer Return CTA */}
       <div className="mt-12 pt-6 border-t border-white/10 flex justify-between items-center">
-        <p className="text-xs text-slate-400">© 2026 PortalBuild. All rights reserved.</p>
+        <p className="text-xs text-slate-400">© 2026 PortalBuild · MorningCrest Solutions LLC. All rights reserved.</p>
         <button
           onClick={handleBackHome}
           className="text-xs text-orange-400 hover:text-orange-300 font-bold uppercase tracking-wider cursor-pointer"

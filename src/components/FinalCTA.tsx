@@ -1,4 +1,7 @@
 import { openApplicationModal } from '../lib/events';
+import { Calendar } from 'lucide-react';
+
+const CAL_URL = 'https://cal.com/morningcrest/portal-fit-call';
 
 interface FinalCTAProps {
   onOpenModal?: () => void;
@@ -37,17 +40,29 @@ export default function FinalCTA({ onOpenModal }: FinalCTAProps) {
         </p>
 
         <div className="flex flex-col items-center">
-          <button
-            type="button"
-            onClick={handleCTA}
-            aria-label="Get my free custom portal preview built in 24 hours"
-            className="inline-flex items-center justify-center px-8 py-4 text-base md:text-lg font-semibold tracking-tight bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white rounded-xl border border-orange-400/30 shadow-sm transition-colors cursor-pointer min-h-[48px] focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
-          >
-            <span>Get my free portal preview</span>
-          </button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-xl">
+            <button
+              type="button"
+              onClick={handleCTA}
+              aria-label="Get my free custom portal preview built in 24 hours"
+              className="inline-flex items-center justify-center px-8 py-4 text-base md:text-lg font-semibold tracking-tight bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white rounded-xl border border-orange-400/30 shadow-sm transition-colors cursor-pointer min-h-[48px] w-full sm:w-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+            >
+              <span>Get my free portal preview</span>
+            </button>
+            <a
+              href={CAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-4 text-sm md:text-base font-medium tracking-tight bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white rounded-xl border border-white/[0.12] hover:border-white/25 transition-all cursor-pointer min-h-[48px] w-full sm:w-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+            >
+              <Calendar className="w-4 h-4 text-orange-400" aria-hidden="true" />
+              <span>Book 20-Min Fit Call</span>
+              <span className="text-slate-500 text-xs">↗</span>
+            </a>
+          </div>
           
           <p className="text-xs md:text-sm text-slate-400 mt-4 font-mono">
-            Free. No call required. No card. You keep the preview.
+            Free preview in 24h · No call required · Or book 20 minutes if you prefer to speak first
           </p>
         </div>
       </div>
