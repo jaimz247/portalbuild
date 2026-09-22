@@ -1,15 +1,39 @@
 import { useState, useRef, useEffect } from 'react';
-import { ExternalLink, Lock, Sparkles, Globe, ArrowRight, Check } from 'lucide-react';
+import { ExternalLink, Lock, Check, Calendar, ArrowRight, ShieldCheck, UserCheck, Eye, Layers, Sparkles, Clock, Globe } from 'lucide-react';
 import { trackDemoInteraction } from '../lib/analytics';
+import { openApplicationModal } from '../lib/events';
 
 interface DemoPortal {
   id: string;
   name: string;
+  shortName: string;
+  badge: string;
+  subtitle: string;
   descriptor: string;
   domain: string;
   url: string;
-  isLive: boolean;
-  isSimulated?: boolean;
+  totalWeeks: number;
+  currentWeek: number;
+  memberName: string;
+  memberInitials: string;
+  memberRole: string;
+  currentSessionTitle: string;
+  currentSessionTime: string;
+  currentSessionNote: string;
+  currentModuleNum: string;
+  currentModuleName: string;
+  metrics: {
+    label: string;
+    value: string;
+    sublabel: string;
+    highlight?: boolean;
+  }[];
+  operatorHighlight: {
+    flaggedName: string;
+    flaggedStatus: string;
+    flaggedReason: string;
+    actionLabel: string;
+  };
 }
 
 interface LiveDemoPortalProps {
@@ -17,146 +41,137 @@ interface LiveDemoPortalProps {
   programURL?: string;
 }
 
-// Multi-Demo Config: Unlaunched cohortroom demos are gated behind isLive flag defaulting to off
-const BASE_DEMO_PORTALS: DemoPortal[] = [
+const LIVE_HOSTED_PORTALS: DemoPortal[] = [
   {
     id: 'growth-collective',
-    name: 'Growth Collective',
-    descriptor: 'Business mastermind · 12 weeks · 32 members',
+    name: 'The Growth Collective',
+    shortName: 'TGC',
+    badge: 'Founder Accelerator',
+    subtitle: 'A 12-week accelerator for founder-led service businesses',
+    descriptor: '12-week accelerator · 32 founders',
     domain: 'growthcollective.cohortroom.com',
     url: 'https://growthcollective.cohortroom.com',
-    isLive: true,
+    totalWeeks: 12,
+    currentWeek: 4,
+    memberName: 'Sarah Whitfield',
+    memberInitials: 'SW',
+    memberRole: 'Member · Pod B · 4 weeks running',
+    currentSessionTitle: 'Week 4 Live Session — Pricing Without Discounting',
+    currentSessionTime: 'Thu, Sep 24 @ 11:00am Zoom · Main Room',
+    currentSessionNote: 'In 2 days',
+    currentModuleNum: '04',
+    currentModuleName: 'Pricing Without Discounting',
+    metrics: [
+      { label: 'Curriculum Progress', value: '68%', sublabel: 'On track · 3 deliverables submitted' },
+      { label: 'Next Live Session', value: 'Thu @ 11:00 AM', sublabel: 'Pricing Without Discounting' },
+      { label: 'Cohort Benchmark', value: '+34%', sublabel: 'Top quartile revenue growth', highlight: true },
+    ],
+    operatorHighlight: {
+      flaggedName: 'Elena Rostova',
+      flaggedStatus: 'At-Risk (Week 3 Inactive)',
+      flaggedReason: 'Has not opened Module 3 or logged in for 6 days. Zero submissions.',
+      actionLabel: 'Intervene Now',
+    },
   },
   {
     id: 'leadership',
-    name: 'Leadership Programme',
-    descriptor: 'Corporate leadership · 14 weeks · 22 participants',
+    name: 'Harbourline Institute',
+    shortName: 'HI',
+    badge: 'Executive Leadership',
+    subtitle: 'A 10-week program for senior managers stepping into executive roles',
+    descriptor: '10-week program · 22 participants',
     domain: 'leadership.cohortroom.com',
-    url: 'https://growthcollective.cohortroom.com',
-    isLive: false,
-  },
-  {
-    id: 'ai-operations',
-    name: 'AI Operations Cohort',
-    descriptor: 'Technical build track · 8 weeks · 40 members',
-    domain: 'ai.cohortroom.com',
-    url: 'https://growthcollective.cohortroom.com',
-    isLive: false,
+    url: 'https://leadership.cohortroom.com',
+    totalWeeks: 10,
+    currentWeek: 4,
+    memberName: 'Priya Raman',
+    memberInitials: 'PR',
+    memberRole: 'Member · Pod B · 4 weeks running',
+    currentSessionTitle: 'Week 4 Live Session — Strategic Prioritization',
+    currentSessionTime: 'Thu, Sep 24 @ 11:00am Zoom · Executive Hall',
+    currentSessionNote: 'In 2 days',
+    currentModuleNum: '04',
+    currentModuleName: 'Strategic Prioritization',
+    metrics: [
+      { label: 'Curriculum Progress', value: '70%', sublabel: 'Leadership Pod B peer review done' },
+      { label: 'Next Executive Session', value: 'Thu @ 11:00 AM', sublabel: 'Strategic Prioritization' },
+      { label: 'Peer Review Score', value: '9.4/10', sublabel: 'Top rated in Executive Pod B', highlight: true },
+    ],
+    operatorHighlight: {
+      flaggedName: 'Marcus Thorne',
+      flaggedStatus: 'Needs Follow-up',
+      flaggedReason: 'Attended session but missed 360 stakeholder feedback upload.',
+      actionLabel: 'Send Nudge',
+    },
   },
   {
     id: 'agency',
-    name: 'Agency Mastermind',
-    descriptor: 'Agency scaling · 16 weeks · 24 members',
+    name: 'Northline Collective',
+    shortName: 'NC',
+    badge: 'Agency Mastermind',
+    subtitle: 'A 16-week sprint for agency owners going from operator to owner',
+    descriptor: '16-week sprint · 24 agency owners',
     domain: 'agency.cohortroom.com',
-    url: 'https://growthcollective.cohortroom.com',
-    isLive: false,
+    url: 'https://agency.cohortroom.com',
+    totalWeeks: 16,
+    currentWeek: 4,
+    memberName: 'Nate Calloway',
+    memberInitials: 'NC',
+    memberRole: 'Member · Pod B · 4 weeks running',
+    currentSessionTitle: 'Week 4 Live Session — Delegation & Margin Health',
+    currentSessionTime: 'Wednesdays, 12pm ET · Main Room',
+    currentSessionNote: 'Live Sprint',
+    currentModuleNum: '04',
+    currentModuleName: 'Delegation & Margin Health',
+    metrics: [
+      { label: 'Monthly Recurring Revenue', value: '$47,000', sublabel: '+38% growth since start', highlight: true },
+      { label: 'Agency Margin Health', value: '44%', sublabel: 'Up 11% from baseline audit' },
+      { label: 'Cohort Rank by MRR', value: 'Top Quartile', sublabel: 'Rank #3 by MRR expansion' },
+    ],
+    operatorHighlight: {
+      flaggedName: 'David Chen',
+      flaggedStatus: 'Needs Follow-up',
+      flaggedReason: 'Logged revenue metrics but skipped hiring matrix deliverable.',
+      actionLabel: 'Send Nudge',
+    },
   },
 ];
 
-function extractProgramInfo(inputUrl: string) {
-  if (!inputUrl || !inputUrl.trim()) return null;
-  const raw = inputUrl.trim();
-  const clean = raw.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
-  
-  const parts = clean.split('/');
-  const host = parts[0] || 'yourprogram.com';
-  
-  let brand = host.replace(/^(www\.|app\.|portal\.)/i, '').split('.')[0] || 'Your Cohort';
-  brand = brand
-    .split(/[-_]/)
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-
-  const simulatedDomain = `portal.${host.replace(/^(www\.|app\.|portal\.)/i, '')}`;
-
-  return {
-    rawUrl: raw.startsWith('http') ? raw : `https://${raw}`,
-    cleanDomain: host,
-    brandName: brand || 'Your Program',
-    simulatedDomain,
-    cohortDescriptor: `${brand} Cohort · 10 weeks · 35 members`,
-  };
-}
-
-export default function LiveDemoPortal({ isLoading, programURL }: LiveDemoPortalProps) {
+export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
   const [isHydrated, setIsHydrated] = useState(false);
-  const [customUrl, setCustomUrl] = useState<string>(programURL || '');
-  const [activeCustomUrl, setActiveCustomUrl] = useState<string>(programURL || '');
+  const [selectedDemoId, setSelectedDemoId] = useState<string>('growth-collective');
+  const [activeTab, setActiveTab] = useState<'overview' | 'cohort' | 'roadmap' | 'operator'>('overview');
+  const tabListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Provides visual skeleton structure during initial client-side hydration
     const timer = setTimeout(() => {
       setIsHydrated(true);
     }, 40);
     return () => clearTimeout(timer);
   }, []);
 
-  // Synchronize when programURL prop updates
-  useEffect(() => {
-    if (programURL) {
-      setCustomUrl(programURL);
-      setActiveCustomUrl(programURL);
-      setSelectedDemoId('simulated-custom');
-    }
-  }, [programURL]);
-
-  const parsedProgram = activeCustomUrl ? extractProgramInfo(activeCustomUrl) : null;
-
-  const simulatedPortal: DemoPortal | null = parsedProgram
-    ? {
-        id: 'simulated-custom',
-        name: parsedProgram.brandName,
-        descriptor: parsedProgram.cohortDescriptor,
-        domain: parsedProgram.simulatedDomain,
-        url: parsedProgram.rawUrl,
-        isLive: true,
-        isSimulated: true,
-      }
-    : null;
-
-  const availableDemos: DemoPortal[] = [
-    ...(simulatedPortal ? [simulatedPortal] : []),
-    ...BASE_DEMO_PORTALS.filter((d) => d.isLive),
-  ];
-
-  const [selectedDemoId, setSelectedDemoId] = useState<string>(
-    simulatedPortal ? 'simulated-custom' : availableDemos[0]?.id || 'growth-collective'
-  );
-  const [activeTab, setActiveTab] = useState<'overview' | 'cohort' | 'roadmap' | 'operator'>('overview');
-  const tabListRef = useRef<HTMLDivElement>(null);
-
-  const activeDemo = availableDemos.find((d) => d.id === selectedDemoId) || availableDemos[0] || BASE_DEMO_PORTALS[0];
+  const activeDemo = LIVE_HOSTED_PORTALS.find((d) => d.id === selectedDemoId) || LIVE_HOSTED_PORTALS[0];
 
   const handleDemoSwitch = (demo: DemoPortal) => {
     setSelectedDemoId(demo.id);
     trackDemoInteraction(demo.id, 'switch_demo_tab');
   };
 
-  const handleSimulateSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (customUrl.trim()) {
-      setActiveCustomUrl(customUrl.trim());
-      setSelectedDemoId('simulated-custom');
-      trackDemoInteraction('simulated-custom', 'submit_custom_url');
-    }
-  };
-
-  const handleOpenFullDemo = () => {
-    trackDemoInteraction(activeDemo.id, 'open_full_demo');
+  const handleOpenFullDemo = (demo: DemoPortal) => {
+    trackDemoInteraction(demo.id, 'open_full_demo');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-    if (availableDemos.length <= 1) return;
     if (e.key === 'ArrowRight') {
       e.preventDefault();
-      const nextIndex = (index + 1) % availableDemos.length;
-      handleDemoSwitch(availableDemos[nextIndex]);
+      const nextIndex = (index + 1) % LIVE_HOSTED_PORTALS.length;
+      handleDemoSwitch(LIVE_HOSTED_PORTALS[nextIndex]);
       const nextBtn = tabListRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex];
       nextBtn?.focus();
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      const prevIndex = (index - 1 + availableDemos.length) % availableDemos.length;
-      handleDemoSwitch(availableDemos[prevIndex]);
+      const prevIndex = (index - 1 + LIVE_HOSTED_PORTALS.length) % LIVE_HOSTED_PORTALS.length;
+      handleDemoSwitch(LIVE_HOSTED_PORTALS[prevIndex]);
       const prevBtn = tabListRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[prevIndex];
       prevBtn?.focus();
     }
@@ -172,556 +187,479 @@ export default function LiveDemoPortal({ isLoading, programURL }: LiveDemoPortal
         role="status"
         aria-label="Loading Interactive Demo Portal"
       >
-        {/* Header Skeleton */}
         <div className="text-center mb-8 md:mb-12">
           <div className="w-44 h-7 rounded-full bg-slate-800/60 border border-white/5 animate-pulse mx-auto mb-3" />
           <div className="w-3/4 max-w-xl h-9 md:h-12 rounded-lg bg-slate-800/60 animate-pulse mx-auto mb-3" />
           <div className="w-4/5 max-w-lg h-4 rounded bg-slate-800/40 animate-pulse mx-auto" />
         </div>
-
-        {/* Program Selector Skeleton */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-36 md:w-44 h-9 rounded-lg bg-slate-900/80 border border-white/10 animate-pulse"
-            />
+            <div key={i} className="h-44 rounded-xl bg-slate-900/80 border border-white/10 animate-pulse" />
           ))}
         </div>
-
-        {/* Active Descriptor Pill Skeleton */}
-        <div className="w-64 h-4 rounded bg-slate-800/40 animate-pulse mx-auto mb-4" />
-
-        {/* Desktop Browser Chrome Container Skeleton */}
-        <div className="hidden md:block relative rounded-xl border border-white/15 bg-slate-950 shadow-2xl overflow-hidden">
-          {/* Top Bar Skeleton */}
-          <div className="bg-slate-900/90 border-b border-white/10 px-4 py-3 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-slate-700/60" />
-              <div className="w-3 h-3 rounded-full bg-slate-700/60" />
-              <div className="w-3 h-3 rounded-full bg-slate-700/60" />
-            </div>
-            <div className="flex-1 max-w-xl mx-auto h-7 bg-slate-950 border border-white/10 rounded-md animate-pulse" />
-            <div className="w-32 h-7 rounded bg-slate-800/60 animate-pulse" />
-          </div>
-
-          {/* Stage Screen Container Skeleton */}
-          <div className="min-h-[520px] md:min-h-[580px] md:aspect-[16/10] bg-slate-950 flex flex-col md:flex-row overflow-hidden">
-            {/* Sidebar Skeleton */}
-            <div className="w-64 border-r border-white/10 bg-slate-900/50 p-4 flex flex-col gap-6 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-slate-800/60 border border-white/5 animate-pulse" />
-                <div className="space-y-2 flex-1">
-                  <div className="w-24 h-4 rounded bg-slate-800/60 animate-pulse" />
-                  <div className="w-16 h-3 rounded bg-slate-800/40 animate-pulse" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                {[0, 1, 2, 3].map((i) => (
-                  <div key={i} className="w-full h-8 rounded-md bg-slate-800/40 animate-pulse" />
-                ))}
-              </div>
-              <div className="mt-auto p-3 rounded-lg border border-white/10 bg-slate-900/80 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-slate-800/60 animate-pulse" />
-                <div className="space-y-1 flex-1">
-                  <div className="w-20 h-3 rounded bg-slate-800/60 animate-pulse" />
-                  <div className="w-14 h-2.5 rounded bg-slate-800/40 animate-pulse" />
-                </div>
-              </div>
-            </div>
-
-            {/* Main Content Area Skeleton */}
-            <div className="flex-1 p-6 flex flex-col gap-6 bg-slate-950/60">
-              {/* Header Skeleton */}
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <div className="w-48 h-6 rounded bg-slate-800/60 animate-pulse" />
-                  <div className="w-32 h-3.5 rounded bg-slate-800/40 animate-pulse" />
-                </div>
-                <div className="w-28 h-8 rounded-lg bg-slate-800/50 animate-pulse" />
-              </div>
-
-              {/* 3 Metric Cards Skeleton */}
-              <div className="grid grid-cols-3 gap-4">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="p-4 rounded-xl border border-white/10 bg-slate-900/60 space-y-3">
-                    <div className="w-24 h-3 rounded bg-slate-800/40 animate-pulse" />
-                    <div className="w-16 h-6 rounded bg-slate-800/60 animate-pulse" />
-                  </div>
-                ))}
-              </div>
-
-              {/* Main Panel Skeleton */}
-              <div className="flex-1 p-5 rounded-xl border border-white/10 bg-slate-900/40 space-y-4">
-                <div className="w-40 h-4 rounded bg-slate-800/60 animate-pulse" />
-                <div className="w-full h-20 rounded-lg bg-slate-800/30 animate-pulse" />
-                <div className="w-full h-20 rounded-lg bg-slate-800/30 animate-pulse" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Demo Card Skeleton */}
-        <div className="md:hidden rounded-xl border border-white/15 bg-slate-900/80 p-4 flex flex-col gap-4">
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <div className="space-y-1">
-              <div className="w-24 h-3 rounded bg-slate-800/40 animate-pulse" />
-              <div className="w-32 h-4 rounded bg-slate-800/60 animate-pulse" />
-            </div>
-            <div className="w-14 h-5 rounded bg-slate-800/60 animate-pulse" />
-          </div>
-          <div className="h-16 rounded-lg bg-slate-950 border border-white/5 animate-pulse" />
-          <div className="h-16 rounded-lg bg-slate-950 border border-white/5 animate-pulse" />
-          <div className="h-11 rounded-lg bg-slate-800/60 animate-pulse mt-2" />
-        </div>
+        <div className="h-96 rounded-xl border border-white/10 bg-slate-950 animate-pulse" />
       </section>
     );
   }
 
   return (
     <section id="live-demo" className="py-16 md:py-24 px-4 sm:px-6 max-w-6xl mx-auto transition-opacity duration-300">
-      {/* Header */}
-      <div className="text-center mb-8 md:mb-12">
-        <p className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-3">
-          Interactive Architecture Preview
-        </p>
-        <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
-          These are real portals. Click around them.
-        </h2>
-        <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto mt-3">
-          Experience the member journey firsthand — from milestone curriculum roadmaps to cohort schedule tracking and operator progress flags.
-        </p>
-      </div>
-
-      {/* Program Shape Selector Tabs (keyboard-accessible ARIA tablist) & Simulated URL Transform Bar */}
-      <div className="max-w-xl mx-auto mb-6">
-        <form onSubmit={handleSimulateSubmit} className="relative flex items-center gap-2 p-1.5 rounded-xl border border-white/[0.08] bg-slate-900/80 shadow-md focus-within:border-orange-500/50 transition-all">
-          <div className="pl-3 text-slate-400">
-            <Globe className="w-4 h-4 text-slate-400" aria-hidden="true" />
-          </div>
-          <input
-            type="text"
-            value={customUrl}
-            onChange={(e) => setCustomUrl(e.target.value)}
-            placeholder="Simulate your site URL (e.g. yourbrand.com/cohort)"
-            aria-label="Enter program URL to simulate transformation"
-            className="flex-1 bg-transparent text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none py-1.5"
-          />
-          <button
-            type="submit"
-            aria-label="Simulate custom portal transformation"
-            className="px-3 sm:px-4 py-2 bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white rounded-lg text-xs font-medium tracking-tight shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-orange-400"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span className="hidden xs:inline">Simulate</span>
-            <span>Transform</span>
-          </button>
-        </form>
-        {activeCustomUrl && (
-          <div className="flex items-center justify-between px-3 py-1.5 mt-2 rounded-lg bg-orange-500/10 border border-orange-500/20 text-[11px] font-mono text-orange-300">
-            <div className="flex items-center gap-2 truncate">
-              <Sparkles className="w-3 h-3 text-orange-400 shrink-0" />
-              <span className="truncate">Simulating: {activeCustomUrl}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveCustomUrl('');
-                setCustomUrl('');
-                setSelectedDemoId('growth-collective');
-              }}
-              className="text-slate-400 hover:text-white underline ml-2 shrink-0 cursor-pointer"
-            >
-              Reset
-            </button>
-          </div>
-        )}
-      </div>
-
-      {availableDemos.length > 1 && (
-        <div 
-          ref={tabListRef}
-          role="tablist" 
-          aria-label="Demo Portal Programs"
-          className="flex flex-wrap items-center justify-center gap-2 mb-6"
-        >
-          {availableDemos.map((demo, idx) => {
-            const isSelected = demo.id === activeDemo.id;
-            return (
-              <button
-                key={demo.id}
-                role="tab"
-                id={`tab-${demo.id}`}
-                aria-selected={isSelected}
-                aria-controls={`panel-${demo.id}`}
-                tabIndex={isSelected ? 0 : -1}
-                onClick={() => handleDemoSwitch(demo)}
-                onKeyDown={(e) => handleKeyDown(e, idx)}
-                className={`px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                  isSelected
-                    ? 'bg-orange-600 text-white shadow-md shadow-orange-600/30'
-                    : 'bg-slate-900/80 text-slate-300 hover:text-white hover:bg-slate-800 border border-white/10'
-                }`}
-              >
-                {demo.isSimulated && <span className="mr-1.5 text-orange-300">✨</span>}
-                <span>{demo.name}</span>
-                <span className="hidden sm:inline-block ml-2 text-[11px] opacity-80 font-normal">
-                  ({demo.descriptor.split('·')[0].trim()})
-                </span>
-              </button>
-            );
-          })}
+      {/* Section Header */}
+      <div className="text-center mb-10 md:mb-12">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono tracking-wider uppercase mb-3.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          Live Hosted Portals
         </div>
-      )}
-
-      {/* Active Program Descriptor Badge */}
-      <div className="flex items-center justify-center gap-2 mb-4 text-xs text-slate-400 font-mono">
-        <span className={`w-1.5 h-1.5 rounded-full ${activeDemo.isSimulated ? 'bg-orange-400 animate-pulse' : 'bg-emerald-500'}`}></span>
-        <span>
-          Active Demo: <strong className="text-slate-200">{activeDemo.name}</strong> · {activeDemo.descriptor}
-        </span>
+        <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
+          Explore 3 live sample portals. Built and hosted for real cohort models.
+        </h2>
+        <p className="text-slate-300 text-base md:text-lg max-w-3xl mx-auto mt-4 leading-relaxed">
+          We have built and hosted 3 complete, ready-made sample portals across founder accelerator, executive leadership, and agency mastermind formats. Test-drive each live website directly — including the member journey, module roadmaps, and the operator back-office view.
+        </p>
       </div>
 
-      {/* Browser Chrome Container (Desktop / Tablet) */}
-      <div 
+      {/* 3 Showcase Cards: 1-Click Launch & Tab Selector */}
+      <div
+        ref={tabListRef}
+        role="tablist"
+        aria-label="Live Hosted Cohort Portals"
+        className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+      >
+        {LIVE_HOSTED_PORTALS.map((demo, idx) => {
+          const isSelected = demo.id === activeDemo.id;
+          return (
+            <div
+              key={demo.id}
+              role="tab"
+              id={`tab-${demo.id}`}
+              aria-selected={isSelected}
+              aria-controls={`panel-${demo.id}`}
+              tabIndex={isSelected ? 0 : -1}
+              onClick={() => handleDemoSwitch(demo)}
+              onKeyDown={(e) => handleKeyDown(e, idx)}
+              className={`p-5 rounded-2xl border transition-all duration-200 text-left flex flex-col justify-between relative cursor-pointer group ${
+                isSelected
+                  ? 'bg-slate-900/90 border-orange-500/40 ring-1 ring-orange-500/30 shadow-lg shadow-orange-950/20'
+                  : 'bg-slate-950/70 hover:bg-slate-900/70 border-white/[0.08] hover:border-white/[0.16]'
+              }`}
+            >
+              <div>
+                {/* Top Badge & Live Indicator */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-white/[0.06] text-slate-300 border border-white/[0.08]">
+                    {demo.badge}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-400 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    LIVE HOSTED
+                  </span>
+                </div>
+
+                {/* Portal Name & Subtitle */}
+                <h3 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                  <span>{demo.name}</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                  {demo.subtitle}
+                </p>
+
+                {/* Domain Pill */}
+                <div className="mt-3.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/40 border border-white/[0.06] text-[11px] font-mono text-slate-300">
+                  <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
+                  <span className="truncate">{demo.domain}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons: Open Live Site or Select Preview */}
+              <div className="mt-5 pt-4 border-t border-white/[0.08] flex items-center justify-between gap-2">
+                <span className="text-[11px] text-slate-400 font-mono">
+                  {isSelected ? 'Currently Viewing ↓' : 'Click to inspect'}
+                </span>
+                <a
+                  href={demo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenFullDemo(demo);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold tracking-tight shadow-sm transition-colors cursor-pointer shrink-0"
+                  aria-label={`Open live portal for ${demo.name} in new tab`}
+                >
+                  <span>Open Live Portal</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop / Tablet Browser Stage Container */}
+      <div
         id={`panel-${activeDemo.id}`}
         role="tabpanel"
         aria-labelledby={`tab-${activeDemo.id}`}
-        className="hidden md:block relative rounded-xl border border-white/15 bg-slate-950 shadow-2xl overflow-hidden"
+        className="hidden md:block relative rounded-2xl border border-white/[0.12] bg-slate-950 shadow-2xl overflow-hidden"
       >
         {/* Browser Top Navigation Bar */}
-        <div className="bg-slate-900/90 border-b border-white/10 px-4 py-3 flex items-center justify-between gap-4">
-          {/* Traffic Light Dots */}
+        <div className="bg-slate-900/95 border-b border-white/[0.08] px-4 py-3 flex items-center justify-between gap-4">
+          {/* Window Traffic Lights */}
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-rose-500/80"></div>
-            <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
-            <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+            <div className="w-3 h-3 rounded-full bg-rose-500/80" />
+            <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+            <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
           </div>
 
           {/* Address Bar */}
-          <div className="flex-1 max-w-xl mx-auto bg-slate-950 border border-white/10 rounded-md px-3 py-1.5 flex items-center gap-2 text-xs text-slate-300 font-mono shadow-inner">
+          <div className="flex-1 max-w-xl mx-auto bg-slate-950 border border-white/[0.08] rounded-lg px-3.5 py-1.5 flex items-center gap-2.5 text-xs text-slate-300 font-mono shadow-inner">
             <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span className="text-slate-200 select-all font-semibold truncate">{activeDemo.domain}</span>
-            <span className={`ml-auto text-[10px] font-sans font-medium px-1.5 py-0.5 rounded border shrink-0 ${
-              activeDemo.isSimulated
-                ? 'text-orange-400 bg-orange-500/10 border-orange-500/20'
-                : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
-            }`}>
-              {activeDemo.isSimulated ? '✨ Simulated Portal' : 'Live Member Portal'}
+            <span className="ml-auto text-[10px] font-sans font-medium px-2 py-0.5 rounded border text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shrink-0 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              Live Member Portal
             </span>
           </div>
 
-          {/* External Link Action */}
+          {/* Direct Launch Action */}
           <a
             href={activeDemo.url}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={handleOpenFullDemo}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-xs font-medium text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500 shrink-0"
+            onClick={() => handleOpenFullDemo(activeDemo)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 rounded-lg text-xs font-semibold text-orange-300 hover:text-orange-200 transition-colors cursor-pointer shrink-0"
           >
-            <span>{activeDemo.isSimulated ? 'Source Site' : 'Open Full Demo'}</span>
-            <ExternalLink className="w-3.5 h-3.5 text-orange-400" />
+            <span>Open Live Website</span>
+            <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
 
-        {/* Demo Stage Screen Container */}
-        <div className="relative min-h-[520px] md:min-h-[580px] md:aspect-[16/10] bg-slate-950 flex flex-col overflow-hidden">
-          {/* Interactive Portal Simulated App Interface */}
-          <div className="flex-1 flex flex-col md:flex-row bg-slate-950 text-slate-100 overflow-hidden">
-            {/* Sidebar Navigation */}
-            <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/10 bg-slate-900/50 p-3 md:p-4 flex flex-col gap-3 md:gap-6 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-orange-600 flex items-center justify-center font-extrabold text-white text-base shrink-0 shadow-md">
-                  {activeDemo.name.slice(0, 2).toUpperCase()}
-                </div>
-                <div className="overflow-hidden">
-                  <h4 className="font-bold text-sm text-white truncate">{activeDemo.name}</h4>
-                  <p className="text-[11px] text-orange-400 font-mono truncate">
-                    {activeDemo.isSimulated ? 'Simulated · 24h Build' : 'Cohort 8 · Live'}
-                  </p>
-                </div>
+        {/* Portal Stage View */}
+        <div className="relative min-h-[540px] bg-slate-950 flex flex-col md:flex-row overflow-hidden text-slate-100">
+          {/* Sidebar Navigation */}
+          <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/[0.08] bg-slate-900/40 p-4 flex flex-col gap-5 shrink-0">
+            <div className="flex items-center gap-3 pb-3 border-b border-white/[0.06]">
+              <div className="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center font-bold text-white text-xs shrink-0 shadow-md">
+                {activeDemo.shortName}
               </div>
-
-              {/* Navigation Links */}
-              <div className="flex flex-row md:flex-col overflow-x-auto gap-2 md:gap-1 font-medium text-xs pb-1 md:pb-0">
-                <button
-                  onClick={() => {
-                    setActiveTab('overview');
-                    trackDemoInteraction('overview', 'click_tab_overview');
-                  }}
-                  className={`text-left px-3 py-2 rounded-md transition-all flex items-center justify-between gap-3 cursor-pointer focus:outline-none focus:ring-1 focus:ring-orange-500 shrink-0 md:shrink whitespace-nowrap md:whitespace-normal ${
-                    activeTab === 'overview' ? 'bg-orange-600 text-white font-bold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span>Welcome / Home</span>
-                  <span className="text-[10px] opacity-75">Screen 1</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveTab('cohort');
-                    trackDemoInteraction('cohort', 'click_tab_cohort');
-                  }}
-                  className={`text-left px-3 py-2 rounded-md transition-all flex items-center justify-between gap-3 cursor-pointer focus:outline-none focus:ring-1 focus:ring-orange-500 shrink-0 md:shrink whitespace-nowrap md:whitespace-normal ${
-                    activeTab === 'cohort' ? 'bg-orange-600 text-white font-bold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span>Your Cohort (32)</span>
-                  <span className="text-[10px] opacity-75">Screen 2</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveTab('roadmap');
-                    trackDemoInteraction('roadmap', 'click_tab_roadmap');
-                  }}
-                  className={`text-left px-3 py-2 rounded-md transition-all flex items-center justify-between gap-3 cursor-pointer focus:outline-none focus:ring-1 focus:ring-orange-500 shrink-0 md:shrink whitespace-nowrap md:whitespace-normal ${
-                    activeTab === 'roadmap' ? 'bg-orange-600 text-white font-bold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span>Program Roadmap</span>
-                  <span className="text-[10px] opacity-75">Screen 3</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveTab('operator');
-                    trackDemoInteraction('operator', 'click_tab_operator');
-                  }}
-                  className={`text-left px-3 py-2 rounded-md transition-all flex items-center justify-between gap-3 cursor-pointer focus:outline-none focus:ring-1 focus:ring-orange-500 shrink-0 md:shrink whitespace-nowrap md:whitespace-normal ${
-                    activeTab === 'operator' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span>Operator View</span>
-                  <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/30 font-mono">ADMIN</span>
-                </button>
-              </div>
-
-              {/* Member Profile Card */}
-              <div className="hidden md:flex mt-auto p-3 rounded-lg border border-white/10 bg-slate-900/80 items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-slate-700 text-white font-bold text-xs flex items-center justify-center">
-                  JM
-                </div>
-                <div className="overflow-hidden">
-                  <p className="text-xs font-semibold text-white truncate">Jordan Miller</p>
-                  <p className="text-[10px] text-slate-400 truncate">Member · Week 4 of 12</p>
-                </div>
+              <div className="overflow-hidden">
+                <h4 className="font-bold text-sm text-white truncate">{activeDemo.name}</h4>
+                <p className="text-[11px] text-orange-400 font-mono truncate">
+                  Week {activeDemo.currentWeek} of {activeDemo.totalWeeks} · Live
+                </p>
               </div>
             </div>
 
-            {/* Main Stage Content */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-6 scrollbar-thin">
-              {activeTab === 'overview' && (
-                <div className="space-y-6">
-                  {/* Top Welcome Banner */}
-                  <div className="p-6 rounded-xl bg-gradient-to-r from-orange-950/60 via-slate-900 to-slate-900 border border-orange-500/20">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-mono uppercase text-orange-400 tracking-wider">
-                        {activeDemo.isSimulated ? 'Custom Cohort · Week 1 Active' : 'Cohort 8 · Week 4 Active'}
-                      </span>
-                      <span className="text-xs text-slate-400">Target Finish: Nov 15</span>
-                    </div>
-                    <h3 className="text-2xl font-bold text-white">
-                      {activeDemo.isSimulated ? `Welcome to ${activeDemo.name} Portal` : 'Welcome back, Jordan'}
-                    </h3>
-                    <p className="text-slate-300 text-sm mt-1">
-                      {activeDemo.isSimulated
-                        ? `Custom branded workspace generated from ${activeDemo.url}. Members access tailored roadmaps and retention triggers.`
-                        : "You have 2 items due before Thursday's live Mastermind session."}
-                    </p>
+            {/* Navigation Tabs */}
+            <div className="flex flex-row md:flex-col overflow-x-auto gap-1 font-medium text-xs">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('overview');
+                  trackDemoInteraction('overview', 'click_tab_overview');
+                }}
+                className={`text-left px-3 py-2 rounded-lg transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                  activeTab === 'overview'
+                    ? 'bg-orange-500 text-white font-semibold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+                }`}
+              >
+                <span>Welcome / Home</span>
+                <span className="text-[10px] opacity-75 font-mono">Screen 1</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('cohort');
+                  trackDemoInteraction('cohort', 'click_tab_cohort');
+                }}
+                className={`text-left px-3 py-2 rounded-lg transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                  activeTab === 'cohort'
+                    ? 'bg-orange-500 text-white font-semibold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+                }`}
+              >
+                <span>Cohort Pods</span>
+                <span className="text-[10px] opacity-75 font-mono">Screen 2</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('roadmap');
+                  trackDemoInteraction('roadmap', 'click_tab_roadmap');
+                }}
+                className={`text-left px-3 py-2 rounded-lg transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                  activeTab === 'roadmap'
+                    ? 'bg-orange-500 text-white font-semibold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+                }`}
+              >
+                <span>Curriculum Roadmap</span>
+                <span className="text-[10px] opacity-75 font-mono">Screen 3</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('operator');
+                  trackDemoInteraction('operator', 'click_tab_operator');
+                }}
+                className={`text-left px-3 py-2 rounded-lg transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                  activeTab === 'operator'
+                    ? 'bg-emerald-600 text-white font-semibold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+                }`}
+              >
+                <span>Operator Radar</span>
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/30 font-mono">
+                  ADMIN
+                </span>
+              </button>
+            </div>
+
+            {/* Member Persona Footer Card */}
+            <div className="hidden md:flex mt-auto p-3 rounded-xl border border-white/[0.08] bg-slate-900/80 items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center border border-white/10">
+                {activeDemo.memberInitials}
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-xs font-semibold text-white truncate">{activeDemo.memberName}</p>
+                <p className="text-[10px] text-slate-400 truncate">{activeDemo.memberRole}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Stage Content */}
+          <div className="flex-1 p-6 overflow-y-auto space-y-6">
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
+                {/* Greeting Banner */}
+                <div className="p-6 rounded-xl bg-gradient-to-r from-orange-950/40 via-slate-900/60 to-slate-900/40 border border-orange-500/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-mono uppercase text-orange-400 tracking-wider font-semibold">
+                      Fall 2026 Cohort · Week {activeDemo.currentWeek} Active
+                    </span>
+                    <span className="text-xs text-slate-400 font-mono">{activeDemo.currentSessionNote}</span>
                   </div>
-
-                  {/* Progress Bar & Current Milestone */}
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="p-4 rounded-lg bg-slate-900 border border-white/10">
-                      <span className="text-xs text-slate-400">Curriculum Progress</span>
-                      <div className="text-2xl font-bold text-white mt-1">68%</div>
-                      <div className="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
-                        <div className="bg-orange-500 h-1.5 rounded-full w-[68%]"></div>
-                      </div>
-                    </div>
-
-                    <div className="p-4 rounded-lg bg-slate-900 border border-white/10">
-                      <span className="text-xs text-slate-400">Next Live Session</span>
-                      <div className="text-base font-bold text-white mt-1">Thursday @ 2:00 PM EST</div>
-                      <span className="text-[11px] text-emerald-400">Zoom link ready in Schedule</span>
-                    </div>
-
-                    <div className="p-4 rounded-lg bg-slate-900 border border-white/10">
-                      <span className="text-xs text-slate-400">Milestone Status</span>
-                      <div className="text-base font-bold text-emerald-400 mt-1">On Track</div>
-                      <span className="text-[11px] text-slate-400">3 deliverables submitted</span>
-                    </div>
-                  </div>
-
-                  {/* Active Module Deliverables */}
-                  <div className="p-5 rounded-xl bg-slate-900 border border-white/10 space-y-4">
-                    <h4 className="font-bold text-sm text-white flex items-center justify-between">
-                      <span>Module 4: Offer Architecture &amp; Pricing</span>
-                      <span className="text-xs font-normal text-orange-400">Due Oct 12</span>
-                    </h4>
-
-                    <div className="space-y-2">
-                      <div className="p-3 rounded bg-slate-950 border border-white/5 flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-3">
-                          <input type="checkbox" checked readOnly className="rounded border-slate-700 bg-slate-800 text-orange-500 focus:ring-0" />
-                          <span className="text-slate-300 line-through">Watch Video Lesson 4.1: Value Tiering Framework</span>
-                        </div>
-                        <span className="text-[10px] text-emerald-400 font-mono">COMPLETED</span>
-                      </div>
-
-                      <div className="p-3 rounded bg-slate-950 border border-orange-500/30 bg-orange-500/5 flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-3">
-                          <input type="checkbox" readOnly className="rounded border-slate-700 bg-slate-800 text-orange-500 focus:ring-0" />
-                          <span className="text-white font-medium">Submit Worksheet: 3-Tier Offer Matrix</span>
-                        </div>
-                        <span className="text-[10px] text-orange-400 font-mono">ACTION REQUIRED</span>
-                      </div>
-                    </div>
-                  </div>
+                  <h3 className="text-2xl font-bold text-white tracking-tight">
+                    Good evening, {activeDemo.memberName.split(' ')[0]}.
+                  </h3>
+                  <p className="text-slate-300 text-xs md:text-sm mt-1 leading-relaxed">
+                    {activeDemo.subtitle}
+                  </p>
                 </div>
-              )}
 
-              {activeTab === 'cohort' && (
-                <div className="space-y-4">
+                {/* 3 Metric Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {activeDemo.metrics.map((m, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-4 rounded-xl border bg-slate-900/70 flex flex-col justify-between ${
+                        m.highlight ? 'border-orange-500/30' : 'border-white/[0.08]'
+                      }`}
+                    >
+                      <span className="text-xs text-slate-400">{m.label}</span>
+                      <div className={`text-xl md:text-2xl font-bold mt-1 tracking-tight ${m.highlight ? 'text-orange-400' : 'text-white'}`}>
+                        {m.value}
+                      </div>
+                      <span className="text-[11px] text-slate-400 mt-1 font-mono">{m.sublabel}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Live Session Deliverable Box */}
+                <div className="p-5 rounded-xl bg-slate-900/70 border border-white/[0.08] space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-white">Cohort 8 Members (32 Operators)</h3>
-                    <span className="text-xs text-slate-400 font-mono">Private Member Directory</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { name: "Jordan Miller", role: "Growth Lead", status: "Active Now", progress: "68%" },
-                      { name: "Sarah Vance", role: "Agency Founder", status: "Active 2h ago", progress: "84%" },
-                      { name: "Marcus Thorne", role: "Consultant", status: "Active yesterday", progress: "72%" },
-                      { name: "Elena Rostova", role: "Cohort Director", status: "Active 3d ago", progress: "45%" },
-                    ].map((m, idx) => (
-                      <div key={idx} className="p-3 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-bold text-white">{m.name}</p>
-                          <p className="text-[10px] text-slate-400">{m.role}</p>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-[10px] text-emerald-400 font-mono block">{m.progress}</span>
-                          <span className="text-[9px] text-slate-500">{m.status}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'roadmap' && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-white">12-Week Program Roadmap</h3>
-                  <div className="space-y-3">
-                    {[
-                      { week: "Week 1-2", title: "Foundation & System Audit", status: "Completed", color: "text-emerald-400" },
-                      { week: "Week 3-4", title: "Offer Architecture & Retention Engine", status: "In Progress", color: "text-orange-400" },
-                      { week: "Week 5-6", title: "Operator Radar & Automated Onboarding", status: "Locked", color: "text-slate-500" },
-                      { week: "Week 7-8", title: "Cohort Dynamics & Milestone Reviews", status: "Locked", color: "text-slate-500" },
-                    ].map((step, idx) => (
-                      <div key={idx} className="p-4 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] font-mono text-slate-400 uppercase">{step.week}</span>
-                          <h4 className="text-sm font-bold text-white">{step.title}</h4>
-                        </div>
-                        <span className={`text-xs font-semibold ${step.color}`}>{step.status}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'operator' && (
-                <div className="space-y-4">
-                  <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between">
                     <div>
-                      <span className="text-xs font-mono text-emerald-400 uppercase tracking-wider">Operator Radar · Real-time Member Flags</span>
-                      <h3 className="text-lg font-bold text-white">Cohort Health: 2 At-Risk Members Flagged</h3>
+                      <span className="text-[10px] font-mono text-orange-400 uppercase tracking-wider">UPCOMING SESSION</span>
+                      <h4 className="font-bold text-sm md:text-base text-white mt-0.5">
+                        {activeDemo.currentSessionTitle}
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-0.5 font-mono">{activeDemo.currentSessionTime}</p>
                     </div>
-                    <span className="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold font-mono">
-                      LIVE RADAR
+                    <span className="px-2.5 py-1 rounded-md bg-orange-500/10 text-orange-400 border border-orange-500/20 text-xs font-mono font-medium">
+                      {activeDemo.currentSessionNote}
                     </span>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="p-3.5 rounded-lg bg-rose-950/30 border border-rose-500/40 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></div>
-                        <div>
-                          <p className="text-xs font-bold text-white">Elena Rostova — <span className="text-rose-400">At-Risk (Week 3 Inactive)</span></p>
-                          <p className="text-[11px] text-slate-400">Has not opened Module 3 or logged in for 6 days. Zero submissions.</p>
-                        </div>
-                      </div>
-                      <button className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded text-xs font-bold cursor-pointer transition-colors focus:outline-none focus:ring-1 focus:ring-rose-400">
-                        Intervene Now
-                      </button>
+                  <div className="p-3.5 rounded-lg bg-slate-950 border border-white/[0.06] flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <span className="text-slate-200">
+                        Module {activeDemo.currentModuleNum}: {activeDemo.currentModuleName}
+                      </span>
                     </div>
-
-                    <div className="p-3.5 rounded-lg bg-amber-950/30 border border-amber-500/40 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                        <div>
-                          <p className="text-xs font-bold text-white">David Chen — <span className="text-amber-400">Needs Follow-up</span></p>
-                          <p className="text-[11px] text-slate-400">Watched videos but skipped worksheet upload. 2 days behind milestone.</p>
-                        </div>
-                      </div>
-                      <button className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded text-xs font-bold cursor-pointer transition-colors focus:outline-none focus:ring-1 focus:ring-amber-400">
-                        Send Nudge
-                      </button>
-                    </div>
+                    <span className="text-[10px] text-emerald-400 font-mono">IN PROGRESS</span>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+
+            {activeTab === 'cohort' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Cohort Pod B Members</h3>
+                    <p className="text-xs text-slate-400">Accountability pods with peer progress transparency</p>
+                  </div>
+                  <span className="text-xs text-slate-400 font-mono">Private Directory</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    { name: activeDemo.memberName, role: "Pod Lead", status: "Active Now", progress: "74%" },
+                    { name: "Sarah Vance", role: "Operator", status: "Active 2h ago", progress: "84%" },
+                    { name: "Marcus Thorne", role: "Participant", status: "Active yesterday", progress: "72%" },
+                    { name: "Elena Rostova", role: "Founder", status: "Active 3d ago", progress: "45%" },
+                  ].map((m, idx) => (
+                    <div key={idx} className="p-3.5 rounded-xl bg-slate-900/70 border border-white/[0.08] flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-white">{m.name}</p>
+                        <p className="text-[10px] text-slate-400">{m.role}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[10px] text-emerald-400 font-mono block">{m.progress}</span>
+                        <span className="text-[9px] text-slate-500">{m.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'roadmap' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-white">{activeDemo.totalWeeks}-Week Program Roadmap</h3>
+                  <span className="text-xs text-orange-400 font-mono">Week {activeDemo.currentWeek} Active</span>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    { week: "Week 1-2", title: "Diagnostic & Core System Architecture", status: "Completed", color: "text-emerald-400" },
+                    { week: "Week 3-4", title: activeDemo.currentModuleName, status: "In Progress", color: "text-orange-400" },
+                    { week: "Week 5-8", title: "Scale Sprints & Executive Milestones", status: "Locked", color: "text-slate-500" },
+                    { week: `Week 9-${activeDemo.totalWeeks}`, title: "Graduation Deliverables & Peer Audits", status: "Locked", color: "text-slate-500" },
+                  ].map((step, idx) => (
+                    <div key={idx} className="p-4 rounded-xl bg-slate-900/70 border border-white/[0.08] flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-mono text-slate-400 uppercase">{step.week}</span>
+                        <h4 className="text-sm font-bold text-white">{step.title}</h4>
+                      </div>
+                      <span className={`text-xs font-semibold ${step.color}`}>{step.status}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'operator' && (
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-mono text-emerald-400 uppercase tracking-wider font-semibold">
+                      Operator Radar · Real-time Member Flags
+                    </span>
+                    <h3 className="text-lg font-bold text-white mt-0.5">Cohort Health: Member Risk Management</h3>
+                  </div>
+                  <span className="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold font-mono">
+                    LIVE RADAR
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping shrink-0" />
+                      <div>
+                        <p className="text-xs font-bold text-white">
+                          {activeDemo.operatorHighlight.flaggedName} —{' '}
+                          <span className="text-rose-400">{activeDemo.operatorHighlight.flaggedStatus}</span>
+                        </p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          {activeDemo.operatorHighlight.flaggedReason}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold cursor-pointer transition-colors shrink-0"
+                    >
+                      {activeDemo.operatorHighlight.actionLabel}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Mobile Frame Device Mock (< 768px) */}
+      {/* Mobile Device Mock (< 768px) */}
       <div className="block md:hidden max-w-sm mx-auto">
-        <div className="rounded-[32px] border-4 border-slate-800 bg-slate-950 p-3 shadow-2xl relative overflow-hidden">
-          {/* Phone Notch */}
-          <div className="w-28 h-4 bg-slate-800 rounded-b-xl mx-auto mb-3"></div>
-
-          {/* Mobile App View */}
-          <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 space-y-4 text-left">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+        <div className="rounded-[28px] border-4 border-slate-800 bg-slate-950 p-3 shadow-2xl relative overflow-hidden">
+          <div className="w-24 h-3.5 bg-slate-800 rounded-b-xl mx-auto mb-3" />
+          <div className="bg-slate-900 border border-white/[0.08] rounded-xl p-4 space-y-4 text-left">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
               <div>
-                <span className="text-[10px] font-mono text-orange-400 uppercase truncate block max-w-[170px]">{activeDemo.name}</span>
+                <span className="text-[10px] font-mono text-orange-400 uppercase truncate block max-w-[170px]">
+                  {activeDemo.name}
+                </span>
                 <h4 className="text-sm font-bold text-white">
-                  {activeDemo.isSimulated ? `${activeDemo.name} Mobile` : "Jordan's Portal"}
+                  {activeDemo.memberName.split(' ')[0]}'s Portal
                 </h4>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-orange-600 text-white font-bold">
-                {activeDemo.isSimulated ? 'Preview' : 'Week 4'}
+              <span className="text-[10px] px-2 py-0.5 rounded bg-orange-600 text-white font-bold font-mono">
+                Week {activeDemo.currentWeek}
               </span>
             </div>
 
-            <div className="p-3 rounded-lg bg-slate-950 border border-white/5 space-y-2">
-              <span className="text-[10px] text-slate-400">Next Mastermind Session</span>
-              <p className="text-xs font-bold text-white">Thursday @ 2:00 PM EST</p>
+            <div className="p-3 rounded-lg bg-slate-950 border border-white/[0.06] space-y-1">
+              <span className="text-[10px] text-slate-400 font-mono">UPCOMING SESSION</span>
+              <p className="text-xs font-bold text-white">{activeDemo.currentSessionTitle}</p>
+              <p className="text-[10px] text-slate-400">{activeDemo.currentSessionTime}</p>
             </div>
 
             <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/30 space-y-1">
               <span className="text-[10px] font-mono text-emerald-400">OPERATOR RADAR</span>
-              <p className="text-xs font-bold text-white">1 Member Flagged At-Risk</p>
-              <p className="text-[10px] text-slate-300">Elena Rostova hasn't logged in for 6 days.</p>
+              <p className="text-xs font-bold text-white">{activeDemo.operatorHighlight.flaggedName}</p>
+              <p className="text-[10px] text-slate-300">{activeDemo.operatorHighlight.flaggedStatus}</p>
             </div>
 
-            {/* Mobile Open Full Demo Button */}
             <a
               href={activeDemo.url}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={handleOpenFullDemo}
-              className="mt-4 flex items-center justify-center gap-2 w-full py-3 bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer min-h-[44px] focus:outline-none focus:ring-2 focus:ring-orange-500"
+              onClick={() => handleOpenFullDemo(activeDemo)}
+              className="mt-4 flex items-center justify-center gap-2 w-full py-3 bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer min-h-[44px]"
             >
-              <span>Open Full Demo Portal</span>
+              <span>Open Live Portal ({activeDemo.domain})</span>
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>
         </div>
       </div>
+
+      {/* Custom Program Callout Banner */}
+      <div className="mt-8 p-6 md:p-8 rounded-2xl border border-white/[0.08] bg-slate-900/60 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        <div className="max-w-xl">
+          <span className="text-xs font-mono uppercase text-orange-400 tracking-wider font-semibold">
+            Custom Cohort Preview
+          </span>
+          <h3 className="text-lg md:text-xl font-bold text-white mt-1">
+            Want to see your curriculum and brand inside a custom portal?
+          </h3>
+          <p className="text-xs md:text-sm text-slate-400 mt-1.5 leading-relaxed">
+            Send us your sales page or curriculum URL. We'll build an interactive, branded preview portal from your content in 24 hours — 100% free, no call, no credit card required.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => openApplicationModal()}
+          className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white rounded-xl text-sm font-semibold tracking-tight transition-colors cursor-pointer shrink-0 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+        >
+          <span>Get my free portal preview</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
     </section>
   );
 }
-

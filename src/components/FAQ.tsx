@@ -8,6 +8,10 @@ export default function FAQ() {
       a: "Paste your program sales page URL or curriculum outline. Within 24 hours, we build a high-fidelity, interactive portal preview styled with your logo and colors. There is zero cost, no credit card required, and no phone call needed. You review it at your own pace."
     },
     {
+      q: "Can I explore real sample portals before requesting my own?",
+      a: "Yes. We have 3 complete, live sample portals hosted on the web across distinct cohort models: The Growth Collective (12-week founder accelerator at growthcollective.cohortroom.com), Harbourline Institute (10-week executive leadership at leadership.cohortroom.com), and Northline Collective (16-week agency mastermind at agency.cohortroom.com). You can click into any of them directly from the live portals section on this page."
+    },
+    {
       q: "Will my portal be ready before my next cohort starts?",
       a: "Yes. Once you approve your preview, the full portal build takes under a week. Your portal goes live on your own domain, with your members' progress tracked from day one."
     },
