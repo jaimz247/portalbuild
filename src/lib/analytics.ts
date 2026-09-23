@@ -1,4 +1,5 @@
-// GA4 Analytics Event Tracking Utility (Deferred loading)
+// GA4 Analytics & First-Party Event Tracking Utility
+import { trackAction } from './tracker';
 
 declare global {
   interface Window {
@@ -45,8 +46,15 @@ export const initGA4 = () => {
   }
 };
 
-// Custom GA4 Event Trackers
+// Event Trackers (Dual Engine: GA4 + First-Party Telemetry)
 export const trackFormSubmission = (formData?: { email?: string; programUrl?: string }) => {
+  // First-party capture
+  trackAction('preview_form_submitted', {
+    category: 'conversion',
+    label: `Form Submitted: ${formData?.programUrl || 'Unspecified'}`,
+    metadata: formData,
+  });
+
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'generate_lead', {
       event_category: 'form',
@@ -58,10 +66,14 @@ export const trackFormSubmission = (formData?: { email?: string; programUrl?: st
       program_url: formData?.programUrl || 'unspecified',
     });
   }
-  console.log('📊 [GA4] Form Submission Tracked:', formData);
 };
 
 export const trackPricingView = (tierName?: string) => {
+  trackAction('pricing_tier_viewed', {
+    category: 'intent',
+    label: tierName || 'Founding Cohort Partner Tier',
+  });
+
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'view_item', {
       item_category: 'pricing',
@@ -74,10 +86,15 @@ export const trackPricingView = (tierName?: string) => {
       tier: tierName || 'Founding Partner',
     });
   }
-  console.log('📊 [GA4] Pricing View Tracked:', tierName);
 };
 
 export const trackDemoInteraction = (tabName: string, actionDetails?: string) => {
+  trackAction('demo_interaction', {
+    category: 'engagement',
+    label: `Demo: ${tabName} (${actionDetails || 'view'})`,
+    metadata: { screen: tabName, action: actionDetails },
+  });
+
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'select_content', {
       content_type: 'demo_screen',
@@ -88,15 +105,19 @@ export const trackDemoInteraction = (tabName: string, actionDetails?: string) =>
       screen: tabName,
     });
   }
-  console.log('📊 [GA4] Demo Interaction Tracked:', tabName);
 };
 
 export const trackFAQExpansion = (question: string) => {
+  trackAction('faq_expanded', {
+    category: 'discovery',
+    label: `FAQ: ${question}`,
+  });
+
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'faq_expand', {
       question_title: question,
     });
   }
-  console.log('📊 [GA4] FAQ Expanded:', question);
 };
+
 

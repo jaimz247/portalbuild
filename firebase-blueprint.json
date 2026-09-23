@@ -31,6 +31,66 @@
       },
       "required": ["name", "email", "businessType", "revenue", "bottlenecks", "features"]
     },
+    "preview_request": {
+      "title": "Preview Request",
+      "description": "Free 24-hour staging preview request submission",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "programUrl": { "type": "string" },
+        "cohortStartDate": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["pending_preview", "reviewed", "contacted", "completed"]
+        },
+        "ref": { "type": "string" },
+        "a": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "programUrl", "cohortStartDate", "status", "createdAt", "updatedAt"]
+    },
+    "site_session": {
+      "title": "Site Session",
+      "description": "First-party anonymous visitor session telemetry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "visitorId": { "type": "string" },
+        "isReturning": { "type": "boolean" },
+        "referrer": { "type": "string" },
+        "utmSource": { "type": "string" },
+        "utmMedium": { "type": "string" },
+        "utmCampaign": { "type": "string" },
+        "deviceType": { "type": "string" },
+        "path": { "type": "string" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "lastActiveAt": { "type": "string", "format": "date-time" },
+        "isInternal": { "type": "boolean" },
+        "clientIp": { "type": "string" }
+      },
+      "required": ["sessionId", "visitorId", "deviceType", "startedAt"]
+    },
+    "site_event": {
+      "title": "Site Event",
+      "description": "First-party behavioral and conversion action telemetry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "visitorId": { "type": "string" },
+        "eventType": { "type": "string" },
+        "eventCategory": { "type": "string" },
+        "label": { "type": "string" },
+        "path": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "isInternal": { "type": "boolean" },
+        "clientIp": { "type": "string" }
+      },
+      "required": ["sessionId", "visitorId", "eventType", "timestamp"]
+    },
     "admin": {
       "title": "Admin",
       "description": "Authorized administrator",
@@ -49,6 +109,18 @@
     "/applications/{applicationId}": {
       "schema": "#/entities/application",
       "description": "Submissions for custom client portal prototypes"
+    },
+    "/preview_requests/{requestId}": {
+      "schema": "#/entities/preview_request",
+      "description": "Submissions for free 24h interactive preview portals"
+    },
+    "/site_sessions/{sessionId}": {
+      "schema": "#/entities/site_session",
+      "description": "Anonymous first-party visitor session analytics"
+    },
+    "/site_events/{eventId}": {
+      "schema": "#/entities/site_event",
+      "description": "First-party user action & conversion analytics events"
     },
     "/admins/{adminId}": {
       "schema": "#/entities/admin",

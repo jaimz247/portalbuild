@@ -1,3 +1,5 @@
+import { trackAction } from './tracker';
+
 export const OPEN_MODAL_EVENT = 'open-application-modal';
 export const OPEN_DEMO_MODAL_EVENT = 'open-demo-modal';
 export const CLOSE_MODALS_EVENT = 'close-all-modals';
@@ -38,12 +40,19 @@ export const hasExitIntentTriggered = (): boolean => {
   }
 };
 
-export const openApplicationModal = (e?: React.MouseEvent | React.SyntheticEvent | Event) => {
+export const openApplicationModal = (e?: React.MouseEvent | React.SyntheticEvent | Event, source?: string) => {
   if (e) {
     if (typeof e.preventDefault === 'function') e.preventDefault();
     if (typeof e.stopPropagation === 'function') e.stopPropagation();
   }
   markPrimaryCTAInteracted();
+
+  // Track high-intent modal open event
+  trackAction('preview_modal_opened', {
+    category: 'intent',
+    label: `Modal Opened: ${source || 'CTA Click'}`,
+    metadata: { source: source || 'button' },
+  });
 
   // Try direct function invocation if ApplicationForm is mounted
   if (typeof window !== 'undefined' && typeof (window as any).__openPortalApplicationModal === 'function') {
@@ -62,6 +71,10 @@ export const openApplicationModal = (e?: React.MouseEvent | React.SyntheticEvent
 
 export const openDemoModal = (e?: React.MouseEvent) => {
   if (e) e.preventDefault();
+  trackAction('demo_modal_opened', {
+    category: 'engagement',
+    label: 'Demo Modal Opened',
+  });
   window.dispatchEvent(new Event(OPEN_DEMO_MODAL_EVENT));
 };
 

@@ -92,6 +92,48 @@ service cloud.firestore {
         && (!data.keys().contains('a') || (data.a is string && data.a.size() <= 200));
     }
 
+    // Site Session validation helper (First-Party Telemetry)
+    function isValidSiteSession(data) {
+      return data.keys().hasAll(['sessionId', 'visitorId', 'deviceType', 'startedAt'])
+        && data.keys().size() <= 20
+        && data.sessionId is string && data.sessionId.size() > 0 && data.sessionId.size() <= 128
+        && data.visitorId is string && data.visitorId.size() > 0 && data.visitorId.size() <= 128
+        && data.deviceType is string && data.deviceType.size() <= 50
+        && data.startedAt is string && data.startedAt.size() <= 50
+        // Optional Fields
+        && (!data.keys().contains('id') || (data.id is string && data.id.size() <= 128))
+        && (!data.keys().contains('isReturning') || data.isReturning is bool)
+        && (!data.keys().contains('referrer') || (data.referrer is string && data.referrer.size() <= 500))
+        && (!data.keys().contains('utmSource') || (data.utmSource is string && data.utmSource.size() <= 150))
+        && (!data.keys().contains('utmMedium') || (data.utmMedium is string && data.utmMedium.size() <= 150))
+        && (!data.keys().contains('utmCampaign') || (data.utmCampaign is string && data.utmCampaign.size() <= 150))
+        && (!data.keys().contains('ref') || (data.ref is string && data.ref.size() <= 150))
+        && (!data.keys().contains('a') || (data.a is string && data.a.size() <= 150))
+        && (!data.keys().contains('path') || (data.path is string && data.path.size() <= 300))
+        && (!data.keys().contains('lastActiveAt') || (data.lastActiveAt is string && data.lastActiveAt.size() <= 50))
+        && (!data.keys().contains('pageViews') || data.pageViews is int)
+        && (!data.keys().contains('isInternal') || data.isInternal is bool)
+        && (!data.keys().contains('clientIp') || (data.clientIp is string && data.clientIp.size() <= 100));
+    }
+
+    // Site Event validation helper (First-Party Behavioral Telemetry)
+    function isValidSiteEvent(data) {
+      return data.keys().hasAll(['sessionId', 'visitorId', 'eventType', 'timestamp'])
+        && data.keys().size() <= 16
+        && data.sessionId is string && data.sessionId.size() > 0 && data.sessionId.size() <= 128
+        && data.visitorId is string && data.visitorId.size() > 0 && data.visitorId.size() <= 128
+        && data.eventType is string && data.eventType.size() > 0 && data.eventType.size() <= 100
+        && data.timestamp is string && data.timestamp.size() <= 50
+        // Optional Fields
+        && (!data.keys().contains('id') || (data.id is string && data.id.size() <= 128))
+        && (!data.keys().contains('eventCategory') || (data.eventCategory is string && data.eventCategory.size() <= 100))
+        && (!data.keys().contains('label') || (data.label is string && data.label.size() <= 300))
+        && (!data.keys().contains('path') || (data.path is string && data.path.size() <= 300))
+        && (!data.keys().contains('metadata') || (data.metadata is string && data.metadata.size() <= 1000))
+        && (!data.keys().contains('isInternal') || data.isInternal is bool)
+        && (!data.keys().contains('clientIp') || (data.clientIp is string && data.clientIp.size() <= 100));
+    }
+
     match /preview_requests/{requestId} {
       allow get, list: if isAdmin();
       
@@ -119,6 +161,26 @@ service cloud.firestore {
         && isValidApplication(incoming())
         && incoming().createdAt == existing().createdAt
         && incoming().updatedAt == request.time;
+
+      allow delete: if isFullControlAdmin();
+    }
+
+    match /site_sessions/{sessionId} {
+      allow get, list: if isAdmin();
+      
+      allow create: if isValidId(sessionId)
+        && isValidSiteSession(incoming());
+        
+      allow update: if (isAdmin() || (isValidId(sessionId) && isValidSiteSession(incoming())));
+
+      allow delete: if isFullControlAdmin();
+    }
+
+    match /site_events/{eventId} {
+      allow get, list: if isAdmin();
+      
+      allow create: if isValidId(eventId)
+        && isValidSiteEvent(incoming());
 
       allow delete: if isFullControlAdmin();
     }

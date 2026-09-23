@@ -25,6 +25,7 @@ import { OPEN_MODAL_EVENT, CLOSE_MODALS_EVENT } from '../lib/events';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { trackFormSubmission } from '../lib/analytics';
+import { trackAction } from '../lib/tracker';
 
 const CAL_URL = 'https://cal.com/morningcrest/portal-fit-call';
 
@@ -188,7 +189,16 @@ export default function ApplicationForm() {
     document.body.style.overflow = 'hidden';
   };
 
+  const focusedFieldsRef = useRef(new Set<string>());
+
   const closeForm = () => {
+    if (!isSuccess && (formData.programUrl || formData.email)) {
+      trackAction('form_abandoned', {
+        category: 'retention',
+        label: 'Preview modal closed without completing submission',
+        metadata: { hasUrl: !!formData.programUrl, hasEmail: !!formData.email },
+      });
+    }
     setIsOpen(false);
     document.body.style.overflow = 'auto';
   };
@@ -294,6 +304,17 @@ export default function ApplicationForm() {
     }
   };
 
+  const handleInputFocus = (fieldName: string) => {
+    if (!focusedFieldsRef.current.has(fieldName)) {
+      focusedFieldsRef.current.add(fieldName);
+      trackAction('form_field_focused', {
+        category: 'intent',
+        label: `Form Field Focused: ${fieldName}`,
+        metadata: { field: fieldName },
+      });
+    }
+  };
+
   const handleInputBlur = (fieldName: string) => {
     setTouched(prev => ({ ...prev, [fieldName]: true }));
   };
@@ -301,6 +322,11 @@ export default function ApplicationForm() {
   const handleSelectCohort = (option: string) => {
     setFormData(prev => ({ ...prev, cohortStartDate: option }));
     setTouched(prev => ({ ...prev, cohortStartDate: true }));
+    trackAction('cohort_date_selected', {
+      category: 'intent',
+      label: `Cohort Date Selected: ${option}`,
+      metadata: { cohortDate: option },
+    });
     if (errors.cohortStartDate) {
       const newErrors = { ...errors };
       delete newErrors.cohortStartDate;
@@ -754,6 +780,7 @@ export default function ApplicationForm() {
                                 aria-describedby={errors.programUrl ? 'field-program-url-error' : 'field-program-url-hint'}
                                 value={formData.programUrl}
                                 onChange={handleInputChange}
+                                onFocus={() => handleInputFocus('programUrl')}
                                 onBlur={() => handleInputBlur('programUrl')}
                                 className={`w-full bg-slate-900/90 border transition-all duration-200 px-4 py-2.5 pr-24 text-white focus:outline-none rounded-xl text-sm ${
                                   isUrlValid
@@ -827,6 +854,7 @@ export default function ApplicationForm() {
                                 aria-describedby={errors.email ? 'field-email-error' : 'field-email-hint'}
                                 value={formData.email}
                                 onChange={handleInputChange}
+                                onFocus={() => handleInputFocus('email')}
                                 onBlur={() => handleInputBlur('email')}
                                 className={`w-full bg-slate-900/90 border transition-all duration-200 px-4 py-2.5 pr-24 text-white focus:outline-none rounded-xl text-sm ${
                                   isEmailValid

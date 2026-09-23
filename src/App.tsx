@@ -25,6 +25,7 @@ import TermsPage from './pages/TermsPage';
 import LogosPage from './pages/LogosPage';
 import { closeAllModals } from './lib/events';
 import { initGA4 } from './lib/analytics';
+import { initFirstPartyTracker } from './lib/tracker';
 
 const Divider = () => (
   <div className="w-full flex justify-center opacity-60 my-4 lg:my-8 relative z-10">
@@ -64,8 +65,9 @@ export default function App() {
       // safe fallback
     }
 
-    // Deferred GA4 Initialization for Performance
+    // Deferred GA4 & First-Party Telemetry Initialization for Performance
     initGA4();
+    initFirstPartyTracker();
 
     // Enforce dark mode #020617 background as per rules
     document.documentElement.classList.remove('theme-light-active');
