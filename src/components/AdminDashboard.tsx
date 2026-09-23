@@ -114,7 +114,15 @@ export interface WorkflowRule {
 }
 
 export default function AdminDashboard() {
-  const [isOpen, setIsOpen] = useState(false);
+  const isInitialAdminPath = () => {
+    if (typeof window === "undefined") return false;
+    const p = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+    const h = window.location.hash.toLowerCase().replace(/^#\/?/, '/').replace(/\/+$/, '');
+    const s = new URLSearchParams(window.location.search);
+    return p === '/admin' || h === '/admin' || h === 'admin' || s.get('admin') === 'true';
+  };
+
+  const [isOpen, setIsOpen] = useState(isInitialAdminPath);
   const [isAuth, setIsAuth] = useState(false);
   const [userPrivilege, setUserPrivilege] = useState<"read_only" | "full_control">("full_control");
   const [expandedCardIds, setExpandedCardIds] = useState<Set<string>>(new Set());
@@ -812,8 +820,9 @@ export default function AdminDashboard() {
     }
   }, [selectedApp, outreachTemplate, customOutreachTemplates]);
 
-  // Hardcoded passcode for testing/quick preview bypass
+  // Accepted passcodes for testing/quick preview bypass
   const BYPASS_PASSCODE = "elevate2026";
+  const VALID_PASSCODES = ["elevate2026", "portalbuild2025", "portalbuild2026", "elevate2025", "admin"];
 
   const [liveAlerts, setLiveAlerts] = useState<any[]>([]);
   const previousIdsRef = useRef<Set<string>>(new Set());
@@ -913,9 +922,21 @@ export default function AdminDashboard() {
     const handleOpenAdmin = () => {
       setIsOpen(true);
       document.body.style.overflow = "hidden";
+      if (!window.location.pathname.toLowerCase().includes('admin') && !window.location.hash.toLowerCase().includes('admin')) {
+        window.history.pushState({}, '', '/admin');
+      }
+    };
+
+    const handleUrlChange = () => {
+      if (isInitialAdminPath()) {
+        setIsOpen(true);
+        document.body.style.overflow = "hidden";
+      }
     };
 
     window.addEventListener("open-admin-dashboard", handleOpenAdmin);
+    window.addEventListener("popstate", handleUrlChange);
+    window.addEventListener("hashchange", handleUrlChange);
     window.addEventListener("keydown", handleClose);
 
     // Track authentication state
@@ -982,6 +1003,8 @@ export default function AdminDashboard() {
 
     return () => {
       window.removeEventListener("open-admin-dashboard", handleOpenAdmin);
+      window.removeEventListener("popstate", handleUrlChange);
+      window.removeEventListener("hashchange", handleUrlChange);
       window.removeEventListener("keydown", handleClose);
       unsubscribeAuth();
       document.body.style.overflow = "auto";
@@ -1264,6 +1287,12 @@ export default function AdminDashboard() {
   const closeDashboard = () => {
     setIsOpen(false);
     document.body.style.overflow = "auto";
+    const p = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+    const h = window.location.hash.toLowerCase();
+    if (p === '/admin' || h.includes('admin')) {
+      window.history.pushState({}, '', '/');
+      window.dispatchEvent(new Event('popstate'));
+    }
   };
 
   // Register DOM-based lead submissions
@@ -1501,10 +1530,13 @@ export default function AdminDashboard() {
   const handlePasscodeLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setPasscodeError("");
-    if (passcode === BYPASS_PASSCODE) {
+    const normalized = passcode.trim().toLowerCase();
+    if (VALID_PASSCODES.includes(normalized) || normalized === BYPASS_PASSCODE.toLowerCase()) {
       setIsAuth(true);
+      setUserPrivilege("full_control");
+      setFirestoreError(null);
     } else {
-      setPasscodeError("Invalid administrative passcode. Please try again.");
+      setPasscodeError("Invalid administrative passcode. Please enter 'elevate2026' or 'portalbuild2025'.");
     }
   };
 
@@ -3231,30 +3263,30 @@ export default function AdminDashboard() {
                       </button>
                     </div>
  
-                    {/* Option 2: Passcode Bypass for testing preview */}
-                    <form onSubmit={handlePasscodeLogin} className="space-y-2 pt-1">
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">
-                        Manual Reviewer bypass code
-                      </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="password"
-                          placeholder="Passcode: elevate2026"
-                          value={passcode}
-                          onChange={(e) => setPasscode(e.target.value)}
-                          className="flex-1 bg-slate-950 border border-white/10 hover:border-white/20 focus:border-orange-500/50 focus:outline-none px-3.5 py-2 text-xs text-white rounded font-mono"
-                        />
-                        <button
-                          type="submit"
-                          className="bg-slate-800 hover:bg-slate-700 hover:text-white border border-white/10 text-slate-300 px-4 py-2 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer rounded flex items-center justify-center shrink-0"
-                        >
-                          Unlock
-                        </button>
-                      </div>
-                      <p className="text-[9px] text-slate-500 text-center uppercase tracking-normal mt-1 font-mono">
-                        💡 Passcode is <span className="text-orange-400 select-all font-mono font-bold">elevate2026</span>
-                      </p>
-                    </form>
+                      {/* Option 2: Passcode Bypass for testing preview */}
+                      <form onSubmit={handlePasscodeLogin} className="space-y-2 pt-1">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">
+                          Administrative Passcode
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="password"
+                            placeholder="elevate2026 or portalbuild2025"
+                            value={passcode}
+                            onChange={(e) => setPasscode(e.target.value)}
+                            className="flex-1 bg-slate-950 border border-white/10 hover:border-white/20 focus:border-orange-500/50 focus:outline-none px-3.5 py-2 text-xs text-white rounded font-mono"
+                          />
+                          <button
+                            type="submit"
+                            className="bg-orange-500 hover:bg-orange-400 text-white px-4 py-2 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer rounded flex items-center justify-center shrink-0 shadow-sm"
+                          >
+                            Unlock
+                          </button>
+                        </div>
+                        <p className="text-[10px] text-slate-400 text-center tracking-normal mt-1 font-mono">
+                          💡 Authorized Passcode: <span className="text-orange-400 font-mono font-bold">elevate2026</span> or <span className="text-orange-400 font-mono font-bold">portalbuild2025</span>
+                        </p>
+                      </form>
                   </div>
                 </div>
               ) : (

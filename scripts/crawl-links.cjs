@@ -21,7 +21,7 @@ const ROOT_DIR = process.cwd();
 const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
 const SRC_DIR = path.join(ROOT_DIR, 'src');
 
-const KNOWN_ROUTES = new Set(['/', '/privacy', '/terms', '/logos', '/brand']);
+const KNOWN_ROUTES = new Set(['/', '/privacy', '/terms', '/logos', '/brand', '/admin']);
 
 const IGNORED_SCHEMAS = [
   'http://www.w3.org/',

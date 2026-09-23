@@ -23,7 +23,8 @@ import ScrollProgressBar from './components/ScrollProgressBar';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import LogosPage from './pages/LogosPage';
-import { closeAllModals } from './lib/events';
+import AdminDashboard from './components/AdminDashboard';
+import { closeAllModals, openAdminDashboard } from './lib/events';
 import { initGA4 } from './lib/analytics';
 import { initFirstPartyTracker } from './lib/tracker';
 
@@ -46,6 +47,9 @@ export default function App() {
     }
     if (rawPath === '/terms' || hash === '/terms') {
       return '/terms';
+    }
+    if (rawPath === '/admin' || hash === '/admin' || hash === 'admin') {
+      return '/admin';
     }
     return rawPath;
   };
@@ -86,6 +90,22 @@ export default function App() {
       // 1. ESC to close all modals
       if (e.key === 'Escape') {
         closeAllModals();
+      }
+
+      // Admin Dashboard shortcut: Shift + A or (Ctrl/Cmd + Shift + A)
+      if ((e.shiftKey && (e.key === 'A' || e.key === 'a')) || ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a'))) {
+        const active = document.activeElement;
+        const isTyping = active && (
+          active.tagName === 'INPUT' ||
+          active.tagName === 'TEXTAREA' ||
+          active.tagName === 'SELECT' ||
+          active.hasAttribute('contenteditable')
+        );
+        if (!isTyping) {
+          e.preventDefault();
+          e.stopPropagation();
+          openAdminDashboard();
+        }
       }
 
       // 2. SPACE to scroll to next section
@@ -140,6 +160,7 @@ export default function App() {
         />
         <PrivacyPage />
         <Footer />
+        <AdminDashboard />
       </div>
     );
   }
@@ -155,6 +176,7 @@ export default function App() {
         />
         <TermsPage />
         <Footer />
+        <AdminDashboard />
       </div>
     );
   }
@@ -170,6 +192,21 @@ export default function App() {
         />
         <LogosPage />
         <Footer />
+        <AdminDashboard />
+      </div>
+    );
+  }
+
+  if (currentPath === '/admin') {
+    return (
+      <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
+        <ScrollProgressBar />
+        <SEO 
+          title="Admin Control Center — PortalBuild"
+          description="PortalBuild Admin Workspace and CRM intelligence engine."
+          url="https://getportalbuild.com/admin"
+        />
+        <AdminDashboard />
       </div>
     );
   }
@@ -252,6 +289,9 @@ export default function App() {
 
       {/* Preview Request Modal Form */}
       <ApplicationForm />
+
+      {/* Admin Dashboard */}
+      <AdminDashboard />
     </div>
   );
 }
