@@ -64,7 +64,7 @@ async function startServer() {
 Note: "${notes}"`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-2.5-flash",
         contents: prompt,
         config: {
           systemInstruction: "You are an AI-powered notes categorization system. Analyze the administrative notes structure. Determine the sentiment ('Positive', 'Neutral', 'Negative') and a list of specific topic keywords/tags (e.g. 'Technical Support', 'Billing Inquiry', 'Workflow Setup', 'Coaching', 'Business Development', 'Integration Requested', 'Urgent'). Always provide your response in JSON format matching the schema.",
