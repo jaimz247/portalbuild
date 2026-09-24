@@ -6,13 +6,15 @@
     <title>PortalBuild — Member Retention Layer for Cohort Programs</title>
     <meta name="description" content="One branded home for your program. One dashboard showing exactly who's falling behind. Live before your next cohort starts." />
     <meta name="keywords" content="cohort member portal, student retention dashboard, cohort-based course portal, member retention layer, operator dashboard, high-ticket cohort" />
-    <meta name="author" content="PortalBuild" />
+    <meta name="author" content="MorningCrest Solutions LLC" />
+    <meta name="publisher" content="MorningCrest Solutions LLC" />
+    <meta name="copyright" content="© 2026 MorningCrest Solutions LLC" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://getportalbuild.com" />
-    <meta property="og:site_name" content="PortalBuild" />
+    <meta property="og:site_name" content="PortalBuild — A MorningCrest Solutions LLC Company" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:locale:alternate" content="en_GB" />
     <meta property="article:published_time" content="2026-03-01T08:00:00+00:00" />
@@ -66,11 +68,29 @@
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "Corporation",
+          "@id": "https://morningcrest.com/#corporation",
+          "name": "MorningCrest Solutions LLC",
+          "legalName": "MorningCrest Solutions LLC",
+          "url": "https://morningcrest.com",
+          "subOrganization": {
+            "@id": "https://getportalbuild.com/#organization"
+          }
+        },
+        {
           "@type": "Organization",
           "@id": "https://getportalbuild.com/#organization",
           "name": "PortalBuild",
+          "legalName": "MorningCrest Solutions LLC",
+          "alternateName": [
+            "PortalBuild by MorningCrest",
+            "PortalBuild a MorningCrest Solutions LLC Company"
+          ],
           "url": "https://getportalbuild.com",
           "logo": "https://getportalbuild.com/og-image.png",
+          "parentOrganization": {
+            "@id": "https://morningcrest.com/#corporation"
+          },
           "contactPoint": {
             "@type": "ContactPoint",
             "email": "hello@getportalbuild.com",

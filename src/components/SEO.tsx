@@ -75,6 +75,23 @@ export default function SEO({
       }
       publishedMeta.setAttribute('content', publishedTime);
     }
+
+    // Corporate parent and publisher consistency for crawlers
+    let authorMeta = document.querySelector('meta[name="author"]');
+    if (!authorMeta) {
+      authorMeta = document.createElement('meta');
+      authorMeta.setAttribute('name', 'author');
+      document.head.appendChild(authorMeta);
+    }
+    authorMeta.setAttribute('content', 'MorningCrest Solutions LLC');
+
+    let publisherMeta = document.querySelector('meta[name="publisher"]');
+    if (!publisherMeta) {
+      publisherMeta = document.createElement('meta');
+      publisherMeta.setAttribute('name', 'publisher');
+      document.head.appendChild(publisherMeta);
+    }
+    publisherMeta.setAttribute('content', 'MorningCrest Solutions LLC');
   }, [title, description, type, url, image, locale, publishedTime]);
 
   return null;

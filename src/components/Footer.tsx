@@ -1,69 +1,107 @@
 import { openAdminDashboard } from '../lib/events';
-import { Shield } from 'lucide-react';
+import { Shield, ExternalLink } from 'lucide-react';
 
 export default function Footer() {
+  const navigate = (path: string) => {
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new Event('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="px-6 py-10 border-t border-white/[0.08] flex flex-col md:flex-row justify-between items-center md:items-end gap-6 shrink-0 max-w-6xl mx-auto w-full relative z-10">
-      <div className="max-w-xl text-center md:text-left">
-        <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest leading-relaxed">
-          PortalBuild // Fast software. Zero developer bureaucracy. Premium retention.
-        </p>
-        <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3 text-xs text-slate-400">
-          <a
-            href="https://cal.com/morningcrest/portal-fit-call"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-orange-400 hover:text-orange-300 font-mono font-medium transition-colors"
-          >
-            Book 20-Min Fit Call ↗
-          </a>
-          <span className="text-slate-700">•</span>
-          <a
-            href="/privacy"
-            onClick={(e) => {
-              e.preventDefault();
-              window.history.pushState({}, '', '/privacy');
-              window.dispatchEvent(new Event('popstate'));
-            }}
-            className="hover:text-slate-200 transition-colors cursor-pointer"
-          >
-            Privacy Policy
-          </a>
-          <span className="text-slate-700">•</span>
-          <a
-            href="/terms"
-            onClick={(e) => {
-              e.preventDefault();
-              window.history.pushState({}, '', '/terms');
-              window.dispatchEvent(new Event('popstate'));
-            }}
-            className="hover:text-slate-200 transition-colors cursor-pointer"
-          >
-            Terms of Service
-          </a>
-          <span className="text-slate-700">•</span>
-          <a
-            href="/admin"
-            onClick={(e) => {
-              e.preventDefault();
-              window.history.pushState({}, '', '/admin');
-              window.dispatchEvent(new Event('popstate'));
-              openAdminDashboard();
-            }}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-orange-500/40 text-slate-300 hover:text-orange-400 font-mono text-xs transition-all cursor-pointer"
-            title="PortalBuild Admin Workspace & Control Center (/admin or Shift+A)"
-          >
-            <Shield className="w-3.5 h-3.5 text-orange-400" />
-            <span>Admin Portal</span>
-            <kbd className="text-[10px] text-slate-400 bg-slate-950 border border-white/10 px-1 py-0.5 rounded font-mono">Shift+A</kbd>
-          </a>
+    <footer 
+      itemScope 
+      itemType="https://schema.org/WPFooter"
+      className="border-t border-white/[0.08] bg-slate-950/60 relative z-10"
+    >
+      <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col gap-8">
+        {/* Top Brand & Mission Row */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-white/[0.06]">
+          {/* Logo & Corporate Lockup */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
+              <span className="w-2.5 h-2.5 rounded-sm bg-orange-500" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-base font-bold tracking-tight text-white leading-tight">
+                PortalBuild
+              </span>
+              <p className="text-[10px] font-mono text-slate-500 tracking-tight">
+                a <span itemProp="copyrightHolder">MorningCrest Solutions</span> Company
+              </p>
+            </div>
+          </div>
+
+          {/* Value Prop Tagline */}
+          <p className="text-[11px] font-mono text-slate-500 tracking-wide uppercase max-w-md text-left md:text-right">
+            Fast software // Zero developer bureaucracy // Premium member retention
+          </p>
         </div>
-      </div>
-      <div className="flex flex-col items-center md:items-end gap-1.5 text-center md:text-right font-mono">
-        <p className="text-[11px] text-slate-500">
-          © 2026 PortalBuild · A MorningCrest Solutions LLC business. All rights reserved.
-        </p>
-        <p className="text-[10px] text-slate-500/80 tracking-tight">London · New York · San Francisco · Melbourne · Serving cohort programs worldwide</p>
+
+        {/* Middle Legal Navigation & Alignment Row */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          {/* Aligned Legal & Navigation Links */}
+          <nav aria-label="Legal and Administrative Navigation" className="flex flex-wrap items-center gap-x-5 gap-y-3 text-xs font-mono text-slate-400">
+            <button
+              type="button"
+              onClick={() => navigate('/privacy')}
+              className="hover:text-white transition-colors cursor-pointer text-left"
+            >
+              Privacy Policy
+            </button>
+            <span className="text-slate-800 select-none">•</span>
+            <button
+              type="button"
+              onClick={() => navigate('/terms')}
+              className="hover:text-white transition-colors cursor-pointer text-left"
+            >
+              Terms of Service
+            </button>
+            <span className="text-slate-800 select-none">•</span>
+            <button
+              type="button"
+              onClick={() => navigate('/logos')}
+              className="hover:text-white transition-colors cursor-pointer text-left"
+            >
+              Brand &amp; Assets
+            </button>
+            <span className="text-slate-800 select-none">•</span>
+            <a
+              href="https://cal.com/morningcrest/portal-fit-call"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-orange-400 hover:text-orange-300 transition-colors inline-flex items-center gap-1"
+            >
+              <span>Book Fit Call</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <span className="text-slate-800 select-none">•</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/admin');
+                openAdminDashboard();
+              }}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-white/10 hover:border-orange-500/40 text-slate-300 hover:text-orange-400 transition-all cursor-pointer"
+              title="PortalBuild Admin Control Center (Shortcut: Shift+A or /admin)"
+            >
+              <Shield className="w-3 h-3 text-orange-400" />
+              <span>Admin Portal</span>
+              <kbd className="text-[10px] text-slate-400 bg-slate-950 border border-white/10 px-1 py-0.2 rounded font-mono">Shift+A</kbd>
+            </button>
+          </nav>
+
+          {/* Operations & Locations */}
+          <div className="text-left lg:text-right font-mono space-y-1">
+            <p className="text-[11px] text-slate-500">
+              © 2026 PortalBuild · A MorningCrest Solutions LLC company. All rights reserved.
+            </p>
+            <p className="text-[10px] text-slate-600">
+              London · New York · San Francisco · Melbourne · Serving cohort programs worldwide
+            </p>
+          </div>
+        </div>
       </div>
     </footer>
   );

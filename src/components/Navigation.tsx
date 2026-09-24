@@ -29,7 +29,7 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
         <div className="flex-1 flex items-center justify-start">
           <button 
             type="button"
-            aria-label="PortalBuild Home — Scroll to top of page"
+            aria-label="PortalBuild Home — a MorningCrest Solutions Company"
             onClick={() => {
               if (window.location.pathname !== '/') {
                 window.history.pushState({}, '', '/');
@@ -38,14 +38,22 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            className="text-lg font-bold tracking-tight flex items-center gap-2.5 text-white cursor-pointer select-none relative z-50 bg-transparent border-0 p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-lg"
+            className="group flex items-center gap-3 text-left cursor-pointer select-none relative z-50 bg-transparent border-0 p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-lg transition-all"
           >
-            <div className="w-7 h-7 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
-              <span className="w-2.5 h-2.5 rounded-sm bg-orange-500" />
+            {/* Logo Mark (enlarged for prominent brand presence) */}
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border border-white/10 group-hover:border-orange-500/40 flex items-center justify-center shrink-0 shadow-sm transition-colors">
+              <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-sm bg-orange-500 group-hover:scale-110 transition-transform" />
             </div>
-            <span className="font-bold tracking-tight text-white">
-              PortalBuild
-            </span>
+
+            {/* Brand Title & Single Subtle Subtitle */}
+            <div className="flex flex-col justify-center">
+              <span className="text-lg sm:text-xl font-bold tracking-tight text-white group-hover:text-orange-400 transition-colors leading-tight">
+                PortalBuild
+              </span>
+              <span className="text-[10px] font-mono tracking-tight text-slate-500 -mt-0.5">
+                a MorningCrest Solutions Company
+              </span>
+            </div>
           </button>
         </div>
         <div className="flex-1 hidden md:flex justify-center flex-wrap items-center gap-6 text-[11px] font-mono tracking-wider uppercase text-slate-400">
@@ -138,6 +146,19 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
             exit={{ opacity: 0, y: -20 }}
             className="fixed inset-x-0 top-[73px] bg-slate-950/95 backdrop-blur-xl border-b border-white/10 z-40 md:hidden flex flex-col items-center justify-start p-8 shadow-2xl"
           >
+            {/* Mobile Brand Identity */}
+            <div className="flex flex-col items-center justify-center gap-1 mb-4 pb-4 border-b border-white/[0.08] w-full">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center shrink-0">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-orange-500" />
+                </div>
+                <span className="font-bold text-lg text-white">PortalBuild</span>
+              </div>
+              <span className="text-[10px] font-mono text-slate-500">
+                a MorningCrest Solutions Company
+              </span>
+            </div>
+
             <div className="text-[11px] font-medium tracking-[0.1em] uppercase text-slate-400 mb-6 text-center flex flex-col gap-2">
               <span className="text-orange-500 font-bold">🟠 {t('nav_slots_claimed')}</span>
               <span>{t('nav_slots_remaining')}</span>
