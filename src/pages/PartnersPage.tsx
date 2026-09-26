@@ -532,11 +532,11 @@ export default function PartnersPage() {
             </a>
           </div>
 
-          {/* Card 3 (Most requested) */}
+          {/* Card 3 (Newest) */}
           <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/80 border border-orange-500/40 relative flex flex-col justify-between shadow-lg shadow-orange-500/5">
             <div className="absolute top-4 right-4">
               <span className="px-2.5 py-0.5 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-300 text-[10px] font-mono tracking-tight font-semibold">
-                Most requested
+                Newest
               </span>
             </div>
             <div>
@@ -585,36 +585,43 @@ export default function PartnersPage() {
       {/* SECTION 4 — THE SCREEN THAT SELLS IT */}
       <section className="py-16 sm:py-20 px-6 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          {/* Left Column: Cockpit Image + GIF */}
-          <div className="lg:col-span-7 space-y-4">
-            {/* Device frame for Cockpit screenshot */}
-            <div className="rounded-2xl border border-white/[0.12] bg-slate-950 p-2 shadow-2xl relative overflow-hidden group">
-              <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-900/90 rounded-t-xl border-b border-white/[0.06] mb-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
-                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
-                <span className="text-[10px] font-mono text-slate-500 ml-2">cockpit.portalbuild.io</span>
+          {/* Left Column: Browser Frame with Cockpit Screenshot */}
+          <div className="lg:col-span-7 space-y-2.5">
+            <div className="rounded-2xl border border-white/[0.12] bg-slate-950 p-2 shadow-2xl shadow-black/50 overflow-hidden group">
+              {/* Subtle Browser Chrome Header */}
+              <div className="flex items-center justify-between px-3 py-2 bg-slate-900/90 rounded-t-xl border-b border-white/[0.06] mb-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
+                </div>
+                <div className="flex-1 max-w-xs mx-auto text-center px-3 py-0.5 rounded-md bg-slate-950/70 border border-white/[0.06]">
+                  <span className="text-[11px] font-mono text-slate-400 select-all">certification.cohortroom.com</span>
+                </div>
+                <div className="w-8" />
               </div>
-              <img
-                src="/images/cockpit-screenshot.png"
-                alt="PortalBuild Founder & Operator Cockpit Dashboard"
-                className="w-full h-auto rounded-lg object-cover"
-                loading="lazy"
-              />
+
+              {/* Clickable Image Linking to Faculty View */}
+              <a
+                href="https://certification.cohortroom.com/faculty"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block relative overflow-hidden rounded-lg group/link cursor-pointer"
+                title="Open certification.cohortroom.com/faculty in a new tab"
+              >
+                <img
+                  src="/images/cockpit-screenshot.png"
+                  alt="Aldermoor Coaching Institute Cockpit Dashboard"
+                  className="w-full h-auto rounded-lg object-cover transition-transform duration-300 group-hover/link:scale-[1.01]"
+                  loading="lazy"
+                />
+              </a>
             </div>
 
-            {/* Smaller frame for WhatsApp GIF */}
-            <div className="rounded-xl border border-white/[0.08] bg-slate-950/80 p-2 shadow-md max-w-md">
-              <img
-                src="/images/whatsapp-checkin.gif"
-                alt="One click personal check-in written in WhatsApp"
-                className="w-full h-auto rounded-lg"
-                loading="lazy"
-              />
-              <p className="text-[11px] font-mono text-slate-400 mt-2 px-1 text-center sm:text-left">
-                One click: a personal check-in, written and opened in WhatsApp.
-              </p>
-            </div>
+            {/* Caption under the image */}
+            <p className="text-xs text-slate-400 font-mono text-center sm:text-left px-1">
+              The real founder view. Click to open it.
+            </p>
           </div>
 
           {/* Right Column: Copy */}
@@ -625,6 +632,9 @@ export default function PartnersPage() {
             </h2>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
               Every participant, across every cohort, on one screen, with the ones going quiet flagged weeks before a refund request. That's the conversation your client has been having with themselves in a spreadsheet.
+            </p>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              One click on any flagged name writes the check-in and opens it in WhatsApp.
             </p>
           </div>
         </div>

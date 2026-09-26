@@ -1,5 +1,4 @@
-import { openAdminDashboard } from '../lib/events';
-import { Shield, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 export default function Footer() {
   const navigate = (path: string) => {
@@ -78,21 +77,6 @@ export default function Footer() {
               <span>Book Fit Call</span>
               <ExternalLink className="w-3 h-3" />
             </a>
-            <span className="text-slate-800 select-none">•</span>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate('/admin');
-                openAdminDashboard();
-              }}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-white/10 hover:border-orange-500/40 text-slate-300 hover:text-orange-400 transition-all cursor-pointer"
-              title="PortalBuild Admin Control Center (Shortcut: Shift+A or /admin)"
-            >
-              <Shield className="w-3 h-3 text-orange-400" />
-              <span>Admin Portal</span>
-              <kbd className="text-[10px] text-slate-400 bg-slate-950 border border-white/10 px-1 py-0.2 rounded font-mono">Shift+A</kbd>
-            </button>
           </nav>
 
           {/* Operations & Locations */}
@@ -101,7 +85,7 @@ export default function Footer() {
               © 2026 PortalBuild · A MorningCrest Solutions LLC company. All rights reserved.
             </p>
             <p className="text-[10px] text-slate-600">
-              London · New York · San Francisco · Melbourne · Serving cohort programs worldwide
+              Serving cohort programmes in the US, UK, Canada and Australia.
             </p>
           </div>
         </div>
