@@ -173,6 +173,8 @@ export default function ApplicationForm() {
 
   const openForm = () => {
     const { ref, a } = getUrlParams();
+    const storedRef = typeof window !== 'undefined' ? (sessionStorage.getItem('pb_ref') || '') : '';
+    const activeRef = (ref || storedRef || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 20);
     setIsOpen(true);
     setIsSuccess(false);
     formOpenedAt.current = Date.now();
@@ -180,7 +182,7 @@ export default function ApplicationForm() {
       email: '',
       programUrl: '',
       cohortStartDate: '',
-      ref: ref || prev.ref || '',
+      ref: activeRef || prev.ref || '',
       a: a || prev.a || '',
       website_hp: '',
     }));
@@ -205,8 +207,10 @@ export default function ApplicationForm() {
 
   useEffect(() => {
     const { preview, ref, a } = getUrlParams();
-    if (ref || a) {
-      setFormData(prev => ({ ...prev, ref: ref || prev.ref, a: a || prev.a }));
+    const storedRef = typeof window !== 'undefined' ? (sessionStorage.getItem('pb_ref') || '') : '';
+    const activeRef = (ref || storedRef || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 20);
+    if (activeRef || a) {
+      setFormData(prev => ({ ...prev, ref: activeRef || prev.ref, a: a || prev.a }));
     }
 
     if (preview) {
@@ -388,7 +392,11 @@ export default function ApplicationForm() {
       updatedAt: new Date().toISOString(),
     };
 
-    if (formData.ref) payload.ref = formData.ref.trim();
+    if (formData.ref) {
+      const sanitized = formData.ref.trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 20);
+      payload.ref = sanitized;
+      payload.referredBy = sanitized;
+    }
     if (formData.a) payload.a = formData.a.trim();
 
     try {
@@ -739,7 +747,7 @@ export default function ApplicationForm() {
 
                         <form onSubmit={handleSubmit} noValidate className="space-y-4">
                           {/* Hidden tracking fields & bot honeypot */}
-                          <input type="hidden" name="ref" value={formData.ref} />
+                          <input type="hidden" name="form-name" value="preview-requests" />
                           <input type="hidden" name="a" value={formData.a} />
                           <div className="hidden" aria-hidden="true">
                             <input
@@ -972,6 +980,37 @@ export default function ApplicationForm() {
                                 <span>Fast-track turnaround activated — prioritized for 12–24h build delivery!</span>
                               </div>
                             )}
+                          </div>
+
+                          {/* Field 4: Referred by (optional) */}
+                          <div className="space-y-1.5">
+                            <label htmlFor="field-referred-by" className="text-xs font-semibold text-slate-200 flex items-center justify-between">
+                              <span className="flex items-center gap-1.5">
+                                Referred by (optional)
+                              </span>
+                              {formData.ref ? (
+                                <span className="text-[11px] text-emerald-400 flex items-center gap-1 font-mono transition-opacity duration-200">
+                                  <Check className="w-3 h-3" /> Code Applied
+                                </span>
+                              ) : null}
+                            </label>
+                            <div className="relative">
+                              <input
+                                id="field-referred-by"
+                                type="text"
+                                name="ref"
+                                maxLength={20}
+                                value={formData.ref}
+                                onChange={(e) => {
+                                  const sanitized = e.target.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 20);
+                                  setFormData(prev => ({ ...prev, ref: sanitized }));
+                                }}
+                                onFocus={() => handleInputFocus('ref')}
+                                onBlur={() => handleInputBlur('ref')}
+                                className="w-full bg-slate-900/90 border border-white/[0.12] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 px-4 py-2.5 text-white focus:outline-none rounded-xl text-sm placeholder:text-slate-500 font-mono uppercase"
+                                placeholder="Partner code, e.g. SARAH01"
+                              />
+                            </div>
                           </div>
 
                           {/* Primary Submit Button with Readiness State */}

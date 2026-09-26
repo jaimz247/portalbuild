@@ -58,13 +58,16 @@ export default function Footer() {
               Terms of Service
             </button>
             <span className="text-slate-800 select-none">•</span>
-            <button
-              type="button"
-              onClick={() => navigate('/logos')}
+            <a
+              href="/partners"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/partners');
+              }}
               className="hover:text-white transition-colors cursor-pointer text-left"
             >
-              Brand &amp; Assets
-            </button>
+              Partner Program
+            </a>
             <span className="text-slate-800 select-none">•</span>
             <a
               href="https://cal.com/morningcrest/portal-fit-call"

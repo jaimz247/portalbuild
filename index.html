@@ -409,6 +409,37 @@
         </div>
       </main>
     </div>
+
+    <!-- Static Hidden Forms for Netlify Forms Deploy Detection -->
+    <form name="preview-requests" data-netlify="true" netlify-honeypot="website_hp" hidden>
+      <input type="text" name="programUrl" />
+      <input type="email" name="email" />
+      <input type="text" name="cohortStartDate" />
+      <input type="text" name="ref" />
+      <input type="text" name="referredBy" />
+      <input type="text" name="a" />
+      <input type="text" name="website_hp" />
+    </form>
+
+    <form name="partner-referral" data-netlify="true" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="referralCode" />
+      <input type="url" name="clientProgramUrl" />
+      <input type="date" name="cohortDate" />
+      <textarea name="notes"></textarea>
+      <input type="radio" name="previewRecipient" value="to_me" />
+      <input type="radio" name="previewRecipient" value="to_client" />
+    </form>
+
+    <form name="partner-signup" data-netlify="true" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="whatYouDo" />
+      <input type="text" name="groupClientsCount" />
+      <input type="text" name="websiteOrLinkedIn" />
+    </form>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

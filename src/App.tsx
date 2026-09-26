@@ -23,6 +23,7 @@ import ScrollProgressBar from './components/ScrollProgressBar';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import LogosPage from './pages/LogosPage';
+import PartnersPage from './pages/PartnersPage';
 import AdminDashboard from './components/AdminDashboard';
 import { closeAllModals, openAdminDashboard } from './lib/events';
 import { initGA4 } from './lib/analytics';
@@ -48,6 +49,9 @@ export default function App() {
     if (rawPath === '/terms' || hash === '/terms') {
       return '/terms';
     }
+    if (rawPath === '/partners' || hash === '/partners' || hash === 'partners') {
+      return '/partners';
+    }
     if (rawPath === '/admin' || hash === '/admin' || hash === 'admin') {
       return '/admin';
     }
@@ -58,12 +62,23 @@ export default function App() {
   const [programUrlFromQuery, setProgramUrlFromQuery] = useState<string>('');
 
   useEffect(() => {
-    // Check for program URL parameter in query string
+    // Check for program URL parameter in query string & capture referral code
     try {
       const searchParams = new URLSearchParams(window.location.search);
       const urlParam = searchParams.get('programURL') || searchParams.get('url') || searchParams.get('site') || searchParams.get('program') || '';
       if (urlParam) {
         setProgramUrlFromQuery(urlParam);
+      }
+
+      // Referral capture: on first load of ANY page, if the URL has a ?ref= parameter,
+      // store its value (uppercased, trimmed, maximum 20 characters, letters and numbers only) in sessionStorage under "pb_ref".
+      // Do not change the URL or the page.
+      const rawRef = searchParams.get('ref');
+      if (rawRef) {
+        const cleanRef = rawRef.trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 20);
+        if (cleanRef) {
+          sessionStorage.setItem('pb_ref', cleanRef);
+        }
       }
     } catch {
       // safe fallback
@@ -191,6 +206,23 @@ export default function App() {
           url="https://getportalbuild.com/logos"
         />
         <LogosPage />
+        <Footer />
+        <AdminDashboard />
+      </div>
+    );
+  }
+
+  if (currentPath === '/partners') {
+    return (
+      <div className="min-h-screen bg-[#020617] text-white selection:bg-orange-500/30 selection:text-orange-50 font-sans antialiased">
+        <ScrollProgressBar />
+        <SEO 
+          title="Partner Programme · PortalBuild"
+          description="Refer cohort-programme founders to PortalBuild. Free branded preview in 24 hours, 20% of the build and 10% monthly for a year. We never go around you."
+          url="https://getportalbuild.com/partners"
+          image="https://getportalbuild.com/images/cockpit-screenshot.png"
+        />
+        <PartnersPage />
         <Footer />
         <AdminDashboard />
       </div>

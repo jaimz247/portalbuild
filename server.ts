@@ -36,6 +36,36 @@ async function startServer() {
     }
   });
 
+  // API route: Partner Client Referral Submission
+  app.post("/api/partner-referral", async (req, res) => {
+    try {
+      const { name, email, clientProgramUrl, referralCode, cohortDate, notes, previewRecipient, id } = req.body;
+      if (!name || !email || !clientProgramUrl) {
+        return res.status(400).json({ error: "Name, email and clientProgramUrl are required." });
+      }
+      console.log(`[Partner Referral Logged] From ${name} (${email}) for client ${clientProgramUrl}, ref: ${referralCode || 'none'}`);
+      return res.json({ success: true, id: id || `ref-${Date.now()}` });
+    } catch (err: any) {
+      console.error("Partner referral error:", err);
+      return res.status(500).json({ error: err.message || "Failed to process partner referral." });
+    }
+  });
+
+  // API route: Partner Signup / Partner Code Request
+  app.post("/api/partner-signup", async (req, res) => {
+    try {
+      const { name, email, whatYouDo, groupClientsCount, websiteOrLinkedIn, id } = req.body;
+      if (!name || !email || !whatYouDo || !groupClientsCount) {
+        return res.status(400).json({ error: "Name, email, whatYouDo, and groupClientsCount are required." });
+      }
+      console.log(`[Partner Signup Logged] ${name} (${email}) - ${whatYouDo}, group clients: ${groupClientsCount}`);
+      return res.json({ success: true, id: id || `signup-${Date.now()}` });
+    } catch (err: any) {
+      console.error("Partner signup error:", err);
+      return res.status(500).json({ error: err.message || "Failed to process partner signup." });
+    }
+  });
+
   // API route: AI Notes Analysis
   app.post("/api/notes/analyze", async (req, res) => {
     try {

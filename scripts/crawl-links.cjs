@@ -21,7 +21,7 @@ const ROOT_DIR = process.cwd();
 const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
 const SRC_DIR = path.join(ROOT_DIR, 'src');
 
-const KNOWN_ROUTES = new Set(['/', '/privacy', '/terms', '/logos', '/brand', '/admin']);
+const KNOWN_ROUTES = new Set(['/', '/privacy', '/terms', '/logos', '/brand', '/admin', '/partners']);
 
 const IGNORED_SCHEMAS = [
   'http://www.w3.org/',
@@ -34,6 +34,7 @@ const MOCK_DEMO_DOMAINS = [
   'api.portalbuild.io',
   'api.crm.io',
   'instagram.com',
+  'cohortroom.com',
 ];
 
 // Read all source files recursively
