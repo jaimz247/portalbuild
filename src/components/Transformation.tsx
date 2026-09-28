@@ -26,7 +26,7 @@ export default function Transformation({ onOpenModal }: TransformationProps) {
             See who's falling behind. In week three, not week nine.
           </h2>
           <p className="text-slate-300/80 text-base md:text-lg leading-relaxed">
-            When a member stops opening modules in week three, your operator radar flags them immediately. Intervene while there is still time to protect their outcome, before they turn into a silent non-renewal or refund request.
+            When a member stops opening modules, missing sessions or skipping submissions, your weekly update flags them, with a check-in already drafted, so you step in while there's still time to protect their outcome.
           </p>
         </div>
 
@@ -113,7 +113,7 @@ export default function Transformation({ onOpenModal }: TransformationProps) {
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
-                  <span className="text-[11px] text-slate-400 font-mono">Recommended: Week 3 Check-In SMS</span>
+                  <span className="text-[11px] text-slate-400 font-mono">Recommended: Week 3 check-in message</span>
                   <button 
                     type="button"
                     onClick={(e) => handleCTA(e)} 
@@ -171,9 +171,9 @@ export default function Transformation({ onOpenModal }: TransformationProps) {
                 <div className="flex items-start gap-3">
                   <CheckCircle className="w-4 h-4 text-slate-300 shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="text-sm font-semibold text-white tracking-tight">Automated Rules</h5>
+                    <h5 className="text-sm font-semibold text-white tracking-tight">Your Thresholds</h5>
                     <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
-                      Define custom criteria: Flag members after 4 days of inactivity, or when 2 consecutive milestones are unsubmitted.
+                      Set your own criteria: flag members after 4 days of inactivity, or when 2 milestones in a row are unsubmitted.
                     </p>
                   </div>
                 </div>
@@ -183,9 +183,9 @@ export default function Transformation({ onOpenModal }: TransformationProps) {
                 <div className="flex items-start gap-3">
                   <Clock className="w-4 h-4 text-slate-300 shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="text-sm font-semibold text-white tracking-tight">Continuous Tracking</h5>
+                    <h5 className="text-sm font-semibold text-white tracking-tight">Weekly Health Update</h5>
                     <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
-                      Activity is logged continuously. Stop cross-referencing messy Google Sheets or guessing who is falling behind.
+                      Progress and attendance refreshed from the data you already collect. No more cross-referencing Google Sheets or guessing who's falling behind.
                     </p>
                   </div>
                 </div>

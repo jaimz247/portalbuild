@@ -218,7 +218,7 @@ export default function App() {
         <ScrollProgressBar />
         <SEO 
           title="Partner Programme · PortalBuild"
-          description="Refer cohort-programme founders to PortalBuild. Free branded preview in 24 hours, 20% of the build and 10% monthly for a year. We never go around you."
+          description="Refer cohort-programme founders to PortalBuild. $1,000 when they sign, $500 more when they stay, and their first month free. We never go around you."
           url="https://getportalbuild.com/partners"
           image="https://getportalbuild.com/images/cockpit-screenshot.png"
         />

@@ -130,7 +130,7 @@ export default function Pricing({ onOpenModal }: PricingProps) {
     <section className="py-16 md:py-24 px-4 sm:px-6 max-w-7xl mx-auto" id="pricing">
       {/* Founding Offer Note */}
       <div className="mb-10 max-w-2xl mx-auto px-4 py-2.5 rounded-lg bg-orange-500/10 border border-orange-500/20 text-center text-xs font-mono text-orange-300">
-        Founding Cohort: $500 reduction applied for the next five program builds.
+        Founding pricing: $500 off for our first five clients, in exchange for a case study.
       </div>
 
       {/* Header */}

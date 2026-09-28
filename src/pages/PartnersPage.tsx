@@ -301,7 +301,7 @@ export default function PartnersPage() {
     },
     {
       q: 'When do I get paid?',
-      a: 'Within 7 days of your client’s payment clearing: the build share once, then 10% of their monthly fee for 12 months.',
+      a: "The signing fee within 7 days of your client's deposit clearing, and the retention bonus within 7 days of their third paid month. By Wise or PayPal.",
     },
     {
       q: "What if my client isn't a fit?",
@@ -389,7 +389,7 @@ export default function PartnersPage() {
         </div>
 
         <p className="mt-5 text-xs text-slate-400 font-mono tracking-tight">
-          Free branded preview in 24 hours · You're cc'd on everything · We never go around you
+          Free branded preview in 24 hours · Their first month free · We never go around you
         </p>
       </section>
 
@@ -439,10 +439,10 @@ export default function PartnersPage() {
               3
             </div>
             <h3 className="text-base font-bold text-white tracking-tight mb-2">
-              They go live, you get paid
+              They sign, you get paid
             </h3>
             <p className="text-sm text-slate-300 leading-relaxed">
-              Live 7 days before their cohort opens, or they don't pay. Your share lands within 7 days of their payment.
+              $1,000 within 7 days of their deposit (Signature), $500 more when they stay. Live 7 days before their cohort opens, or they don't pay.
             </p>
           </div>
         </div>
@@ -649,8 +649,11 @@ export default function PartnersPage() {
         <div className="text-center max-w-xl mx-auto mb-10">
           <span className="text-xs font-mono uppercase tracking-wider text-orange-400">Compensation Model</span>
           <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">
-            One intro. No delivery. Paid for a year.
+            $1,000 when they sign. $500 more when they stay.
           </h2>
+          <p className="mt-2 text-sm text-slate-300 leading-relaxed">
+            Flat amounts, paid fast. And your client gets their first month free because they came through you.
+          </p>
         </div>
 
         {/* Desktop Table View */}
@@ -659,29 +662,29 @@ export default function PartnersPage() {
             <thead>
               <tr className="border-b border-white/[0.08] bg-slate-900/80 text-xs font-mono uppercase text-slate-400">
                 <th className="py-4 px-6 font-semibold">Client plan</th>
-                <th className="py-4 px-6 font-semibold">Build share (20%)</th>
-                <th className="py-4 px-6 font-semibold">Monthly share (10% × 12 months)</th>
-                <th className="py-4 px-6 font-semibold text-orange-400">Year-one total</th>
+                <th className="py-4 px-6 font-semibold">When they sign</th>
+                <th className="py-4 px-6 font-semibold">When they pass 3 paid months</th>
+                <th className="py-4 px-6 font-semibold text-orange-400">Total per client</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.06] text-sm">
               <tr className="hover:bg-white/[0.02] transition-colors">
                 <td className="py-4 px-6 font-semibold text-white">Essential</td>
-                <td className="py-4 px-6 text-slate-300 font-mono">$399</td>
-                <td className="py-4 px-6 text-slate-300 font-mono">$356</td>
-                <td className="py-4 px-6 font-bold text-orange-400 font-mono">~$755</td>
+                <td className="py-4 px-6 text-slate-300 font-mono">$500</td>
+                <td className="py-4 px-6 text-slate-300 font-mono">$250</td>
+                <td className="py-4 px-6 font-bold text-orange-400 font-mono">$750</td>
               </tr>
               <tr className="hover:bg-white/[0.02] transition-colors">
                 <td className="py-4 px-6 font-semibold text-white">Signature</td>
-                <td className="py-4 px-6 text-slate-300 font-mono">$699</td>
-                <td className="py-4 px-6 text-slate-300 font-mono">$596</td>
-                <td className="py-4 px-6 font-bold text-orange-400 font-mono">~$1,295</td>
+                <td className="py-4 px-6 text-slate-300 font-mono">$1,000</td>
+                <td className="py-4 px-6 text-slate-300 font-mono">$500</td>
+                <td className="py-4 px-6 font-bold text-orange-400 font-mono">$1,500</td>
               </tr>
               <tr className="hover:bg-white/[0.02] transition-colors">
                 <td className="py-4 px-6 font-semibold text-white">Scale</td>
-                <td className="py-4 px-6 text-slate-300 font-mono">$1,199</td>
-                <td className="py-4 px-6 text-slate-300 font-mono">$956</td>
-                <td className="py-4 px-6 font-bold text-orange-400 font-mono">~$2,155</td>
+                <td className="py-4 px-6 text-slate-300 font-mono">$1,500</td>
+                <td className="py-4 px-6 text-slate-300 font-mono">$750</td>
+                <td className="py-4 px-6 font-bold text-orange-400 font-mono">$2,250</td>
               </tr>
             </tbody>
           </table>
@@ -692,54 +695,54 @@ export default function PartnersPage() {
           <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.08] space-y-2">
             <div className="flex justify-between items-center border-b border-white/[0.06] pb-2">
               <span className="font-bold text-white">Essential</span>
-              <span className="text-orange-400 font-bold font-mono">~$755 total</span>
+              <span className="text-orange-400 font-bold font-mono">$750 total</span>
             </div>
             <div className="flex justify-between text-xs text-slate-300">
-              <span>Build share (20%):</span>
-              <span className="font-mono">$399</span>
+              <span>When they sign:</span>
+              <span className="font-mono">$500</span>
             </div>
             <div className="flex justify-between text-xs text-slate-300">
-              <span>Monthly share (10% × 12m):</span>
-              <span className="font-mono">$356</span>
+              <span>When they pass 3 paid months:</span>
+              <span className="font-mono">$250</span>
             </div>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.08] space-y-2">
             <div className="flex justify-between items-center border-b border-white/[0.06] pb-2">
               <span className="font-bold text-white">Signature</span>
-              <span className="text-orange-400 font-bold font-mono">~$1,295 total</span>
+              <span className="text-orange-400 font-bold font-mono">$1,500 total</span>
             </div>
             <div className="flex justify-between text-xs text-slate-300">
-              <span>Build share (20%):</span>
-              <span className="font-mono">$699</span>
+              <span>When they sign:</span>
+              <span className="font-mono">$1,000</span>
             </div>
             <div className="flex justify-between text-xs text-slate-300">
-              <span>Monthly share (10% × 12m):</span>
-              <span className="font-mono">$596</span>
+              <span>When they pass 3 paid months:</span>
+              <span className="font-mono">$500</span>
             </div>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.08] space-y-2">
             <div className="flex justify-between items-center border-b border-white/[0.06] pb-2">
               <span className="font-bold text-white">Scale</span>
-              <span className="text-orange-400 font-bold font-mono">~$2,155 total</span>
+              <span className="text-orange-400 font-bold font-mono">$2,250 total</span>
             </div>
             <div className="flex justify-between text-xs text-slate-300">
-              <span>Build share (20%):</span>
-              <span className="font-mono">$1,199</span>
+              <span>When they sign:</span>
+              <span className="font-mono">$1,500</span>
             </div>
             <div className="flex justify-between text-xs text-slate-300">
-              <span>Monthly share (10% × 12m):</span>
-              <span className="font-mono">$956</span>
+              <span>When they pass 3 paid months:</span>
+              <span className="font-mono">$750</span>
             </div>
           </div>
         </div>
 
         {/* Three small points under the table */}
         <div className="mt-5 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 text-xs font-mono text-slate-400 text-center">
-          <span>Paid by Wise or PayPal within 7 days of your client's payment clearing.</span>
+          <span>Signing fee paid within 7 days of your client's deposit.</span>
           <span className="hidden md:inline select-none text-slate-700">·</span>
-          <span>After three closed referrals: 25% build share.</span>
+          <span>Your 3rd signed client earns a one-off $1,000 bonus.</span>
           <span className="hidden md:inline select-none text-slate-700">·</span>
           <span>90-day attribution from your first intro or referral code.</span>
         </div>

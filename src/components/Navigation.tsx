@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { openApplicationModal, openAdminDashboard } from '../lib/events';
-import { Menu, X, Sun, Moon, Globe, Calendar, Shield } from 'lucide-react';
+import { openApplicationModal } from '../lib/events';
+import { Menu, X, Sun, Moon, Globe, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from '../context/LanguageContext';
 
@@ -56,7 +56,7 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
             </div>
           </button>
         </div>
-        <div className="flex-1 hidden md:flex justify-center flex-wrap items-center gap-6 text-[11px] font-mono tracking-wider uppercase text-slate-400">
+        <div className="flex-1 hidden md:flex justify-center flex-wrap items-center gap-6 text-[11px] font-mono tracking-wider text-slate-400">
           <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.06]">
             <span className="w-1.5 h-1.5 rounded-full bg-orange-400/80"></span>
             <span>{t('nav_slots')}</span>
@@ -84,17 +84,6 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
             title={theme === 'light' ? "Activate dark theme" : "Activate light theme"}
           >
             {theme === 'light' ? <Moon className="w-4 h-4 text-slate-600 hover:text-slate-900" aria-hidden="true" /> : <Sun className="w-4 h-4 text-orange-400" aria-hidden="true" />}
-          </button>
-
-          {/* Admin Dashboard Quick Access Button */}
-          <button
-            type="button"
-            onClick={(e) => openAdminDashboard(e)}
-            className="p-2 text-slate-400 hover:text-orange-400 border border-white/[0.06] hover:border-orange-500/30 bg-slate-900/40 hover:bg-orange-500/10 rounded-lg transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
-            aria-label="Admin Control Center (Shift+A or /admin)"
-            title="Admin Control Center (Shift+A or /admin)"
-          >
-            <Shield className="w-4 h-4" aria-hidden="true" />
           </button>
 
           {/* Book 20-Min Fit Call Link */}
@@ -159,9 +148,11 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
               </span>
             </div>
 
-            <div className="text-[11px] font-medium tracking-[0.1em] uppercase text-slate-400 mb-6 text-center flex flex-col gap-2">
-              <span className="text-orange-500 font-bold">🟠 {t('nav_slots_claimed')}</span>
-              <span>{t('nav_slots_remaining')}</span>
+            <div className="text-[11px] font-medium tracking-wide text-slate-400 mb-6 text-center flex flex-col gap-2">
+              <span className="text-orange-400 font-semibold inline-flex items-center justify-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                <span>{t('nav_slots')}</span>
+              </span>
             </div>
 
             {/* Mobile Controls Suite */}
@@ -220,18 +211,6 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
               <Calendar className="w-4 h-4 text-orange-400" aria-hidden="true" />
               <span>Prefer to talk first? Book 20-Min Call ↗</span>
             </a>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                toggleMobileMenu();
-                openAdminDashboard(e);
-              }}
-              className="mt-3 flex items-center justify-center gap-2 py-2.5 px-6 text-xs font-mono uppercase tracking-wider text-slate-400 hover:text-orange-400 border border-white/5 hover:border-white/15 bg-slate-900/50 rounded-xl transition-colors w-full cursor-pointer"
-            >
-              <Shield className="w-4 h-4 text-orange-400" aria-hidden="true" />
-              <span>Admin Portal Access (Shift+A)</span>
-            </button>
           </motion.div>
         )}
       </AnimatePresence>

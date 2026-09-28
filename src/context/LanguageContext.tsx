@@ -68,9 +68,9 @@ type TranslationKey =
 const translations: Record<Language, Record<TranslationKey, string>> = {
   en: {
     topbar_text: "⚡ First 3 founding client slots open — live before your next cohort starts.",
-    nav_slots: "🟠 2 of 3 founding slots claimed — 1 remaining.",
-    nav_slots_claimed: "2 of 3 founding slots claimed",
-    nav_slots_remaining: "1 slot remaining for next cohort.",
+    nav_slots: "Founding pricing: $500 off for our first five clients",
+    nav_slots_claimed: "Founding pricing: $500 off",
+    nav_slots_remaining: "For our first five clients",
     nav_apply: "Get my free portal preview",
     hero_headline: "Every cohort, you lose members you could have saved.",
     hero_subhead: "One branded home for your program. One dashboard showing exactly who's falling behind. Live before your next cohort starts.",

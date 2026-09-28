@@ -46,7 +46,7 @@ const heroSvg = `
   
   <!-- Banner Card -->
   <rect x="580" y="200" width="1720" height="240" rx="20" fill="url(#grad1)" stroke="#ea580c" stroke-width="2"/>
-  <text x="630" y="270" font-family="system-ui, sans-serif" font-size="42" font-weight="800" fill="#ffffff">Welcome back, Sarah 👋</text>
+  <text x="630" y="270" font-family="system-ui, sans-serif" font-size="42" font-weight="800" fill="#ffffff">Welcome back, Sarah</text>
   <text x="630" y="320" font-family="system-ui, sans-serif" font-size="26" font-weight="500" fill="#cbd5e1">Week 3: Client Acquisition Engine &amp; Funnel Optimization</text>
   <rect x="630" y="360" width="320" height="50" rx="25" fill="#10b981"/>
   <text x="790" y="393" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">✓ Active Member · On Track</text>
@@ -115,8 +115,8 @@ const operatorSvg = `
   <text x="600" y="300" font-family="system-ui, sans-serif" font-size="56" font-weight="800" fill="#f59e0b">8.4 / 10</text>
 
   <rect x="1080" y="180" width="480" height="180" rx="16" fill="#0f172a" stroke="#f43f5e" stroke-width="2"/>
-  <text x="1120" y="230" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#94a3b8">Interventions Triggered</text>
-  <text x="1120" y="300" font-family="system-ui, sans-serif" font-size="56" font-weight="800" fill="#f43f5e">3 Saved</text>
+  <text x="1120" y="230" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#94a3b8">Check-ins Drafted</text>
+  <text x="1120" y="300" font-family="system-ui, sans-serif" font-size="56" font-weight="800" fill="#f43f5e">3</text>
 
   <!-- Alert Table -->
   <rect x="40" y="400" width="1520" height="560" rx="16" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
@@ -125,9 +125,9 @@ const operatorSvg = `
   <!-- Row 1 -->
   <rect x="80" y="500" width="1440" height="120" rx="12" fill="#020617" stroke="#f43f5e" stroke-width="2"/>
   <circle cx="140" cy="560" r="30" fill="#f43f5e" fill-opacity="0.2"/>
-  <text x="140" y="568" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#f43f5e" text-anchor="middle">JD</text>
-  <text x="200" y="548" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#ffffff">John Doe</text>
-  <text x="200" y="582" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#94a3b8">john@enterprise.com · Joined 21 days ago</text>
+  <text x="140" y="568" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#f43f5e" text-anchor="middle">JH</text>
+  <text x="200" y="548" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#ffffff">Jordan Hale</text>
+  <text x="200" y="582" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#94a3b8">jordan@halecreative.co · Joined 21 days ago</text>
   <text x="750" y="565" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#f43f5e">⚠️ Inactive 5 days · Missed 2 worksheets</text>
   <rect x="1260" y="535" width="220" height="50" rx="10" fill="#ea580c"/>
   <text x="1370" y="568" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">Send Check-in DM</text>
@@ -136,8 +136,8 @@ const operatorSvg = `
   <rect x="80" y="640" width="1440" height="120" rx="12" fill="#020617" stroke="#f59e0b" stroke-width="2"/>
   <circle cx="140" cy="700" r="30" fill="#f59e0b" fill-opacity="0.2"/>
   <text x="140" y="708" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#f59e0b" text-anchor="middle">AS</text>
-  <text x="200" y="688" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#ffffff">Alice Smith</text>
-  <text x="200" y="722" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#94a3b8">alice@growth.io · Joined 21 days ago</text>
+  <text x="200" y="688" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#ffffff">Amara Stone</text>
+  <text x="200" y="722" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#94a3b8">amara@stonestudio.co · Joined 21 days ago</text>
   <text x="750" y="705" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#f59e0b">⚡ Module 3 video uncompleted</text>
   <rect x="1260" y="675" width="220" height="50" rx="10" fill="#334155"/>
   <text x="1370" y="708" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">Nudge Member</text>
@@ -145,9 +145,9 @@ const operatorSvg = `
   <!-- Row 3 -->
   <rect x="80" y="780" width="1440" height="120" rx="12" fill="#020617" stroke="#10b981" stroke-width="2"/>
   <circle cx="140" cy="840" r="30" fill="#10b981" fill-opacity="0.2"/>
-  <text x="140" y="848" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#10b981" text-anchor="middle">MK</text>
-  <text x="200" y="828" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#ffffff">Michael Knight</text>
-  <text x="200" y="862" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#94a3b8">michael@tech.com · Joined 21 days ago</text>
+  <text x="140" y="848" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#10b981" text-anchor="middle">MR</text>
+  <text x="200" y="828" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#ffffff">Marcus Reid</text>
+  <text x="200" y="862" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#94a3b8">marcus@reidpartners.co · Joined 21 days ago</text>
   <text x="750" y="845" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#10b981">✓ All deliverables submitted on time</text>
   <rect x="1260" y="815" width="220" height="50" rx="10" fill="#10b981" fill-opacity="0.2"/>
   <text x="1370" y="848" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#10b981" text-anchor="middle">Star Performer</text>
