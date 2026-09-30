@@ -5,7 +5,6 @@ import {
   Check, 
   ExternalLink, 
   ChevronDown, 
-  ChevronUp, 
   Loader2, 
   ShieldCheck, 
   Clock, 
@@ -20,11 +19,52 @@ import {
   User,
   Globe,
   Calendar,
-  Layers
+  Layers,
+  Calculator,
+  Sparkles,
+  TrendingUp
 } from 'lucide-react';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { trackAction } from '../lib/tracker';
+
+const PLANS_CONFIG = {
+  essential: {
+    id: 'essential',
+    name: 'Essential',
+    tag: 'One-off Cohorts',
+    clientPrice: '$1,997 + $297/mo',
+    signingFee: 500,
+    retentionBonus: 250,
+    totalPerClient: 750,
+    clientFreeMonthValue: '$297',
+    desc: 'For one program running one cohort at a time.',
+  },
+  signature: {
+    id: 'signature',
+    name: 'Signature',
+    tag: 'Most Popular',
+    clientPrice: '$3,497 + $497/mo',
+    signingFee: 1000,
+    retentionBonus: 500,
+    totalPerClient: 1500,
+    clientFreeMonthValue: '$497',
+    desc: 'For active programs running cohorts back-to-back.',
+  },
+  scale: {
+    id: 'scale',
+    name: 'Scale',
+    tag: 'High-Volume Academies',
+    clientPrice: '$5,997 + $797/mo',
+    signingFee: 1500,
+    retentionBonus: 750,
+    totalPerClient: 2250,
+    clientFreeMonthValue: '$797',
+    desc: 'For academies and institutions with multiple parallel tracks.',
+  },
+} as const;
+
+type PlanKey = keyof typeof PLANS_CONFIG;
 
 const checkEmailFormat = (val: string): boolean => {
   const trimmed = val.trim();
@@ -86,6 +126,10 @@ export default function PartnersPage() {
 
   // FAQ state
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
+  // Interactive Earnings Calculator state
+  const [calcPlan, setCalcPlan] = useState<PlanKey>('signature');
+  const [calcClients, setCalcClients] = useState<number>(3);
 
   // Prefill referral code from ?ref= or pb_ref in sessionStorage
   useEffect(() => {
@@ -312,6 +356,12 @@ export default function PartnersPage() {
       a: "It doesn't have to be. White-label at 30% off list gives you a product without the build time.",
     },
   ];
+
+  const currentPlan = PLANS_CONFIG[calcPlan];
+  const upfrontPayout = currentPlan.signingFee * calcClients;
+  const retentionPayout = currentPlan.retentionBonus * calcClients;
+  const milestoneBonus = calcClients >= 3 ? 1000 : 0;
+  const totalCommission = upfrontPayout + retentionPayout + milestoneBonus;
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-100 font-sans selection:bg-orange-500/30 selection:text-orange-50">
@@ -745,6 +795,216 @@ export default function PartnersPage() {
           <span>Your 3rd signed client earns a one-off $1,000 bonus.</span>
           <span className="hidden md:inline select-none text-slate-700">·</span>
           <span>90-day attribution from your first intro or referral code.</span>
+        </div>
+
+        {/* Interactive Earnings Calculator */}
+        <div className="mt-12 rounded-2xl border border-white/[0.1] bg-slate-900/70 backdrop-blur-xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+          {/* Top specular hairline edge */}
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-400/40 to-transparent pointer-events-none" />
+
+          {/* Header of Calculator */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
+            <div>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono mb-2">
+                <Calculator className="w-3.5 h-3.5 text-orange-400" />
+                <span>Interactive Earnings Calculator</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                Model your partner referral commission
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                Toggle between plans and client counts to project your exact payouts.
+              </p>
+            </div>
+
+            {/* Quick Badge */}
+            <div className="px-3.5 py-2 rounded-xl bg-slate-950/80 border border-white/[0.08] flex items-center gap-3 shrink-0 self-start md:self-auto">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="text-left font-mono">
+                <p className="text-[10px] text-slate-500 uppercase tracking-wider">Fast Settlement</p>
+                <p className="text-xs font-bold text-white">Within 7 days of deposit</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Calculator Controls Grid */}
+          <div className="grid lg:grid-cols-12 gap-8 pt-6">
+            {/* Left Controls Column (Plan & Volume) */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Step 1: Select Plan */}
+              <div>
+                <label className="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-3">
+                  1. Select Client Tier
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {(Object.keys(PLANS_CONFIG) as Array<PlanKey>).map((planKey) => {
+                    const plan = PLANS_CONFIG[planKey];
+                    const isSelected = calcPlan === planKey;
+                    return (
+                      <button
+                        key={planKey}
+                        type="button"
+                        onClick={() => {
+                          setCalcPlan(planKey);
+                          trackAction('calculator_plan_changed', { category: 'engagement', label: plan.name });
+                        }}
+                        className={`p-4 rounded-xl border text-left transition-all relative cursor-pointer ${
+                          isSelected
+                            ? 'bg-slate-800/90 border-orange-500/50 ring-1 ring-orange-500/30 shadow-lg shadow-orange-950/30'
+                            : 'bg-slate-950/60 border-white/[0.08] hover:border-white/[0.18] hover:bg-slate-900/60'
+                        }`}
+                      >
+                        {planKey === 'signature' && (
+                          <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-orange-500 text-white shadow-sm">
+                            Popular
+                          </span>
+                        )}
+                        <p className="text-sm font-bold text-white tracking-tight flex items-center justify-between">
+                          <span>{plan.name}</span>
+                          {isSelected && <Check className="w-4 h-4 text-orange-400 shrink-0" />}
+                        </p>
+                        <p className="text-xs font-mono text-orange-400 mt-1 font-semibold">
+                          ${plan.totalPerClient.toLocaleString()} <span className="text-[10px] text-slate-400 font-normal">/ client</span>
+                        </p>
+                        <p className="text-[11px] text-slate-400 mt-2 line-clamp-2 leading-snug">
+                          {plan.desc}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Step 2: Select Client Volume */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-mono uppercase tracking-wider text-slate-400">
+                    2. Referred Clients in 12 Months
+                  </label>
+                  <span className="text-xs font-mono font-bold text-orange-400 bg-orange-500/10 px-2.5 py-0.5 rounded border border-orange-500/20">
+                    {calcClients} {calcClients === 1 ? 'Client' : 'Clients'}
+                  </span>
+                </div>
+
+                {/* Quick Toggle Buttons */}
+                <div className="grid grid-cols-4 gap-2 mb-3">
+                  {[1, 2, 3, 5].map((count) => (
+                    <button
+                      key={count}
+                      type="button"
+                      onClick={() => setCalcClients(count)}
+                      className={`py-2 px-3 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                        calcClients === count
+                          ? 'bg-orange-500 text-white shadow-md font-bold'
+                          : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border border-white/[0.08]'
+                      }`}
+                    >
+                      {count} {count === 1 ? 'Client' : 'Clients'}
+                      {count === 3 && <span className="block text-[9px] text-amber-200">+$1k Bonus</span>}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Range Slider for granular control */}
+                <div className="pt-2 px-1">
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value={calcClients}
+                    onChange={(e) => setCalcClients(parseInt(e.target.value, 10))}
+                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                    aria-label="Number of referred clients"
+                  />
+                  <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
+                    <span>1 client</span>
+                    <span className="text-orange-400/80">3 clients (Milestone tier)</span>
+                    <span>5 clients</span>
+                    <span>10 clients</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Display Bento Column */}
+            <div className="lg:col-span-5 flex flex-col justify-between p-6 rounded-xl bg-slate-950/80 border border-white/[0.08] relative">
+              <div className="space-y-4">
+                <div>
+                  <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+                    Estimated Total Referral Commission
+                  </span>
+                  <div className="text-3xl sm:text-4xl font-extrabold text-orange-400 font-mono tracking-tight mt-1 flex items-baseline gap-2">
+                    <span>${totalCommission.toLocaleString()}</span>
+                    <span className="text-xs font-sans text-slate-400 font-normal">
+                      for {calcClients} {calcClients === 1 ? 'client' : 'clients'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Breakdown List */}
+                <div className="space-y-2.5 pt-3 border-t border-white/[0.06] text-xs font-mono">
+                  <div className="flex items-center justify-between text-slate-300">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>Upfront Signing Fees:</span>
+                    </span>
+                    <span className="text-white font-bold">${upfrontPayout.toLocaleString()}</span>
+                  </div>
+                  <p className="text-[10px] text-slate-500 pl-3">
+                    ${currentPlan.signingFee} × {calcClients} client{calcClients > 1 ? 's' : ''} (paid within 7 days of deposit)
+                  </p>
+
+                  <div className="flex items-center justify-between text-slate-300 pt-1">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                      <span>Retention Bonuses:</span>
+                    </span>
+                    <span className="text-white font-bold">${retentionPayout.toLocaleString()}</span>
+                  </div>
+                  <p className="text-[10px] text-slate-500 pl-3">
+                    ${currentPlan.retentionBonus} × {calcClients} client{calcClients > 1 ? 's' : ''} (paid when they pass 3 paid months)
+                  </p>
+
+                  {milestoneBonus > 0 && (
+                    <div className="pt-2 border-t border-emerald-500/20 bg-emerald-950/20 -mx-3 px-3 py-2 rounded-lg border border-emerald-500/30">
+                      <div className="flex items-center justify-between text-emerald-300 font-bold">
+                        <span className="flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>3rd Client Milestone Bonus:</span>
+                        </span>
+                        <span>+$1,000</span>
+                      </div>
+                      <p className="text-[10px] text-emerald-400/80 mt-0.5">
+                        One-off $1,000 bonus unlocked upon 3rd signed client
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Client Perk Benefit Note */}
+                <div className="p-3 rounded-lg bg-orange-500/5 border border-orange-500/20 text-[11px] text-slate-300 leading-relaxed">
+                  <span className="text-orange-400 font-semibold block mb-0.5">Exclusive Client Benefit:</span>
+                  Your client receives their <strong className="text-white">first month free</strong> (worth {currentPlan.clientFreeMonthValue}) because they came through your intro.
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <div className="pt-4 mt-4 border-t border-white/[0.08]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    scrollToSection('refer');
+                    trackAction('calculator_cta_clicked', { category: 'intent', label: currentPlan.name });
+                  }}
+                  className="w-full py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white font-semibold text-xs tracking-tight shadow-md transition-colors cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Refer a client on {currentPlan.name} (${currentPlan.totalPerClient.toLocaleString()})</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Callout Card */}
@@ -1268,43 +1528,49 @@ export default function PartnersPage() {
       </div>
 
       {/* SECTION 10 — FAQ (ACCORDION) */}
-      <section className="py-16 sm:py-20 px-6 max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <span className="text-xs font-mono uppercase tracking-wider text-orange-400">Questions &amp; Details</span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">
-            Frequently asked questions
+      <section className="py-16 sm:py-28 px-6 max-w-4xl mx-auto" id="faq">
+        <div className="text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.08] bg-slate-900/60 backdrop-blur-md text-slate-300 text-xs font-mono uppercase tracking-wider mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+            <span className="text-orange-400">Frequently Asked Questions</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-[-0.03em] text-white leading-tight">
+            Everything you need to know about the partner programme.
           </h2>
         </div>
 
-        <div className="space-y-3">
-          {faqs.map((faq, index) => {
-            const isOpen = openFaqIndex === index;
-            return (
-              <div
-                key={faq.q}
-                className="rounded-xl border border-white/[0.08] bg-slate-900/50 overflow-hidden transition-all"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                  className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none hover:bg-white/[0.02]"
-                >
-                  <span className="text-sm sm:text-base font-semibold text-white">
-                    {faq.q}
-                  </span>
-                  <span className="text-slate-400 shrink-0">
-                    {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </span>
-                </button>
+        <div className="space-y-3.5">
+          {faqs.map((faq, idx) => (
+            <details
+              key={faq.q}
+              open={openFaqIndex === idx}
+              onToggle={(e) => {
+                const isOpen = (e.currentTarget as HTMLDetailsElement).open;
+                if (isOpen) {
+                  setOpenFaqIndex(idx);
+                  trackAction('faq_expanded', { category: 'engagement', label: faq.q });
+                } else if (openFaqIndex === idx) {
+                  setOpenFaqIndex(null);
+                }
+              }}
+              className="group bg-slate-900/40 border border-white/[0.08] rounded-2xl hover:border-white/[0.18] backdrop-blur-md transition-all duration-300 [&_summary::-webkit-details-marker]:hidden relative overflow-hidden"
+            >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
 
-                {isOpen && (
-                  <div className="px-5 pb-4 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-white/[0.04]">
-                    {faq.a}
-                  </div>
-                )}
+              <summary className="cursor-pointer p-5 md:p-6 flex items-center justify-between text-base font-bold tracking-tight text-slate-200 group-hover:text-white transition-colors list-none select-none">
+                <span className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-orange-400/80">0{idx + 1}</span>
+                  <span>{faq.q}</span>
+                </span>
+                <span className="ml-4 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform duration-300 group-hover:text-orange-400">
+                  <ChevronDown className="w-4 h-4" />
+                </span>
+              </summary>
+              <div className="px-5 md:px-6 pb-6 text-slate-300/90 leading-relaxed text-sm pt-2 border-t border-white/[0.06]">
+                {faq.a}
               </div>
-            );
-          })}
+            </details>
+          ))}
         </div>
       </section>
     </div>
