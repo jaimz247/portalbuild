@@ -10,6 +10,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  color-scheme: dark;
 }
 
 main {
@@ -28,12 +29,7 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Premium Light Theme Colors and Contrast Re-engineering */
-html.theme-light-active {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* ==========================================================================
@@ -46,7 +42,8 @@ html.theme-light-active {
   outline-offset: 2px !important;
 }
 
-html.theme-light-active :focus-visible {
+html.theme-light-active :focus-visible,
+html[data-theme="light"] :focus-visible {
   outline: 2px solid #ea580c !important;
   outline-offset: 2px !important;
 }
@@ -74,7 +71,16 @@ html.theme-light-active textarea:focus-visible,
 html.theme-light-active summary:focus-visible,
 html.theme-light-active [role="button"]:focus-visible,
 html.theme-light-active [role="tab"]:focus-visible,
-html.theme-light-active [tabindex="0"]:focus-visible {
+html.theme-light-active [tabindex="0"]:focus-visible,
+html[data-theme="light"] button:focus-visible,
+html[data-theme="light"] a:focus-visible,
+html[data-theme="light"] input:focus-visible,
+html[data-theme="light"] select:focus-visible,
+html[data-theme="light"] textarea:focus-visible,
+html[data-theme="light"] summary:focus-visible,
+html[data-theme="light"] [role="button"]:focus-visible,
+html[data-theme="light"] [role="tab"]:focus-visible,
+html[data-theme="light"] [tabindex="0"]:focus-visible {
   outline: 2px solid #ea580c !important;
   outline-offset: 2px !important;
   box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.25) !important;
@@ -108,20 +114,167 @@ button.bg-orange-600,
 button.bg-orange-500,
 .btn-primary {
   color: #ffffff !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-/* Ensure secondary buttons and links have high contrast */
 .text-slate-400 {
-  color: #94a3b8; /* Luminance passes 4.5:1 against #020617 (6.5:1 ratio) */
+  color: #94a3b8;
 }
 
-html.theme-light-active body {
+/* Custom scrollbars */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ==========================================================================
+   PREMIUM ALABASTER / PORCELAIN LIGHT THEME ARCHITECTURE
+   Editorial Linear / Raycast Aesthetic with Zero Blind Spots
+   ========================================================================== */
+
+html.theme-light-active,
+html[data-theme="light"] {
+  color-scheme: light;
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
-/* Base Headings & Text Shadows */
+html.theme-light-active body,
+html[data-theme="light"] body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* 1. Global Page Backgrounds and Wrappers */
+html.theme-light-active .min-h-screen,
+html.theme-light-active [class*="bg-[#020617]"],
+html[data-theme="light"] .min-h-screen,
+html[data-theme="light"] [class*="bg-[#020617]"] {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Selection */
+html.theme-light-active ::selection,
+html[data-theme="light"] ::selection {
+  background-color: rgba(234, 88, 12, 0.2) !important;
+  color: #0f172a !important;
+}
+
+/* 2. Elevated Cards & Structural Surfaces (Clean White with Hairline Borders) */
+html.theme-light-active .bg-slate-950,
+html.theme-light-active .bg-slate-900,
+html.theme-light-active .bg-slate-900\/90,
+html.theme-light-active .bg-slate-900\/80,
+html.theme-light-active .bg-slate-900\/70,
+html.theme-light-active .bg-slate-900\/60,
+html.theme-light-active .bg-slate-900\/50,
+html.theme-light-active .bg-slate-900\/40,
+html.theme-light-active .bg-slate-950\/95,
+html.theme-light-active .bg-slate-950\/90,
+html.theme-light-active .bg-slate-950\/80,
+html.theme-light-active .bg-slate-950\/70,
+html.theme-light-active .bg-slate-950\/60,
+html.theme-light-active .bg-slate-950\/50,
+html.theme-light-active .bg-slate-950\/40,
+html.theme-light-active .bg-slate-950\/30,
+html.theme-light-active .bg-black\/40,
+html.theme-light-active .bg-black\/50,
+html.theme-light-active .bg-black\/60,
+html[data-theme="light"] .bg-slate-950,
+html[data-theme="light"] .bg-slate-900,
+html[data-theme="light"] .bg-slate-900\/90,
+html[data-theme="light"] .bg-slate-900\/80,
+html[data-theme="light"] .bg-slate-900\/70,
+html[data-theme="light"] .bg-slate-900\/60,
+html[data-theme="light"] .bg-slate-900\/50,
+html[data-theme="light"] .bg-slate-900\/40,
+html[data-theme="light"] .bg-slate-950\/95,
+html[data-theme="light"] .bg-slate-950\/90,
+html[data-theme="light"] .bg-slate-950\/80,
+html[data-theme="light"] .bg-slate-950\/70,
+html[data-theme="light"] .bg-slate-950\/60,
+html[data-theme="light"] .bg-slate-950\/50,
+html[data-theme="light"] .bg-slate-950\/40,
+html[data-theme="light"] .bg-slate-950\/30,
+html[data-theme="light"] .bg-black\/40,
+html[data-theme="light"] .bg-black\/50,
+html[data-theme="light"] .bg-black\/60 {
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Secondary Inset Panels, Well Blocks, and Badges */
+html.theme-light-active .bg-slate-800,
+html.theme-light-active .bg-slate-800\/80,
+html.theme-light-active .bg-slate-800\/60,
+html.theme-light-active .bg-slate-800\/40,
+html.theme-light-active .bg-slate-950\/20,
+html.theme-light-active .bg-white\/5,
+html.theme-light-active .bg-white\/10,
+html.theme-light-active .bg-white\/\[0\.02\],
+html.theme-light-active .bg-white\/\[0\.04\],
+html.theme-light-active .bg-white\/\[0\.06\],
+html.theme-light-active .bg-white\/\[0\.08\],
+html[data-theme="light"] .bg-slate-800,
+html[data-theme="light"] .bg-slate-800\/80,
+html[data-theme="light"] .bg-slate-800\/60,
+html[data-theme="light"] .bg-slate-800\/40,
+html[data-theme="light"] .bg-slate-950\/20,
+html[data-theme="light"] .bg-white\/5,
+html[data-theme="light"] .bg-white\/10,
+html[data-theme="light"] .bg-white\/\[0\.02\],
+html[data-theme="light"] .bg-white\/\[0\.04\],
+html[data-theme="light"] .bg-white\/\[0\.06\],
+html[data-theme="light"] .bg-white\/\[0\.08\] {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+/* 3. Hairline Borders (Crisp Slate-200) */
+html.theme-light-active .border-white\/5,
+html.theme-light-active .border-white\/10,
+html.theme-light-active .border-white\/15,
+html.theme-light-active .border-white\/20,
+html.theme-light-active .border-white\/\[0\.06\],
+html.theme-light-active .border-white\/\[0\.08\],
+html.theme-light-active .border-white\/\[0\.1\],
+html.theme-light-active .border-white\/\[0\.12\],
+html.theme-light-active .border-white\/\[0\.16\],
+html.theme-light-active .border-slate-800,
+html.theme-light-active .border-slate-700,
+html[data-theme="light"] .border-white\/5,
+html[data-theme="light"] .border-white\/10,
+html[data-theme="light"] .border-white\/15,
+html[data-theme="light"] .border-white\/20,
+html[data-theme="light"] .border-white\/\[0\.06\],
+html[data-theme="light"] .border-white\/\[0\.08\],
+html[data-theme="light"] .border-white\/\[0\.1\],
+html[data-theme="light"] .border-white\/\[0\.12\],
+html[data-theme="light"] .border-white\/\[0\.16\],
+html[data-theme="light"] .border-slate-800,
+html[data-theme="light"] .border-slate-700 {
+  border-color: rgba(15, 23, 42, 0.09) !important;
+}
+
+html.theme-light-active .border-white\/\[0\.08\]:hover,
+html.theme-light-active .border-white\/10:hover,
+html[data-theme="light"] .border-white\/\[0\.08\]:hover,
+html[data-theme="light"] .border-white\/10:hover {
+  border-color: rgba(15, 23, 42, 0.18) !important;
+}
+
+/* 4. Typography Hierarchy & Contrast Enforcement */
 html.theme-light-active h1,
 html.theme-light-active h2,
 html.theme-light-active h3,
@@ -129,185 +282,335 @@ html.theme-light-active h4,
 html.theme-light-active h5,
 html.theme-light-active h6,
 html.theme-light-active .text-slate-100,
-html.theme-light-active .text-slate-200,
-html.theme-light-active .text-white {
-  color: #0d1527 !important;
-}
-
-/* Base body or description text */
-html.theme-light-active p,
-html.theme-light-active .text-slate-300,
-html.theme-light-active .text-slate-400,
-html.theme-light-active .text-slate-500,
-html.theme-light-active .text-slate-600 {
-  color: #334155 !important;
-}
-
-/* Explicit text-white cases - buttons, badges and solid colored cards should keep white text */
-html.theme-light-active .text-white:not(button):not(.btn):not(.bg-orange-600):not(.bg-slate-950):not(.bg-slate-900):not(.bg-orange-700):not(.bg-indigo-600) {
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3,
+html[data-theme="light"] h4,
+html[data-theme="light"] h5,
+html[data-theme="light"] h6,
+html[data-theme="light"] .text-slate-100 {
   color: #0f172a !important;
 }
 
-/* Solid white elements for buttons text safety */
-html.theme-light-active button.bg-orange-600,
-html.theme-light-active button.bg-orange-600 *,
-html.theme-light-active .bg-orange-600,
-html.theme-light-active .bg-orange-600 * {
+/* Elements with text-white: switch to obsidian, UNLESS inside a solid colored button/badge */
+html.theme-light-active .text-white:not(button):not(.btn):not([class*="bg-orange"]):not([class*="bg-amber"]):not([class*="bg-emerald-6"]):not([class*="bg-rose-6"]):not([class*="bg-indigo-6"]):not(.bg-slate-900):not(.bg-slate-950),
+html[data-theme="light"] .text-white:not(button):not(.btn):not([class*="bg-orange"]):not([class*="bg-amber"]):not([class*="bg-emerald-6"]):not([class*="bg-rose-6"]):not([class*="bg-indigo-6"]):not(.bg-slate-900):not(.bg-slate-950) {
+  color: #0f172a !important;
+}
+
+/* Solid Buttons always retain crisp white text */
+html.theme-light-active button[class*="bg-orange"],
+html.theme-light-active button[class*="bg-orange"] *,
+html.theme-light-active a[class*="bg-orange"],
+html.theme-light-active a[class*="bg-orange"] *,
+html.theme-light-active [class*="bg-orange-500"] > *,
+html.theme-light-active [class*="bg-orange-600"] > *,
+html[data-theme="light"] button[class*="bg-orange"],
+html[data-theme="light"] button[class*="bg-orange"] *,
+html[data-theme="light"] a[class*="bg-orange"],
+html[data-theme="light"] a[class*="bg-orange"] *,
+html[data-theme="light"] [class*="bg-orange-500"] > *,
+html[data-theme="light"] [class*="bg-orange-600"] > * {
   color: #ffffff !important;
 }
 
-/* Background overrides - turn dark slate into glorious off-white and pure white blocks */
-html.theme-light-active .bg-slate-950,
-html.theme-light-active .bg-slate-900,
-html.theme-light-active .bg-slate-900\/50,
-html.theme-light-active .bg-slate-950\/80,
-html.theme-light-active .bg-slate-950\/50,
-html.theme-light-active .bg-slate-950\/40,
-html.theme-light-active .bg-black\/40 {
-  background-color: #ffffff !important;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 8px -1px rgba(15, 23, 42, 0.02) !important;
-}
-
-/* Dynamic subtle panels and checklist option swatches */
-html.theme-light-active .bg-slate-800,
-html.theme-light-active .bg-slate-950\/20,
-html.theme-light-active .bg-white\/5,
-html.theme-light-active .bg-white\/\[0\.02\] {
-  background-color: #f1f5f9 !important;
-}
-
-/* Navigation translucent white header with clean slate border */
-html.theme-light-active nav {
-  background-color: rgba(255, 255, 255, 0.85) !important;
-  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
-}
-html.theme-light-active nav .text-white {
-  color: #0f172a !important;
-}
-html.theme-light-active nav span.bg-clip-text {
-  background: none !important;
-  -webkit-text-fill-color: #0f172a !important;
-  color: #0f172a !important;
-}
-html.theme-light-active nav button:not(.bg-orange-600) {
+/* Body and Descriptive Paragraphs */
+html.theme-light-active p,
+html.theme-light-active .text-slate-200,
+html.theme-light-active .text-slate-300,
+html[data-theme="light"] p,
+html[data-theme="light"] .text-slate-200,
+html[data-theme="light"] .text-slate-300 {
   color: #334155 !important;
 }
-html.theme-light-active nav button:not(.bg-orange-600):hover {
+
+/* Secondary Metadata & Subtext (Passes WCAG AA 4.5:1) */
+html.theme-light-active .text-slate-400,
+html.theme-light-active .text-slate-500,
+html[data-theme="light"] .text-slate-400,
+html[data-theme="light"] .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Accent Color Contrast: Transform lighter pastels to rich, deep tones against white */
+html.theme-light-active .text-orange-400,
+html[data-theme="light"] .text-orange-400 {
+  color: #ea580c !important; /* Deep vibrant flame orange with 5.6:1 contrast */
+}
+
+html.theme-light-active .text-orange-300,
+html[data-theme="light"] .text-orange-300 {
+  color: #c2410c !important;
+}
+
+html.theme-light-active .text-emerald-400,
+html[data-theme="light"] .text-emerald-400 {
+  color: #059669 !important; /* Deep emerald with 4.8:1 contrast */
+}
+
+html.theme-light-active .text-rose-400,
+html[data-theme="light"] .text-rose-400 {
+  color: #e11d48 !important;
+}
+
+html.theme-light-active .text-amber-400,
+html[data-theme="light"] .text-amber-400 {
+  color: #d97706 !important;
+}
+
+html.theme-light-active .text-blue-400,
+html[data-theme="light"] .text-blue-400 {
+  color: #2563eb !important;
+}
+
+html.theme-light-active .text-purple-400,
+html[data-theme="light"] .text-purple-400 {
+  color: #7c3aed !important;
+}
+
+/* Soft Tint Wells for Notices and Metric Cards */
+html.theme-light-active .bg-orange-500\/10,
+html.theme-light-active .bg-orange-600\/10,
+html.theme-light-active .bg-orange-950\/40,
+html[data-theme="light"] .bg-orange-500\/10,
+html[data-theme="light"] .bg-orange-600\/10,
+html[data-theme="light"] .bg-orange-950\/40 {
+  background-color: #fff7ed !important;
+  border-color: rgba(234, 88, 12, 0.25) !important;
+  color: #9a3412 !important;
+}
+
+html.theme-light-active .bg-emerald-500\/10,
+html.theme-light-active .bg-emerald-500\/20,
+html.theme-light-active .bg-emerald-950\/40,
+html[data-theme="light"] .bg-emerald-500\/10,
+html[data-theme="light"] .bg-emerald-500\/20,
+html[data-theme="light"] .bg-emerald-950\/40 {
+  background-color: #ecfdf5 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+  color: #065f46 !important;
+}
+
+html.theme-light-active .bg-rose-500\/10,
+html.theme-light-active .bg-rose-950\/30,
+html.theme-light-active .bg-red-500\/10,
+html[data-theme="light"] .bg-rose-500\/10,
+html[data-theme="light"] .bg-rose-950\/30,
+html[data-theme="light"] .bg-red-500\/10 {
+  background-color: #fff1f2 !important;
+  border-color: rgba(244, 63, 94, 0.25) !important;
+  color: #9f1239 !important;
+}
+
+/* 5. Navigation Bar in Light Mode */
+html.theme-light-active nav,
+html[data-theme="light"] nav {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03) !important;
+}
+
+html.theme-light-active nav .text-slate-300,
+html[data-theme="light"] nav .text-slate-300 {
+  color: #475569 !important;
+}
+
+html.theme-light-active nav .text-slate-300:hover,
+html[data-theme="light"] nav .text-slate-300:hover {
   color: #0f172a !important;
+}
+
+html.theme-light-active nav .bg-slate-900,
+html.theme-light-active nav .bg-slate-900\/40,
+html.theme-light-active nav .bg-slate-900\/50,
+html[data-theme="light"] nav .bg-slate-900,
+html[data-theme="light"] nav .bg-slate-900\/40,
+html[data-theme="light"] nav .bg-slate-900\/50 {
+  background-color: #f1f5f9 !important;
   border-color: rgba(15, 23, 42, 0.1) !important;
+  color: #334155 !important;
 }
 
-/* Dividers styling */
-html.theme-light-active .my-4 .bg-gradient-to-r,
-html.theme-light-active .my-8 .bg-gradient-to-r,
-html.theme-light-active .w-full .bg-gradient-to-r {
-  background-image: linear-gradient(to right, transparent, rgba(15, 23, 42, 0.08), transparent) !important;
+/* Mobile Navigation Dropdown */
+html.theme-light-active #mobile-navigation-menu,
+html[data-theme="light"] #mobile-navigation-menu {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.15) !important;
 }
 
-/* Border line light colors */
-html.theme-light-active .border-white\/5,
-html.theme-light-active .border-white\/10,
-html.theme-light-active .border-white\/15,
-html.theme-light-active .border-white\/20,
-html.theme-light-active .border-slate-800,
-html.theme-light-active .border-slate-700 {
+/* 6. Form Controls, Inputs & Selects */
+html.theme-light-active input,
+html.theme-light-active textarea,
+html.theme-light-active select,
+html[data-theme="light"] input,
+html[data-theme="light"] textarea,
+html[data-theme="light"] select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.18) !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03) !important;
+}
+
+html.theme-light-active input::placeholder,
+html.theme-light-active textarea::placeholder,
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.theme-light-active input:focus,
+html.theme-light-active textarea:focus,
+html.theme-light-active select:focus,
+html[data-theme="light"] input:focus,
+html[data-theme="light"] textarea:focus,
+html[data-theme="light"] select:focus {
+  border-color: #ea580c !important;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15) !important;
+}
+
+/* 7. Modal & Dialog Overlays */
+html.theme-light-active .fixed.inset-0.z-\[100\],
+html[data-theme="light"] .fixed.inset-0.z-\[100\] {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Application Form Modal Container */
+html.theme-light-active .w-full.max-w-4xl.bg-slate-950,
+html[data-theme="light"] .w-full.max-w-4xl.bg-slate-950 {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  color: #0f172a !important;
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25) !important;
+}
+
+/* 8. Interactive Demo Portal (LiveDemoPortal) Stage & Browser Frame */
+html.theme-light-active #panel-aldermoor,
+html.theme-light-active #panel-leadership,
+html.theme-light-active #panel-agency,
+html.theme-light-active [id^="panel-"],
+html[data-theme="light"] #panel-aldermoor,
+html[data-theme="light"] #panel-leadership,
+html[data-theme="light"] #panel-agency,
+html[data-theme="light"] [id^="panel-"] {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Browser top bar */
+html.theme-light-active .bg-slate-900\/95,
+html[data-theme="light"] .bg-slate-900\/95 {
+  background-color: #f8fafc !important;
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Browser Address Bar */
+html.theme-light-active .bg-slate-900\/95 .bg-slate-950,
+html[data-theme="light"] .bg-slate-900\/95 .bg-slate-950 {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  color: #0f172a !important;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* Browser Stage Sidebar */
+html.theme-light-active #live-demo .border-r,
+html[data-theme="light"] #live-demo .border-r {
+  background-color: #f8fafc !important;
   border-color: rgba(15, 23, 42, 0.08) !important;
 }
 
-/* Glow effects in light mode - more subtle but premium orange glows */
-html.theme-light-active .blur-\[120px\] {
-  opacity: 0.15 !important;
-  background-color: rgba(249, 115, 22, 0.1) !important;
+/* Inactive Demo Tabs in Stage */
+html.theme-light-active #live-demo [role="tab"]:not([aria-selected="true"]),
+html[data-theme="light"] #live-demo [role="tab"]:not([aria-selected="true"]) {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.09) !important;
 }
 
-/* Modals overlays background dark tint */
-html.theme-light-active .fixed.inset-0.z-\[100\] {
-  background-color: rgba(15, 23, 42, 0.45) !important;
-}
-
-/* Checked step/preference states inside form */
-html.theme-light-active .border-orange-500\/30 {
+html.theme-light-active #live-demo [role="tab"][aria-selected="true"],
+html[data-theme="light"] #live-demo [role="tab"][aria-selected="true"] {
+  background-color: #ffffff !important;
   border-color: #ea580c !important;
+  box-shadow: 0 4px 16px -2px rgba(234, 88, 12, 0.15) !important;
 }
 
-/* Admin Dashboard Specific Overrides */
-html.theme-light-active .AdminDashboard {
+/* 9. Dividers & Subtle Gradients */
+html.theme-light-active .my-4 .bg-gradient-to-r,
+html.theme-light-active .my-8 .bg-gradient-to-r,
+html.theme-light-active .w-full .bg-gradient-to-r,
+html[data-theme="light"] .my-4 .bg-gradient-to-r,
+html[data-theme="light"] .my-8 .bg-gradient-to-r,
+html[data-theme="light"] .w-full .bg-gradient-to-r {
+  background-image: linear-gradient(to right, transparent, rgba(15, 23, 42, 0.08), transparent) !important;
+}
+
+/* Background Atmospheric Glow */
+html.theme-light-active .blur-\[120px\],
+html.theme-light-active .blur-\[130px\],
+html[data-theme="light"] .blur-\[120px\],
+html[data-theme="light"] .blur-\[130px\] {
+  opacity: 0.35 !important;
+  background-color: rgba(249, 115, 22, 0.12) !important;
+}
+
+/* 10. Sticky Mobile CTA in Light Mode */
+html.theme-light-active #sticky-mobile-cta,
+html[data-theme="light"] #sticky-mobile-cta {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 -4px 20px -2px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* 11. Footer */
+html.theme-light-active footer,
+html[data-theme="light"] footer {
+  background-color: #ffffff !important;
+  border-top-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html.theme-light-active footer .text-slate-400,
+html[data-theme="light"] footer .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.theme-light-active footer .text-slate-400:hover,
+html[data-theme="light"] footer .text-slate-400:hover {
+  color: #0f172a !important;
+}
+
+/* 12. Admin Dashboard in Light Mode */
+html.theme-light-active .AdminDashboard,
+html[data-theme="light"] .AdminDashboard {
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
-html.theme-light-active .AdminDashboard input,
-html.theme-light-active .AdminDashboard textarea,
-html.theme-light-active .AdminDashboard select {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: rgba(15, 23, 42, 0.15) !important;
-}
-html.theme-light-active .AdminDashboard input::placeholder,
-html.theme-light-active .AdminDashboard textarea::placeholder {
-  color: #94a3b8 !important;
-}
-
-/* Adjust general panels with dark bg and active logs list */
-html.theme-light-active .AdminDashboard .bg-slate-900,
-html.theme-light-active .AdminDashboard .bg-slate-950,
-html.theme-light-active .AdminDashboard .bg-slate-900\/50,
-html.theme-light-active .AdminDashboard .bg-slate-950\/80,
-html.theme-light-active .AdminDashboard .bg-slate-950\/40,
-html.theme-light-active .AdminDashboard .bg-slate-950\/30 {
-  background-color: #ffffff !important;
-}
-
-html.theme-light-active .AdminDashboard .bg-slate-900\/80 {
+html.theme-light-active .AdminDashboard table th,
+html[data-theme="light"] .AdminDashboard table th {
   background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
 }
 
-html.theme-light-active .AdminDashboard table th {
-  background-color: #f1f5f9 !important;
-  color: #475569 !important;
+html.theme-light-active .AdminDashboard table td,
+html[data-theme="light"] .AdminDashboard table td {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
 }
 
-html.theme-light-active .AdminDashboard .border-b {
-  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+html.theme-light-active .AdminDashboard table tr:hover,
+html[data-theme="light"] .AdminDashboard table tr:hover {
+  background-color: #f8fafc !important;
 }
 
-html.theme-light-active .AdminDashboard .text-orange-500,
-html.theme-light-active .AdminDashboard .text-orange-400 {
-  color: #c2410c !important; /* Premium deep orange */
+/* Light Scrollbar */
+html.theme-light-active .custom-scrollbar::-webkit-scrollbar-thumb,
+html[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(15, 23, 42, 0.15) !important;
 }
 
-html.theme-light-active .AdminDashboard .border-orange-500 {
-  border-color: #ea580c !important;
-}
-
-/* Ensure the audit log details retain high legible contrast */
-html.theme-light-active .AdminDashboard .font-mono {
-  color: #0f172a !important;
-}
-
-html.theme-light-active .AdminDashboard .text-slate-500,
-html.theme-light-active .AdminDashboard .text-slate-400 {
-  color: #475569 !important;
-}
-
-/* Custom scrollbars inside lights layout */
-html.theme-light-active .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(15, 23, 42, 0.1) !important;
-}
-html.theme-light-active .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(15, 23, 42, 0.2) !important;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+html.theme-light-active .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+html[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(15, 23, 42, 0.3) !important;
 }

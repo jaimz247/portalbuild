@@ -1,6 +1,8 @@
-import { ArrowLeft, ShieldCheck, FileCheck, Scale, AlertCircle, Building2 } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, FileCheck, Scale, AlertCircle, Building2, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function TermsPage() {
+  const { theme, toggleTheme } = useTheme();
   const handleBackHome = () => {
     window.history.pushState({}, '', '/');
     window.dispatchEvent(new Event('popstate'));
@@ -36,6 +38,17 @@ export default function TermsPage() {
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+          {/* Theme Switcher */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="p-2 text-slate-400 hover:text-white border border-white/[0.08] hover:border-white/20 bg-slate-900/60 rounded-lg transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+            aria-label={theme === 'light' ? "Activate dark theme" : "Activate light theme"}
+            title={theme === 'light' ? "Activate dark theme" : "Activate light theme"}
+          >
+            {theme === 'light' ? <Moon className="w-4 h-4 text-slate-600 hover:text-slate-900" aria-hidden="true" /> : <Sun className="w-4 h-4 text-orange-400" aria-hidden="true" />}
+          </button>
+
           <button
             onClick={handleBackHome}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-white/10 rounded-lg text-xs font-mono text-slate-300 hover:text-white transition-all cursor-pointer"

@@ -1,9 +1,10 @@
 import {StrictMode} from 'react';
-import {createRoot, hydrateRoot} from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { initPerformanceTracker } from './lib/performance';
 import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 initPerformanceTracker();
 
@@ -12,9 +13,11 @@ const rootEl = document.getElementById('root');
 if (rootEl) {
   createRoot(rootEl).render(
     <StrictMode>
-      <LanguageProvider>
-        <App />
-      </LanguageProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <App />
+        </LanguageProvider>
+      </ThemeProvider>
     </StrictMode>
   );
 }

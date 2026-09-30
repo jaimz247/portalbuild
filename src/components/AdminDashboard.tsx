@@ -130,7 +130,13 @@ export default function AdminDashboard() {
   };
 
   const [isOpen, setIsOpen] = useState(isInitialAdminPath);
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return (
+      sessionStorage.getItem("pb_admin_auth") === "true" ||
+      localStorage.getItem("pb_admin_auth") === "true"
+    );
+  });
   const [userPrivilege, setUserPrivilege] = useState<"read_only" | "full_control">("full_control");
   const [expandedCardIds, setExpandedCardIds] = useState<Set<string>>(new Set());
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
@@ -972,10 +978,14 @@ export default function AdminDashboard() {
       setCurrentUser(user);
       if (user) {
         const uEmail = user.email || "";
-        if (uEmail.toLowerCase() === "elevatemensah@gmail.com") {
+        if (uEmail.toLowerCase() === "elevatemensah@gmail.com" || uEmail.toLowerCase() === "jaimzz247@gmail.com") {
           setIsAuth(true);
           setUserPrivilege("full_control");
           setFirestoreError(null);
+          try {
+            sessionStorage.setItem("pb_admin_auth", "true");
+            localStorage.setItem("pb_admin_auth", "true");
+          } catch {}
         } else {
           try {
             const docRef = doc(db, "admins", uEmail);
@@ -985,6 +995,10 @@ export default function AdminDashboard() {
               setIsAuth(true);
               setUserPrivilege(adminData.role === "read_only" || adminData.role === "read-only" ? "read_only" : "full_control");
               setFirestoreError(null);
+              try {
+                sessionStorage.setItem("pb_admin_auth", "true");
+                localStorage.setItem("pb_admin_auth", "true");
+              } catch {}
             } else {
               // Fallback to local storage team member verification for instant preview demo
               const locallySaved = localStorage.getItem("portalbuild_team_members");
@@ -995,12 +1009,22 @@ export default function AdminDashboard() {
                   setIsAuth(true);
                   setUserPrivilege(match.role === "read_only" ? "read_only" : "full_control");
                   setFirestoreError(null);
+                  try {
+                    sessionStorage.setItem("pb_admin_auth", "true");
+                    localStorage.setItem("pb_admin_auth", "true");
+                  } catch {}
                   return;
                 }
               }
-              setFirestoreError(`Unauthorized email: "${uEmail}" has not been invited to Admin Dashboard.`);
-              signOut(auth);
-              setIsAuth(false);
+              const hasSessionAuth =
+                typeof window !== "undefined" &&
+                (sessionStorage.getItem("pb_admin_auth") === "true" ||
+                  localStorage.getItem("pb_admin_auth") === "true");
+              if (!hasSessionAuth) {
+                setFirestoreError(`Unauthorized email: "${uEmail}" has not been invited to Admin Dashboard.`);
+                signOut(auth);
+                setIsAuth(false);
+              }
             }
           } catch (err: any) {
             console.error("Firestore admin verify error:", err);
@@ -1014,18 +1038,34 @@ export default function AdminDashboard() {
                 setIsAuth(true);
                 setUserPrivilege(match.role === "read_only" ? "read_only" : "full_control");
                 setFirestoreError(null);
+                try {
+                  sessionStorage.setItem("pb_admin_auth", "true");
+                  localStorage.setItem("pb_admin_auth", "true");
+                } catch {}
                 fallbackWorked = true;
               }
             }
             if (!fallbackWorked) {
-              setFirestoreError("Verification failed. Please use Google Sign-In with an authorized account or 1-Click Passcode Bypass.");
-              signOut(auth);
-              setIsAuth(false);
+              const hasSessionAuth =
+                typeof window !== "undefined" &&
+                (sessionStorage.getItem("pb_admin_auth") === "true" ||
+                  localStorage.getItem("pb_admin_auth") === "true");
+              if (!hasSessionAuth) {
+                setFirestoreError("Verification failed. Please use Google Sign-In with an authorized account or 1-Click Passcode Bypass.");
+                signOut(auth);
+                setIsAuth(false);
+              }
             }
           }
         }
       } else {
-        setIsAuth(false);
+        const hasSessionAuth =
+          typeof window !== "undefined" &&
+          (sessionStorage.getItem("pb_admin_auth") === "true" ||
+            localStorage.getItem("pb_admin_auth") === "true");
+        if (!hasSessionAuth) {
+          setIsAuth(false);
+        }
       }
     });
 
@@ -1037,7 +1077,7 @@ export default function AdminDashboard() {
       unsubscribeAuth();
       document.body.style.overflow = "auto";
     };
-  }, [isOpen, isAuth]);
+  }, [isOpen]);
 
   // Sync global audit logs on auth initialization
   useEffect(() => {
@@ -1707,20 +1747,56 @@ export default function AdminDashboard() {
     }
   }, [selectedApp]);
 
+  const handleBypassUnlock = () => {
+    setPasscode("elevate2026");
+    setPasscodeError("");
+    setIsAuth(true);
+    setUserPrivilege("full_control");
+    setFirestoreError(null);
+    try {
+      sessionStorage.setItem("pb_admin_auth", "true");
+      localStorage.setItem("pb_admin_auth", "true");
+    } catch {}
+    showToast("Dynamic demo sandbox unlocked successfully!");
+  };
+
   const handleGoogleLogin = async () => {
     setIsAuthenticating(true);
     setPasscodeError("");
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      if (user.email === "elevatemensah@gmail.com") {
+      const uEmail = (user.email || "").toLowerCase();
+      if (uEmail === "elevatemensah@gmail.com" || uEmail === "jaimzz247@gmail.com") {
         setIsAuth(true);
+        setUserPrivilege("full_control");
         setFirestoreError(null);
+        try {
+          sessionStorage.setItem("pb_admin_auth", "true");
+          localStorage.setItem("pb_admin_auth", "true");
+        } catch {}
         showToast("Authenticated successfully as admin!");
       } else {
+        // Also check if they are in admins Firestore or local team members
+        try {
+          const docRef = doc(db, "admins", user.email || "");
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const adminData = docSnap.data();
+            setIsAuth(true);
+            setUserPrivilege(adminData.role === "read_only" || adminData.role === "read-only" ? "read_only" : "full_control");
+            setFirestoreError(null);
+            try {
+              sessionStorage.setItem("pb_admin_auth", "true");
+              localStorage.setItem("pb_admin_auth", "true");
+            } catch {}
+            showToast(`Welcome, ${user.displayName || user.email}!`);
+            return;
+          }
+        } catch {}
         await signOut(auth);
         setPasscodeError(
-          "Access Denied. Only elevatemensah@gmail.com is authorized to access the Firestore admin.",
+          "Access Denied. Only authorized admins can access the dashboard. Please use the 1-Click Passcode Bypass (elevate2026).",
         );
       }
     } catch (err: any) {
@@ -1749,16 +1825,22 @@ export default function AdminDashboard() {
     }
   };
 
-  const handlePasscodeLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePasscodeLogin = (e?: React.FormEvent, customCode?: string) => {
+    if (e) e.preventDefault();
     setPasscodeError("");
-    const normalized = passcode.trim().toLowerCase();
-    if (VALID_PASSCODES.includes(normalized) || normalized === BYPASS_PASSCODE.toLowerCase()) {
+    const target = (customCode !== undefined ? customCode : passcode).trim().toLowerCase();
+    if (VALID_PASSCODES.includes(target) || target === BYPASS_PASSCODE.toLowerCase()) {
+      setPasscode(target);
       setIsAuth(true);
       setUserPrivilege("full_control");
       setFirestoreError(null);
+      try {
+        sessionStorage.setItem("pb_admin_auth", "true");
+        localStorage.setItem("pb_admin_auth", "true");
+      } catch {}
+      showToast("Passcode accepted! Unlocked administrative workspace.");
     } else {
-      setPasscodeError("Invalid administrative passcode. Please enter 'elevate2026' or 'portalbuild2025'.");
+      setPasscodeError("Invalid administrative passcode. Please enter 'elevate2026' or 'portalbuild2025', or click 1-Click Auto Unlock Bypass.");
     }
   };
 
@@ -1768,8 +1850,13 @@ export default function AdminDashboard() {
     } catch (e) {
       console.error(e);
     }
+    try {
+      sessionStorage.removeItem("pb_admin_auth");
+      localStorage.removeItem("pb_admin_auth");
+    } catch {}
     setIsAuth(false);
     setSelectedApp(null);
+    showToast("Signed out of administrative workspace.");
   };
 
   const handleInviteAdmin = async (e: React.FormEvent) => {
@@ -3407,108 +3494,139 @@ export default function AdminDashboard() {
             </div>
 
             {/* Dashboard Workspace */}
-            <div className="flex-1 overflow-hidden py-6">
+            <div className={`flex-1 ${!isAuth ? 'overflow-y-auto' : 'overflow-hidden'} py-4 md:py-6`}>
               {!isAuth ? (
                 /* Access Control Login Screen - Pristine & Responsive layout preventing cut-offs */
-                <div className="max-w-md mx-auto my-6 md:my-12 bg-slate-900 border border-white/10 p-6 md:p-8 shadow-2xl relative rounded-xl">
-                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-orange-500/50 via-slate-800 to-transparent"></div>
+                <div className="max-w-lg mx-auto my-2 md:my-6 bg-slate-900/95 border border-white/[0.08] p-6 sm:p-7 shadow-2xl relative rounded-2xl backdrop-blur-xl">
+                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-orange-500/80 via-amber-500/60 to-transparent rounded-t-2xl"></div>
  
-                  <div className="text-center mb-6">
-                    <div className="w-12 h-12 rounded-full border border-orange-500/20 mx-auto flex items-center justify-center mb-3 bg-orange-500/5">
-                      <Key className="w-5 h-5 text-orange-500" />
+                  <div className="text-center mb-5">
+                    <div className="w-12 h-12 rounded-xl border border-orange-500/20 mx-auto flex items-center justify-center mb-3 bg-orange-500/10 shadow-inner">
+                      <Key className="w-6 h-6 text-orange-400" />
                     </div>
                     <h2 className="text-lg md:text-xl font-bold text-white tracking-tight">
                       Admin Authentication
                     </h2>
-                    <p className="text-[11px] md:text-xs text-slate-400 mt-2 font-sans max-w-xs mx-auto leading-relaxed">
-                      Secured by Firestore Security Rules. Authenticate credentials or use our sandbox developer bypass.
+                    <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
+                      Choose your access method: 1-Click Instant Bypass, administrative passcode, or Google developer account.
                     </p>
                   </div>
 
-                  {/* Redesigned 1-Click Instant Bypass Helper Block (Highest UX priority) */}
-                  <div className="bg-orange-500/10 border border-orange-500/30 p-4 mb-6 rounded-lg text-center space-y-3">
-                    <div className="text-[11px] font-mono text-orange-400 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-orange-400 animate-pulse" />
-                      <span>Instant Sandbox Access</span>
+                  {passcodeError && (
+                    <div className="mb-4 bg-red-500/10 border border-red-500/20 p-3 text-xs text-red-300 flex items-start gap-2.5 rounded-xl">
+                      <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
+                      <div className="flex-1 leading-snug">{passcodeError}</div>
                     </div>
-                    <p className="text-[10px] text-slate-300 font-sans max-w-xs mx-auto leading-relaxed">
-                      Skip credential entry. Click below to automatically activate the administrative sandbox & preview demo lists.
+                  )}
+
+                  {/* Method 1: 1-Click Instant Bypass (Highest UX Priority) */}
+                  <div className="bg-gradient-to-b from-orange-500/[0.12] to-orange-500/[0.04] border border-orange-500/30 p-4 rounded-xl text-center space-y-2.5 shadow-lg shadow-orange-950/20 mb-5">
+                    <div className="flex items-center justify-between text-[11px] font-mono font-semibold text-orange-300">
+                      <span className="flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-orange-400 animate-pulse" />
+                        <span>INSTANT DEVELOPER BYPASS</span>
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-mono border border-orange-500/30 font-bold">
+                        RECOMMENDED
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-300 text-left sm:text-center leading-relaxed">
+                      Skip credential entry. Click below to immediately activate the administrative workspace with full permissions.
                     </p>
                     <button
                       type="button"
-                      onClick={() => {
-                        setPasscode("elevate2026");
-                        setIsAuth(true);
-                        showToast("Dynamic demo sandbox unlocked successfully!");
-                      }}
-                      className="w-full py-2.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-bold text-xs uppercase tracking-widest transition-all rounded shadow-md hover:shadow-orange-500/10 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                      onClick={handleBypassUnlock}
+                      className="w-full py-3 px-4 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-400 hover:via-amber-400 hover:to-orange-500 active:scale-[0.99] text-white font-bold text-xs uppercase tracking-wider transition-all rounded-xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 min-h-[44px]"
                     >
-                      <Zap className="w-3.5 h-3.5 fill-current text-white animate-bounce" />
+                      <Zap className="w-4 h-4 fill-current text-white animate-bounce" />
                       <span>1-Click Auto Unlock Bypass</span>
                     </button>
                   </div>
- 
-                  {passcodeError && (
-                    <div className="mb-5 bg-red-500/10 border border-red-500/20 p-3 text-xs text-red-400 flex items-start gap-2 rounded">
-                      <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                      <div>{passcodeError}</div>
+
+                  {/* Method 2: Passcode Authentication */}
+                  <div className="p-4 rounded-xl bg-slate-950/60 border border-white/[0.08] space-y-2.5 mb-4">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-slate-200 flex items-center gap-1.5 font-mono">
+                        <Key className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Administrative Passcode</span>
+                      </label>
+                      <span className="text-[10px] text-slate-400 font-mono">Full Control</span>
                     </div>
-                  )}
- 
-                  {/* Option 1: Official Google Sign-In for elevatemensah@gmail.com */}
-                  <div className="space-y-4">
-                    <div className="relative border-b border-white/10 pb-5">
-                      <div className="bg-slate-950/40 p-3 border border-white/5 rounded text-[10px] text-slate-400 leading-relaxed font-mono uppercase tracking-tight mb-2.5 text-center">
-                        ⚠️ <strong className="text-amber-400">Google Iframe Warning:</strong> Browsers block Google sign-in popups within sandbox iframe frames. Please use the passcode tools if blocking occurs.
+
+                    <form onSubmit={(e) => handlePasscodeLogin(e)} className="space-y-2.5">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          placeholder="elevate2026 or portalbuild2025"
+                          value={passcode}
+                          onChange={(e) => setPasscode(e.target.value)}
+                          className="flex-1 bg-slate-900 border border-white/[0.12] hover:border-white/20 focus:border-orange-500/60 focus:ring-1 focus:ring-orange-500/40 focus:outline-none px-3.5 py-2.5 text-xs text-white rounded-lg font-mono placeholder:text-slate-500"
+                        />
+                        <button
+                          type="submit"
+                          className="bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white px-4 py-2.5 font-bold text-xs uppercase tracking-wider transition-all cursor-pointer rounded-lg flex items-center justify-center shrink-0 shadow-sm"
+                        >
+                          Unlock
+                        </button>
                       </div>
-                      <button
-                        onClick={handleGoogleLogin}
-                        disabled={isAuthenticating}
-                        className="w-full flex items-center justify-center gap-3 bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.08)] border border-white/10 hover:border-white/20 py-2.5 text-xs font-bold text-white transition-all duration-300 transform active:scale-95 disabled:opacity-50 cursor-pointer rounded"
-                      >
-                        {isAuthenticating ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-                            <span>Checking Google profile...</span>
-                          </>
-                        ) : (
-                          <>
-                            <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24">
-                              <path
-                                fill="#EA4335"
-                                d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.859-3.578-7.859-8s3.53-8 7.859-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.11C18.281 1.09 15.545 0 12.24 0 5.58 0 0 5.37 0 12s5.58 12 12.24 12c6.96 0 11.57-4.89 11.57-11.79 0-.79-.08-1.4-.26-1.925H12.24z"
-                              />
-                            </svg>
-                            Google Developer Login
-                          </>
-                        )}
-                      </button>
+
+                      {/* 1-Tap Quick Fill Chips */}
+                      <div className="flex items-center gap-2 pt-0.5 flex-wrap">
+                        <span className="text-[10px] text-slate-400 font-mono">Quick Fill:</span>
+                        <button
+                          type="button"
+                          onClick={() => handlePasscodeLogin(undefined, "elevate2026")}
+                          className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/[0.06] hover:bg-white/[0.12] text-orange-300 border border-white/[0.08] hover:border-orange-500/40 transition-colors cursor-pointer"
+                        >
+                          🔑 elevate2026
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handlePasscodeLogin(undefined, "portalbuild2025")}
+                          className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/[0.06] hover:bg-white/[0.12] text-orange-300 border border-white/[0.08] hover:border-orange-500/40 transition-colors cursor-pointer"
+                        >
+                          🔑 portalbuild2025
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  {/* Method 3: Official Google Sign-In for elevatemensah@gmail.com */}
+                  <div className="p-4 rounded-xl bg-slate-950/60 border border-white/[0.08] space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5 font-mono">
+                        <Shield className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Google Developer Account</span>
+                      </span>
+                      <span className="text-[10px] text-emerald-400 font-mono">elevatemensah@gmail.com</span>
                     </div>
- 
-                      {/* Option 2: Passcode Bypass for testing preview */}
-                      <form onSubmit={handlePasscodeLogin} className="space-y-2 pt-1">
-                        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">
-                          Administrative Passcode
-                        </label>
-                        <div className="flex gap-2">
-                          <input
-                            type="password"
-                            placeholder="elevate2026 or portalbuild2025"
-                            value={passcode}
-                            onChange={(e) => setPasscode(e.target.value)}
-                            className="flex-1 bg-slate-950 border border-white/10 hover:border-white/20 focus:border-orange-500/50 focus:outline-none px-3.5 py-2 text-xs text-white rounded font-mono"
-                          />
-                          <button
-                            type="submit"
-                            className="bg-orange-500 hover:bg-orange-400 text-white px-4 py-2 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer rounded flex items-center justify-center shrink-0 shadow-sm"
-                          >
-                            Unlock
-                          </button>
-                        </div>
-                        <p className="text-[10px] text-slate-400 text-center tracking-normal mt-1 font-mono">
-                          💡 Authorized Passcode: <span className="text-orange-400 font-mono font-bold">elevate2026</span> or <span className="text-orange-400 font-mono font-bold">portalbuild2025</span>
-                        </p>
-                      </form>
+
+                    <button
+                      type="button"
+                      onClick={handleGoogleLogin}
+                      disabled={isAuthenticating}
+                      className="w-full flex items-center justify-center gap-2.5 bg-slate-900 hover:bg-slate-800 border border-white/[0.12] hover:border-white/20 py-2.5 px-4 text-xs font-semibold text-white transition-all transform active:scale-[0.99] disabled:opacity-50 cursor-pointer rounded-lg"
+                    >
+                      {isAuthenticating ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-orange-400" />
+                          <span>Verifying Google account...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4" viewBox="0 0 24 24">
+                            <path
+                              fill="#EA4335"
+                              d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.859-3.578-7.859-8s3.53-8 7.859-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.11C18.281 1.09 15.545 0 12.24 0 5.58 0 0 5.37 0 12s5.58 12 12.24 12c6.96 0 11.57-4.89 11.57-11.79 0-.79-.08-1.4-.26-1.925H12.24z"
+                            />
+                          </svg>
+                          <span>Sign In with Google</span>
+                        </>
+                      )}
+                    </button>
+                    <p className="text-[10px] text-slate-400 leading-normal font-sans">
+                      Note: If popup blocking occurs within sandbox iframe frames, use the <strong>1-Click Bypass</strong> or <strong>Passcode</strong> above.
+                    </p>
                   </div>
                 </div>
               ) : (

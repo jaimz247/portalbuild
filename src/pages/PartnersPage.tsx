@@ -21,11 +21,17 @@ import {
   Calendar,
   Layers,
   Calculator,
-  TrendingUp
+  TrendingUp,
+  Sun,
+  Moon,
+  Plus,
+  Minus,
+  Sparkles
 } from 'lucide-react';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { trackAction } from '../lib/tracker';
+import { useTheme } from '../context/ThemeContext';
 
 const PLANS_CONFIG = {
   essential: {
@@ -82,6 +88,8 @@ const sanitizeRefCode = (val: string): string => {
 };
 
 export default function PartnersPage() {
+  const { theme, toggleTheme } = useTheme();
+
   const handleBackHome = () => {
     window.history.pushState({}, '', '/');
     window.dispatchEvent(new Event('popstate'));
@@ -425,18 +433,33 @@ export default function PartnersPage() {
           </nav>
 
           <div className="flex items-center gap-3">
+            {/* Return Home text link */}
             <button
               onClick={handleBackHome}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-white/10 rounded-lg text-xs font-mono text-slate-300 hover:text-white transition-all cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-white transition-colors cursor-pointer px-2 py-1.5"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-orange-400" />
               <span>Return Home</span>
             </button>
+
+            {/* Theme Switcher Button */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-1.5 text-slate-400 hover:text-white border border-white/[0.08] hover:border-white/20 bg-slate-900/60 rounded-lg transition-all cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500"
+              aria-label={theme === 'light' ? "Activate dark theme" : "Activate light theme"}
+              title={theme === 'light' ? "Activate dark theme" : "Activate light theme"}
+            >
+              {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-slate-600 hover:text-slate-900" aria-hidden="true" /> : <Sun className="w-3.5 h-3.5 text-orange-400" aria-hidden="true" />}
+            </button>
+
+            {/* Primary Action Button */}
             <button
               onClick={() => scrollToSection('refer')}
-              className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold tracking-tight shadow-sm transition-all cursor-pointer"
+              className="group relative inline-flex items-center justify-center gap-1.5 bg-gradient-to-b from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 active:from-orange-600 active:to-orange-700 text-white font-semibold py-1.5 px-3.5 text-xs tracking-tight rounded-lg shadow-sm hover:shadow-[0_0_20px_-3px_rgba(249,115,22,0.35)] ring-1 ring-inset ring-white/20 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
             >
-              Send a client
+              <span>Send a Client</span>
+              <span className="text-orange-200 group-hover:translate-x-0.5 transition-transform">→</span>
             </button>
           </div>
         </div>
@@ -834,45 +857,55 @@ export default function PartnersPage() {
           <span>90-day attribution from your first intro or referral code.</span>
         </div>
 
-        {/* Interactive Earnings Calculator */}
-        <div id="calculator" className="mt-12 rounded-2xl border border-white/[0.1] bg-slate-900/70 backdrop-blur-xl p-6 sm:p-8 relative overflow-hidden shadow-2xl scroll-mt-20">
+        {/* Interactive Earnings Calculator — Editorial Clean Architecture */}
+        <div id="calculator" className="mt-12 rounded-2xl border border-white/[0.08] bg-slate-900/80 backdrop-blur-2xl p-6 sm:p-10 relative overflow-hidden shadow-2xl scroll-mt-20">
           {/* Top specular hairline edge */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-400/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-400/50 to-transparent pointer-events-none" />
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-orange-500/[0.06] blur-[100px] rounded-full pointer-events-none -z-10" />
 
           {/* Header of Calculator */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
-            <div>
-              <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-2">
-                Interactive Earnings Calculator
-              </p>
-              <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 border-b border-white/[0.08]">
+            <div className="space-y-1.5 max-w-xl">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-[10px] font-mono font-semibold uppercase tracking-widest text-orange-400">
+                <Calculator className="w-3 h-3" />
+                <span>Partner Economics · Yield Model</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 Model your partner referral commission
               </h3>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                Toggle between plans and client counts to project your exact payouts.
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                Dual cash settlements wired directly to you: upfront upon client deposit, plus retention upside at month three.
               </p>
             </div>
 
-            {/* Quick Badge */}
-            <div className="px-3.5 py-2 rounded-xl bg-slate-950/80 border border-white/[0.08] flex items-center gap-3 shrink-0 self-start md:self-auto">
+            {/* Quick Settlement Badge */}
+            <div className="px-3.5 py-2 rounded-xl bg-slate-950 border border-white/[0.08] flex items-center gap-3 shrink-0 self-start md:self-auto shadow-inner">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <div className="text-left font-mono">
-                <p className="text-[10px] text-slate-500 uppercase tracking-wider">Fast Settlement</p>
+                <p className="text-[9px] text-slate-500 uppercase tracking-widest font-semibold">Settlement Guarantee</p>
                 <p className="text-xs font-bold text-white">Within 7 days of deposit</p>
               </div>
             </div>
           </div>
 
           {/* Calculator Controls Grid */}
-          <div className="grid lg:grid-cols-12 gap-8 pt-6">
-            {/* Left Controls Column (Plan & Volume) */}
-            <div className="lg:col-span-7 space-y-6">
-              {/* Step 1: Select Plan */}
+          <div className="grid lg:grid-cols-12 gap-8 pt-8">
+            {/* Left Controls Column (Plan & Volume Segmented Controls) */}
+            <div className="lg:col-span-7 space-y-7">
+              {/* Step 1: Select Plan Tier via Editorial Segmented Control */}
               <div>
-                <label className="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-3">
-                  1. Select Client Tier
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full bg-orange-500/20 text-orange-400 text-[10px] flex items-center justify-center font-bold">1</span>
+                    <span>Client Plan Tier</span>
+                  </label>
+                  <span className="text-[11px] font-mono text-slate-500">
+                    Total payout: <strong className="text-orange-400 font-bold">${currentPlan.totalPerClient.toLocaleString()}</strong> / client
+                  </span>
+                </div>
+
+                {/* Segmented Control Bar */}
+                <div className="p-1 rounded-xl bg-slate-950 border border-white/[0.08] grid grid-cols-3 gap-1 shadow-inner">
                   {(Object.keys(PLANS_CONFIG) as Array<PlanKey>).map((planKey) => {
                     const plan = PLANS_CONFIG[planKey];
                     const isSelected = calcPlan === planKey;
@@ -884,159 +917,231 @@ export default function PartnersPage() {
                           setCalcPlan(planKey);
                           trackAction('calculator_plan_changed', { category: 'engagement', label: plan.name });
                         }}
-                        className={`p-4 rounded-xl border text-left transition-all relative cursor-pointer ${
+                        className={`relative py-3 px-3 rounded-lg text-center transition-all cursor-pointer select-none flex flex-col items-center justify-center ${
                           isSelected
-                            ? 'bg-slate-800/90 border-orange-500/50 ring-1 ring-orange-500/30 shadow-lg shadow-orange-950/30'
-                            : 'bg-slate-950/60 border-white/[0.08] hover:border-white/[0.18] hover:bg-slate-900/60'
+                            ? 'bg-slate-900 text-white shadow-sm border border-white/10 ring-1 ring-orange-500/30'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]'
                         }`}
                       >
                         {planKey === 'signature' && (
-                          <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-orange-500 text-white shadow-sm">
-                            Popular
+                          <span className="absolute -top-2.5 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase tracking-wider bg-orange-500 text-white shadow-sm">
+                            Most Popular
                           </span>
                         )}
-                        <p className="text-sm font-bold text-white tracking-tight flex items-center justify-between">
-                          <span>{plan.name}</span>
-                          {isSelected && <Check className="w-4 h-4 text-orange-400 shrink-0" />}
+                        <span className="text-xs sm:text-sm font-bold tracking-tight">
+                          {plan.name}
+                        </span>
+                        <span className={`text-[11px] font-mono mt-0.5 ${isSelected ? 'text-orange-400 font-bold' : 'text-slate-500'}`}>
+                          ${plan.totalPerClient.toLocaleString()} <span className="text-[9px] font-normal text-slate-500">/ client</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Editorial Tier Dossier Strip */}
+                <div className="mt-3 p-3.5 rounded-xl bg-slate-950/60 border border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0" />
+                    <span className="text-slate-300 font-medium">
+                      <strong className="text-white">{currentPlan.name}:</strong> {currentPlan.desc}
+                    </span>
+                  </div>
+                  <div className="font-mono text-[11px] text-slate-400 shrink-0 flex items-center gap-2">
+                    <span>Rate: <strong className="text-slate-200">{currentPlan.clientPrice}</strong></span>
+                    <span className="text-white/20">|</span>
+                    <span className="text-emerald-400 font-semibold">${currentPlan.signingFee} sign + ${currentPlan.retentionBonus} retain</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 2: Select Client Volume via Segmented Controls (No Standard Slider) */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full bg-orange-500/20 text-orange-400 text-[10px] flex items-center justify-center font-bold">2</span>
+                    <span>Referred Clients in 12 Months</span>
+                  </label>
+
+                  {/* Interactive Fine-tune Stepper */}
+                  <div className="flex items-center gap-2 bg-slate-950 border border-white/[0.08] rounded-lg p-0.5 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => setCalcClients(Math.max(1, calcClients - 1))}
+                      disabled={calcClients <= 1}
+                      aria-label="Decrease client count"
+                      className="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.05] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="font-mono text-xs font-bold text-white px-1.5 min-w-[2.5rem] text-center">
+                      {calcClients} {calcClients === 1 ? 'Client' : 'Clients'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setCalcClients(Math.min(15, calcClients + 1))}
+                      disabled={calcClients >= 15}
+                      aria-label="Increase client count"
+                      className="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.05] disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Segmented Volume Preset Buttons */}
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  {[1, 2, 3, 5, 8, 10].map((count) => {
+                    const isSelected = calcClients === count;
+                    const isMilestone = count === 3;
+                    return (
+                      <button
+                        key={count}
+                        type="button"
+                        onClick={() => {
+                          setCalcClients(count);
+                          trackAction('calculator_volume_changed', { category: 'engagement', label: `${count}_clients` });
+                        }}
+                        className={`relative py-3 px-2 rounded-xl text-center transition-all cursor-pointer select-none border ${
+                          isSelected
+                            ? 'bg-slate-800 text-white border-orange-500/50 ring-1 ring-orange-500/30 shadow-md'
+                            : 'bg-slate-950/70 border-white/[0.08] hover:border-white/[0.16] hover:bg-slate-900/60 text-slate-300'
+                        }`}
+                      >
+                        {isMilestone && (
+                          <span className="absolute -top-2 inset-x-1 mx-auto text-[8px] font-mono font-bold uppercase tracking-wider text-amber-300 bg-amber-950/90 border border-amber-500/30 rounded py-0.5 px-1 shadow-sm">
+                            +$1k Bonus
+                          </span>
+                        )}
+                        <p className="text-xs font-mono font-bold">
+                          {count} {count === 1 ? 'Client' : 'Clients'}
                         </p>
-                        <p className="text-xs font-mono text-orange-400 mt-1 font-semibold">
-                          ${plan.totalPerClient.toLocaleString()} <span className="text-[10px] text-slate-400 font-normal">/ client</span>
-                        </p>
-                        <p className="text-[11px] text-slate-400 mt-2 line-clamp-2 leading-snug">
-                          {plan.desc}
+                        <p className="text-[10px] text-slate-500 mt-0.5 font-mono">
+                          {count === 1 ? 'Base' : count === 3 ? 'Milestone' : count >= 5 ? 'Scale' : 'Paced'}
                         </p>
                       </button>
                     );
                   })}
                 </div>
-              </div>
 
-              {/* Step 2: Select Client Volume */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-xs font-mono uppercase tracking-wider text-slate-400">
-                    2. Referred Clients in 12 Months
-                  </label>
-                  <span className="text-xs font-mono font-bold text-orange-400 bg-orange-500/10 px-2.5 py-0.5 rounded border border-orange-500/20">
-                    {calcClients} {calcClients === 1 ? 'Client' : 'Clients'}
-                  </span>
-                </div>
-
-                {/* Quick Toggle Buttons */}
-                <div className="grid grid-cols-4 gap-2 mb-3">
-                  {[1, 2, 3, 5].map((count) => (
-                    <button
-                      key={count}
-                      type="button"
-                      onClick={() => setCalcClients(count)}
-                      className={`py-2 px-3 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
-                        calcClients === count
-                          ? 'bg-orange-500 text-white shadow-md font-bold'
-                          : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border border-white/[0.08]'
-                      }`}
-                    >
-                      {count} {count === 1 ? 'Client' : 'Clients'}
-                      {count === 3 && <span className="block text-[9px] text-amber-200">+$1k Bonus</span>}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Range Slider for granular control */}
-                <div className="pt-2 px-1">
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    step="1"
-                    value={calcClients}
-                    onChange={(e) => setCalcClients(parseInt(e.target.value, 10))}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
-                    aria-label="Number of referred clients"
-                  />
-                  <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
-                    <span>1 client</span>
-                    <span className="text-orange-400/80">3 clients (Milestone tier)</span>
-                    <span>5 clients</span>
-                    <span>10 clients</span>
+                {/* Milestone Tier Reassurance Banner */}
+                {calcClients >= 3 ? (
+                  <div className="mt-3.5 p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 flex items-center justify-between text-xs text-emerald-300">
+                    <span className="flex items-center gap-2 font-mono">
+                      <Award className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span><strong>$1,000 Milestone Bonus Unlocked</strong> (earned on your 3rd signed client)</span>
+                    </span>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 shrink-0">
+                      Tier Activated
+                    </span>
                   </div>
-                </div>
+                ) : (
+                  <div className="mt-3.5 p-3 rounded-xl bg-slate-950/40 border border-white/[0.06] flex items-center justify-between text-xs text-slate-400 font-mono">
+                    <span className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                      <span>Refer {3 - calcClients} more {3 - calcClients === 1 ? 'client' : 'clients'} to unlock the one-off <strong>$1,000 Milestone Bonus</strong>.</span>
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Right Display Bento Column */}
-            <div className="lg:col-span-5 flex flex-col justify-between p-6 rounded-xl bg-slate-950/80 border border-white/[0.08] relative">
-              <div className="space-y-4">
-                <div>
-                  <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
-                    Estimated Total Referral Commission
+            {/* Right Display Bento Column: High-Contrast Editorial Typography */}
+            <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-slate-950 to-slate-900/90 border border-white/[0.12] relative shadow-2xl overflow-hidden">
+              {/* Subtle radial ambient highlight */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/[0.08] blur-[70px] rounded-full pointer-events-none" />
+
+              <div className="space-y-6 relative z-10">
+                {/* Header Label & Micro-Indicator */}
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-orange-500" />
+                    <span>Total Potential Commission</span>
                   </span>
-                  <div className="text-3xl sm:text-4xl font-extrabold text-orange-400 font-mono tracking-tight mt-1 flex items-baseline gap-2">
-                    <span>${totalCommission.toLocaleString()}</span>
-                    <span className="text-xs font-sans text-slate-400 font-normal">
-                      for {calcClients} {calcClients === 1 ? 'client' : 'clients'}
-                    </span>
-                  </div>
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    Guaranteed Payout
+                  </span>
                 </div>
 
-                {/* Breakdown List */}
-                <div className="space-y-2.5 pt-3 border-t border-white/[0.06] text-xs font-mono">
-                  <div className="flex items-center justify-between text-slate-300">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                      <span>Upfront Signing Fees:</span>
+                {/* High-Contrast Primary Number Display */}
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl sm:text-5xl lg:text-6xl font-black text-white font-mono tracking-tight leading-none drop-shadow-sm">
+                      ${totalCommission.toLocaleString()}
+                    </span>
+                    <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">
+                      USD
+                    </span>
+                  </div>
+
+                  <p className="text-xs font-mono text-slate-400 mt-2 flex items-center gap-2">
+                    <span>Yield:</span>
+                    <strong className="text-orange-400 font-bold font-mono">
+                      ${Math.round(totalCommission / calcClients).toLocaleString()}
+                    </strong>
+                    <span className="text-slate-500">average cash earned per client</span>
+                  </p>
+                </div>
+
+                {/* Financial Statement / Structured Settlement Breakdown */}
+                <div className="space-y-3 pt-4 border-t border-white/[0.08] text-xs font-mono">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span>Upfront Signing Fees</span>
                     </span>
                     <span className="text-white font-bold">${upfrontPayout.toLocaleString()}</span>
                   </div>
-                  <p className="text-[10px] text-slate-500 pl-3">
-                    ${currentPlan.signingFee} × {calcClients} client{calcClients > 1 ? 's' : ''} (paid within 7 days of deposit)
+                  <p className="text-[10px] text-slate-500 pl-3.5 -mt-1.5">
+                    ${currentPlan.signingFee} × {calcClients} client{calcClients > 1 ? 's' : ''} (wired within 7 days of deposit)
                   </p>
 
-                  <div className="flex items-center justify-between text-slate-300 pt-1">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                      <span>Retention Bonuses:</span>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-slate-400 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                      <span>Quarterly Retention Bonuses</span>
                     </span>
                     <span className="text-white font-bold">${retentionPayout.toLocaleString()}</span>
                   </div>
-                  <p className="text-[10px] text-slate-500 pl-3">
-                    ${currentPlan.retentionBonus} × {calcClients} client{calcClients > 1 ? 's' : ''} (paid when they pass 3 paid months)
+                  <p className="text-[10px] text-slate-500 pl-3.5 -mt-1.5">
+                    ${currentPlan.retentionBonus} × {calcClients} client{calcClients > 1 ? 's' : ''} (wired at month 3 milestone)
                   </p>
 
                   {milestoneBonus > 0 && (
-                    <div className="pt-2 border-t border-emerald-500/20 bg-emerald-950/20 -mx-3 px-3 py-2 rounded-lg border border-emerald-500/30">
-                      <div className="flex items-center justify-between text-emerald-300 font-bold">
+                    <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
+                      <div className="flex items-center justify-between font-bold">
                         <span className="flex items-center gap-1.5">
                           <Award className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>3rd Client Milestone Bonus:</span>
+                          <span>3rd Client Milestone Bonus</span>
                         </span>
                         <span>+$1,000</span>
                       </div>
                       <p className="text-[10px] text-emerald-400/80 mt-0.5">
-                        One-off $1,000 bonus unlocked upon 3rd signed client
+                        One-off cash accelerator awarded upon 3rd signed client
                       </p>
                     </div>
                   )}
-                </div>
 
-                {/* Client Perk Benefit Note */}
-                <div className="p-3 rounded-lg bg-orange-500/5 border border-orange-500/20 text-[11px] text-slate-300 leading-relaxed">
-                  <span className="text-orange-400 font-semibold block mb-0.5">Exclusive Client Benefit:</span>
-                  Your client receives their <strong className="text-white">first month free</strong> (worth {currentPlan.clientFreeMonthValue}) because they came through your intro.
+                  {/* Exclusive Client Benefit Callout */}
+                  <div className="p-3 rounded-lg bg-orange-500/[0.06] border border-orange-500/20 text-[11px] text-slate-300 leading-relaxed mt-2">
+                    <span className="text-orange-400 font-semibold block mb-0.5">Your Client's Incentive:</span>
+                    First month free (<strong className="text-white">{currentPlan.clientFreeMonthValue} value</strong>) automatically applied via your introduction.
+                  </div>
                 </div>
               </div>
 
               {/* Action Button */}
-              <div className="pt-4 mt-4 border-t border-white/[0.08]">
+              <div className="pt-6 mt-6 border-t border-white/[0.08] relative z-10">
                 <button
                   type="button"
                   onClick={() => {
                     scrollToSection('refer');
                     trackAction('calculator_cta_clicked', { category: 'intent', label: currentPlan.name });
                   }}
-                  className="w-full py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white font-semibold text-xs tracking-tight shadow-md transition-colors cursor-pointer flex items-center justify-center gap-2"
+                  className="group relative w-full py-3 px-4 rounded-xl bg-gradient-to-b from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 active:from-orange-600 text-white font-semibold text-xs tracking-tight shadow-md hover:shadow-[0_0_25px_-3px_rgba(249,115,22,0.4)] ring-1 ring-inset ring-white/20 transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <span>Refer a client on {currentPlan.name} (${currentPlan.totalPerClient.toLocaleString()})</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Refer a Client on {currentPlan.name} (${currentPlan.totalPerClient.toLocaleString()})</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </div>
             </div>

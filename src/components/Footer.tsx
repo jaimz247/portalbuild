@@ -1,6 +1,8 @@
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Footer() {
+  const { theme, toggleTheme } = useTheme();
   const navigate = (path: string) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new Event('popstate'));
@@ -31,10 +33,30 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Value Prop Tagline */}
-          <p className="text-[11px] font-mono text-slate-500 tracking-wide uppercase max-w-md text-left md:text-right">
-            Fast software · Zero developer bureaucracy · Premium member retention
-          </p>
+          {/* Theme Quick Switcher & Value Prop Tagline */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:justify-end w-full md:w-auto">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.08] hover:border-white/20 bg-slate-900/60 text-xs font-mono text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+            >
+              {theme === 'light' ? (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Switch to Dark Theme</span>
+                </>
+              ) : (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-orange-400" />
+                  <span>Switch to Light Theme</span>
+                </>
+              )}
+            </button>
+            <p className="text-[11px] font-mono text-slate-500 tracking-wide uppercase text-left md:text-right">
+              Fast software · Zero bureaucracy · Member retention
+            </p>
+          </div>
         </div>
 
         {/* Middle Legal Navigation & Alignment Row */}

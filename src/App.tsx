@@ -27,6 +27,7 @@ import AdminDashboard from './components/AdminDashboard';
 import { closeAllModals, openAdminDashboard } from './lib/events';
 import { initGA4 } from './lib/analytics';
 import { initFirstPartyTracker } from './lib/tracker';
+import { useTheme } from './context/ThemeContext';
 
 const Divider = () => (
   <div className="w-full flex justify-center opacity-60 my-4 lg:my-8 relative z-10">
@@ -35,6 +36,7 @@ const Divider = () => (
 );
 
 export default function App() {
+  const { theme, toggleTheme, isLight } = useTheme();
   const getNormalizedRoute = () => {
     const rawPath = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
     const hash = window.location.hash.toLowerCase().replace(/^#\/?/, '/').replace(/\/+$/, '');
@@ -86,11 +88,6 @@ export default function App() {
     // Deferred GA4 & First-Party Telemetry Initialization for Performance
     initGA4();
     initFirstPartyTracker();
-
-    // Enforce dark mode #020617 background as per rules
-    document.documentElement.classList.remove('theme-light-active');
-    document.body.style.backgroundColor = '#020617';
-    document.body.style.color = '#ffffff';
 
     const handleLocationChange = () => {
       setCurrentPath(getNormalizedRoute());
@@ -259,7 +256,7 @@ export default function App() {
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/20 to-transparent pointer-events-none -z-10"></div>
 
       {/* Navigation */}
-      <Navigation />
+      <Navigation theme={theme} toggleTheme={toggleTheme} />
 
       {/* Main Target Structure */}
       <main id="main-content" tabIndex={-1}>
