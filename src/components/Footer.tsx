@@ -33,7 +33,7 @@ export default function Footer() {
 
           {/* Value Prop Tagline */}
           <p className="text-[11px] font-mono text-slate-500 tracking-wide uppercase max-w-md text-left md:text-right">
-            Fast software // Zero developer bureaucracy // Premium member retention
+            Fast software · Zero developer bureaucracy · Premium member retention
           </p>
         </div>
 

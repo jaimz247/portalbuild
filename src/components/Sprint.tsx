@@ -30,10 +30,9 @@ export default function Sprint() {
   return (
     <section className="py-16 md:py-28 px-6 max-w-6xl mx-auto relative" id="how-it-works">
       <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.08] bg-slate-900/60 backdrop-blur-md text-slate-300 text-xs font-mono uppercase tracking-wider mb-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-          <span className="text-orange-400">Days, Not Weeks</span>
-        </div>
+        <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-3">
+          Rapid Deployment
+        </p>
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-[-0.03em] text-white leading-tight mb-4">
           Live before your next cohort starts. Under a week.
         </h2>
@@ -52,11 +51,11 @@ export default function Sprint() {
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
 
             <div>
-              <div className="text-xs text-orange-400 font-mono font-bold mb-3 uppercase tracking-widest flex items-center justify-between">
-                <span className="px-2 py-0.5 rounded bg-orange-500/10 border border-orange-500/20 text-[10px]">
-                  STEP {item.step}
+              <div className="text-xs text-orange-400 font-mono font-bold mb-3 flex items-center justify-between">
+                <span className="font-mono text-xs text-orange-400 font-semibold tracking-wider">
+                  {item.step}
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400/80"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-400/60"></span>
               </div>
               <h3 className="text-slate-100 font-bold tracking-tight text-sm md:text-base mb-2 group-hover:text-orange-400 transition-colors leading-snug">
                 {item.title}

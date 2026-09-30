@@ -41,36 +41,69 @@ interface LiveDemoPortalProps {
   programURL?: string;
 }
 
+// PRESERVED FOR FUTURE RESTORATION — TEMPORARILY REPLACED BY ALDERMOOR COACHING INSTITUTE
+export const PRESERVED_GROWTH_COLLECTIVE_PORTAL: DemoPortal = {
+  id: 'growth-collective',
+  name: 'The Growth Collective',
+  shortName: 'TGC',
+  badge: 'Founder Accelerator',
+  subtitle: 'A 12-week accelerator for founder-led service businesses',
+  descriptor: '12-week accelerator · 32 founders',
+  domain: 'growthcollective.cohortroom.com',
+  url: 'https://growthcollective.cohortroom.com',
+  totalWeeks: 12,
+  currentWeek: 4,
+  memberName: 'Sarah Whitfield',
+  memberInitials: 'SW',
+  memberRole: 'Member · Pod B · 4 weeks running',
+  currentSessionTitle: 'Week 4 Live Session — Pricing Without Discounting',
+  currentSessionTime: 'Thu, Sep 24 @ 11:00am Zoom · Main Room',
+  currentSessionNote: 'In 2 days',
+  currentModuleNum: '04',
+  currentModuleName: 'Pricing Without Discounting',
+  metrics: [
+    { label: 'Curriculum Progress', value: '68%', sublabel: 'On track · 3 deliverables submitted' },
+    { label: 'Next Live Session', value: 'Thu @ 11:00 AM', sublabel: 'Pricing Without Discounting' },
+    { label: 'Cohort Benchmark', value: '+34%', sublabel: 'Top quartile revenue growth', highlight: true },
+  ],
+  operatorHighlight: {
+    flaggedName: 'Elena Rostova',
+    flaggedStatus: 'At-Risk (Week 3 Inactive)',
+    flaggedReason: 'Has not opened Module 3 or logged in for 6 days. Zero submissions.',
+    actionLabel: 'Intervene Now',
+  },
+};
+
 const LIVE_HOSTED_PORTALS: DemoPortal[] = [
   {
-    id: 'growth-collective',
-    name: 'The Growth Collective',
-    shortName: 'TGC',
-    badge: 'Founder Accelerator',
-    subtitle: 'A 12-week accelerator for founder-led service businesses',
-    descriptor: '12-week accelerator · 32 founders',
-    domain: 'growthcollective.cohortroom.com',
-    url: 'https://growthcollective.cohortroom.com',
-    totalWeeks: 12,
-    currentWeek: 4,
-    memberName: 'Sarah Whitfield',
-    memberInitials: 'SW',
-    memberRole: 'Member · Pod B · 4 weeks running',
-    currentSessionTitle: 'Week 4 Live Session — Pricing Without Discounting',
-    currentSessionTime: 'Thu, Sep 24 @ 11:00am Zoom · Main Room',
-    currentSessionNote: 'In 2 days',
-    currentModuleNum: '04',
-    currentModuleName: 'Pricing Without Discounting',
+    id: 'aldermoor',
+    name: 'Aldermoor Coaching Institute',
+    shortName: 'ACI',
+    badge: 'Coaching Institute',
+    subtitle: 'A 30-week accredited coach certification & ICF credential pathway',
+    descriptor: '30-week ICF credential · 20 coaches',
+    domain: 'certification.cohortroom.com',
+    url: 'https://certification.cohortroom.com',
+    totalWeeks: 30,
+    currentWeek: 15,
+    memberName: 'Rachel Kim',
+    memberInitials: 'RK',
+    memberRole: 'Participant · PCC Track Cohort 14 · VP People',
+    currentSessionTitle: 'Module 5 — Building Your Coaching Practice',
+    currentSessionTime: 'Tue, Sep 29 @ 12:00pm ET · Zoom · Main Room',
+    currentSessionNote: 'Next: Thu Group Mentor',
+    currentModuleNum: '05',
+    currentModuleName: 'Building Your Coaching Practice',
     metrics: [
-      { label: 'Curriculum Progress', value: '68%', sublabel: 'On track · 3 deliverables submitted' },
-      { label: 'Next Live Session', value: 'Thu @ 11:00 AM', sublabel: 'Pricing Without Discounting' },
-      { label: 'Cohort Benchmark', value: '+34%', sublabel: 'Top quartile revenue growth', highlight: true },
+      { label: 'ICF PCC Readiness', value: '34%', sublabel: 'Training: 68/125 hrs · Evaluation: 72%', highlight: true },
+      { label: 'Coaching Hours Logged', value: '212 / 500h', sublabel: 'On pace · 9.5 hrs/week logged' },
+      { label: 'Next Live / Mentor', value: 'Thu @ 7:30 PM', sublabel: 'Group Mentor with Tom Whitaker, PCC' },
     ],
     operatorHighlight: {
-      flaggedName: 'Elena Rostova',
-      flaggedStatus: 'At-Risk (Week 3 Inactive)',
-      flaggedReason: 'Has not opened Module 3 or logged in for 6 days. Zero submissions.',
-      actionLabel: 'Intervene Now',
+      flaggedName: 'Daniel Reyes',
+      flaggedStatus: 'At-Risk (Missed 2 Sessions)',
+      flaggedReason: 'Missed last 2 live sessions; no coaching hours logged in 19 days. Tuition at risk.',
+      actionLabel: 'Draft Message',
     },
   },
   {
@@ -139,7 +172,7 @@ const LIVE_HOSTED_PORTALS: DemoPortal[] = [
 
 export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
   const [isHydrated, setIsHydrated] = useState(false);
-  const [selectedDemoId, setSelectedDemoId] = useState<string>('growth-collective');
+  const [selectedDemoId, setSelectedDemoId] = useState<string>('aldermoor');
   const [activeTab, setActiveTab] = useState<'overview' | 'cohort' | 'roadmap' | 'operator'>('overview');
   const tabListRef = useRef<HTMLDivElement>(null);
 
@@ -206,15 +239,14 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
     <section id="live-demo" className="py-16 md:py-24 px-4 sm:px-6 max-w-6xl mx-auto transition-opacity duration-300">
       {/* Section Header */}
       <div className="text-center mb-10 md:mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono tracking-wider uppercase mb-3.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-3">
           Live Hosted Portals
-        </div>
+        </p>
         <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
           Explore 3 live sample portals. Built and hosted for real cohort models.
         </h2>
         <p className="text-slate-300 text-base md:text-lg max-w-3xl mx-auto mt-4 leading-relaxed">
-          We have built and hosted 3 complete, ready-made sample portals across founder accelerator, executive leadership, and agency mastermind formats. Test-drive each live website directly — including the member journey, module roadmaps, and the operator back-office view.
+          We have built and hosted 3 complete, ready-made sample portals across coaching certification, executive leadership, and agency mastermind formats. Test-drive each live website directly — including the member journey, module roadmaps, and the operator back-office view.
         </p>
       </div>
 
@@ -436,12 +468,12 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
                 <div className="p-6 rounded-xl bg-gradient-to-r from-orange-950/40 via-slate-900/60 to-slate-900/40 border border-orange-500/20">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-mono uppercase text-orange-400 tracking-wider font-semibold">
-                      Fall 2026 Cohort · Week {activeDemo.currentWeek} Active
+                      {activeDemo.id === 'aldermoor' ? 'Cohort 14 · Week 15 Active · PCC Track' : `Fall 2026 Cohort · Week ${activeDemo.currentWeek} Active`}
                     </span>
                     <span className="text-xs text-slate-400 font-mono">{activeDemo.currentSessionNote}</span>
                   </div>
                   <h3 className="text-2xl font-bold text-white tracking-tight">
-                    Good evening, {activeDemo.memberName.split(' ')[0]}.
+                    Good {activeDemo.id === 'aldermoor' ? 'morning' : 'evening'}, {activeDemo.memberName.split(' ')[0]}.
                   </h3>
                   <p className="text-slate-300 text-xs md:text-sm mt-1 leading-relaxed">
                     {activeDemo.subtitle}
@@ -498,19 +530,35 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-bold text-white">Cohort Pod B Members</h3>
-                    <p className="text-xs text-slate-400">Accountability pods with peer progress transparency</p>
+                    <h3 className="text-lg font-bold text-white">
+                      {activeDemo.id === 'aldermoor' ? 'Cohort 14 Practice Triad' : 'Cohort Pod B Members'}
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      {activeDemo.id === 'aldermoor'
+                        ? 'Coaching triads and peer feedback accountability'
+                        : 'Accountability pods with peer progress transparency'}
+                    </p>
                   </div>
-                  <span className="text-xs text-slate-400 font-mono">Private Directory</span>
+                  <span className="text-xs text-slate-400 font-mono">
+                    {activeDemo.id === 'aldermoor' ? '20 Coaches' : 'Private Directory'}
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {[
-                    { name: activeDemo.memberName, role: "Pod Lead", status: "Active Now", progress: "74%" },
-                    { name: "Sarah Vance", role: "Operator", status: "Active 2h ago", progress: "84%" },
-                    { name: "Marcus Thorne", role: "Participant", status: "Active yesterday", progress: "72%" },
-                    { name: "Elena Rostova", role: "Founder", status: "Active 3d ago", progress: "45%" },
-                  ].map((m, idx) => (
+                  {(activeDemo.id === 'aldermoor'
+                    ? [
+                        { name: 'Rachel Kim', role: 'Triad Lead · VP People', status: 'Active Now', progress: '34% (212h logged)' },
+                        { name: 'Daniel Reyes', role: 'Triad Member · Coach', status: 'Needs attention', progress: '22% (84h logged)' },
+                        { name: 'Olivia Chen', role: 'Triad Member · Exec Coach', status: 'Active yesterday', progress: '38% (230h logged)' },
+                        { name: 'Priya Nair', role: 'Cohort 14 · Team Coach', status: 'Active 2h ago', progress: '31% (190h logged)' },
+                      ]
+                    : [
+                        { name: activeDemo.memberName, role: 'Pod Lead', status: 'Active Now', progress: '74%' },
+                        { name: 'Sarah Vance', role: 'Operator', status: 'Active 2h ago', progress: '84%' },
+                        { name: 'Marcus Thorne', role: 'Participant', status: 'Active yesterday', progress: '72%' },
+                        { name: 'Elena Rostova', role: 'Founder', status: 'Active 3d ago', progress: '45%' },
+                      ]
+                  ).map((m, idx) => (
                     <div key={idx} className="p-3.5 rounded-xl bg-slate-900/70 border border-white/[0.08] flex items-center justify-between">
                       <div>
                         <p className="text-xs font-bold text-white">{m.name}</p>
@@ -533,12 +581,20 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
                   <span className="text-xs text-orange-400 font-mono">Week {activeDemo.currentWeek} Active</span>
                 </div>
                 <div className="space-y-3">
-                  {[
-                    { week: "Week 1-2", title: "Diagnostic & Core System Architecture", status: "Completed", color: "text-emerald-400" },
-                    { week: "Week 3-4", title: activeDemo.currentModuleName, status: "In Progress", color: "text-orange-400" },
-                    { week: "Week 5-8", title: "Scale Sprints & Executive Milestones", status: "Locked", color: "text-slate-500" },
-                    { week: `Week 9-${activeDemo.totalWeeks}`, title: "Graduation Deliverables & Peer Audits", status: "Locked", color: "text-slate-500" },
-                  ].map((step, idx) => (
+                  {(activeDemo.id === 'aldermoor'
+                    ? [
+                        { week: 'Module 1-2', title: 'Foundations of Coaching & ICF Core Competencies', status: 'Completed', color: 'text-emerald-400' },
+                        { week: 'Module 3-4', title: 'Establishing Agreements & Evoking Awareness', status: 'Completed', color: 'text-emerald-400' },
+                        { week: 'Module 5', title: activeDemo.currentModuleName, status: 'In Progress', color: 'text-orange-400' },
+                        { week: 'Module 6-8', title: 'Mentor Coaching, 500-Hour Log & Final Performance Evaluation', status: 'Locked', color: 'text-slate-500' },
+                      ]
+                    : [
+                        { week: 'Week 1-2', title: 'Diagnostic & Core System Architecture', status: 'Completed', color: 'text-emerald-400' },
+                        { week: 'Week 3-4', title: activeDemo.currentModuleName, status: 'In Progress', color: 'text-orange-400' },
+                        { week: 'Week 5-8', title: 'Scale Sprints & Executive Milestones', status: 'Locked', color: 'text-slate-500' },
+                        { week: `Week 9-${activeDemo.totalWeeks}`, title: 'Graduation Deliverables & Peer Audits', status: 'Locked', color: 'text-slate-500' },
+                      ]
+                  ).map((step, idx) => (
                     <div key={idx} className="p-4 rounded-xl bg-slate-900/70 border border-white/[0.08] flex items-center justify-between">
                       <div>
                         <span className="text-[10px] font-mono text-slate-400 uppercase">{step.week}</span>
@@ -556,12 +612,14 @@ export default function LiveDemoPortal({ isLoading }: LiveDemoPortalProps) {
                 <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between">
                   <div>
                     <span className="text-xs font-mono text-emerald-400 uppercase tracking-wider font-semibold">
-                      Operator Radar · Real-time Member Flags
+                      {activeDemo.id === 'aldermoor' ? 'Faculty Cockpit · ICF Rule Engine' : 'Operator Radar · Real-time Member Flags'}
                     </span>
-                    <h3 className="text-lg font-bold text-white mt-0.5">Cohort Health: Member Risk Management</h3>
+                    <h3 className="text-lg font-bold text-white mt-0.5">
+                      {activeDemo.id === 'aldermoor' ? 'Cohort 14 Oversight: Attendance & Log Status' : 'Cohort Health: Member Risk Management'}
+                    </h3>
                   </div>
                   <span className="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold font-mono">
-                    LIVE RADAR
+                    {activeDemo.id === 'aldermoor' ? 'FACULTY COCKPIT' : 'LIVE RADAR'}
                   </span>
                 </div>
 

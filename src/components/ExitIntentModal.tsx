@@ -63,21 +63,21 @@ export default function ExitIntentModal() {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: -16 }}
             transition={{ type: "spring", duration: 0.4, bounce: 0.05 }}
-            className="w-full max-w-lg bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border border-white/15 p-8 md:p-10 shadow-[0_25px_70px_rgba(0,0,0,0.85),0_0_50px_rgba(249,115,22,0.12)] relative z-10 text-center rounded-3xl overflow-hidden"
+            className="w-full max-w-lg bg-slate-950 border border-white/[0.08] p-8 md:p-10 shadow-2xl relative z-10 text-center rounded-2xl overflow-hidden"
           >
             {/* Ambient radiant highlight */}
-            <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-32 bg-orange-500/15 blur-3xl rounded-full pointer-events-none" />
+            <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-32 bg-orange-500/10 blur-3xl rounded-full pointer-events-none" />
 
             <button 
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 focus-visible:ring-2 focus-visible:ring-orange-500 focus:outline-none cursor-pointer z-20"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] focus-visible:ring-2 focus-visible:ring-orange-500 focus:outline-none cursor-pointer z-20"
               aria-label="Close modal"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <div className="w-16 h-16 mx-auto bg-orange-600/20 text-orange-500 flex items-center justify-center rounded-2xl mb-6 border border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.15)]">
-               <Play className="w-6 h-6 ml-0.5" />
+            <div className="w-14 h-14 mx-auto bg-slate-900 text-orange-400 flex items-center justify-center rounded-xl mb-6 border border-white/10 shadow-sm">
+               <Play className="w-5 h-5 ml-0.5" />
             </div>
 
             <h2 className="text-2xl md:text-3xl font-bold tracking-tighter text-white mb-3">

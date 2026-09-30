@@ -19,6 +19,24 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const navigateToSection = (sectionId: string) => {
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', `/#${sectionId}`);
+      window.dispatchEvent(new Event('popstate'));
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  const navigateToPage = (path: string) => {
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new Event('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
       <nav 
@@ -26,7 +44,8 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
         aria-label="Main Navigation"
         className="w-full px-6 py-3.5 flex flex-row justify-between items-center sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-white/[0.08]"
       >
-        <div className="flex-1 flex items-center justify-start">
+        {/* Zone 1: Brand Wordmark */}
+        <div className="flex items-center justify-start">
           <button 
             type="button"
             aria-label="PortalBuild Home — a MorningCrest Solutions Company"
@@ -40,7 +59,7 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
             }}
             className="group flex items-center gap-3 text-left cursor-pointer select-none relative z-50 bg-transparent border-0 p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-lg transition-all"
           >
-            {/* Logo Mark (enlarged for prominent brand presence) */}
+            {/* Logo Mark */}
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border border-white/10 group-hover:border-orange-500/40 flex items-center justify-center shrink-0 shadow-sm transition-colors">
               <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-sm bg-orange-500 group-hover:scale-110 transition-transform" />
             </div>
@@ -56,13 +75,52 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
             </div>
           </button>
         </div>
-        <div className="flex-1 hidden md:flex justify-center flex-wrap items-center gap-6 text-[11px] font-mono tracking-wider text-slate-400">
-          <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.06]">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400/80"></span>
-            <span>{t('nav_slots')}</span>
-          </span>
+
+        {/* Zone 2: Navigation Links */}
+        <div className="hidden lg:flex items-center gap-7 text-xs font-medium text-slate-300">
+          <button 
+            type="button" 
+            onClick={() => navigateToSection('live-demo')} 
+            className="hover:text-white transition-colors cursor-pointer"
+          >
+            Sample Portals
+          </button>
+          <button 
+            type="button" 
+            onClick={() => navigateToSection('operator-view')} 
+            className="hover:text-white transition-colors cursor-pointer"
+          >
+            Operator Radar
+          </button>
+          <button 
+            type="button" 
+            onClick={() => navigateToSection('screens')} 
+            className="hover:text-white transition-colors cursor-pointer"
+          >
+            9 Screens
+          </button>
+          <button 
+            type="button" 
+            onClick={() => navigateToSection('pricing')} 
+            className="hover:text-white transition-colors cursor-pointer"
+          >
+            Pricing
+          </button>
+          <button 
+            type="button" 
+            onClick={() => navigateToPage('/partners')} 
+            className="hover:text-white transition-colors cursor-pointer"
+          >
+            Partners
+          </button>
         </div>
-        <div className="flex-1 hidden md:flex justify-end items-center gap-3">
+
+        {/* Zone 3: Actions & Controls */}
+        <div className="hidden md:flex items-center gap-3">
+          <span className="hidden xl:inline text-[11px] font-mono text-slate-400 mr-1">
+            {t('nav_slots')}
+          </span>
+
           {/* L10n Switcher */}
           <button 
             type="button"
@@ -148,11 +206,62 @@ export default function Navigation({ theme = 'dark', toggleTheme }: NavigationPr
               </span>
             </div>
 
-            <div className="text-[11px] font-medium tracking-wide text-slate-400 mb-6 text-center flex flex-col gap-2">
-              <span className="text-orange-400 font-semibold inline-flex items-center justify-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-                <span>{t('nav_slots')}</span>
-              </span>
+            {/* Mobile Navigation Links */}
+            <div className="flex flex-col items-center gap-3.5 mb-6 text-sm font-medium text-slate-200">
+              <button
+                type="button"
+                onClick={() => {
+                  toggleMobileMenu();
+                  navigateToSection('live-demo');
+                }}
+                className="hover:text-orange-400 transition-colors cursor-pointer py-1"
+              >
+                Sample Portals
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  toggleMobileMenu();
+                  navigateToSection('operator-view');
+                }}
+                className="hover:text-orange-400 transition-colors cursor-pointer py-1"
+              >
+                Operator Radar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  toggleMobileMenu();
+                  navigateToSection('screens');
+                }}
+                className="hover:text-orange-400 transition-colors cursor-pointer py-1"
+              >
+                9 Screens
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  toggleMobileMenu();
+                  navigateToSection('pricing');
+                }}
+                className="hover:text-orange-400 transition-colors cursor-pointer py-1"
+              >
+                Pricing
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  toggleMobileMenu();
+                  navigateToPage('/partners');
+                }}
+                className="hover:text-orange-400 transition-colors cursor-pointer py-1"
+              >
+                Partner Program
+              </button>
+            </div>
+
+            <div className="text-[11px] font-mono text-slate-400 mb-6 text-center">
+              <span>{t('nav_slots')}</span>
             </div>
 
             {/* Mobile Controls Suite */}

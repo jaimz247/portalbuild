@@ -9,7 +9,7 @@ export default function FAQ() {
     },
     {
       q: "Can I explore real sample portals before requesting my own?",
-      a: "Yes. We have 3 complete, live sample portals hosted on the web across distinct cohort models: The Growth Collective (12-week founder accelerator at growthcollective.cohortroom.com), Harbourline Institute (10-week executive leadership at leadership.cohortroom.com), and Northline Collective (16-week agency mastermind at agency.cohortroom.com). You can click into any of them directly from the live portals section on this page."
+      a: "Yes. We have 3 complete, live sample portals hosted on the web across distinct cohort models: Aldermoor Coaching Institute (30-week accredited coach certification at certification.cohortroom.com), Harbourline Institute (10-week executive leadership at leadership.cohortroom.com), and Northline Collective (16-week agency mastermind at agency.cohortroom.com). You can click into any of them directly from the live portals section on this page."
     },
     {
       q: "Will my portal be ready before my next cohort starts?",
@@ -48,10 +48,9 @@ export default function FAQ() {
   return (
     <section className="py-16 md:py-28 px-6 max-w-4xl mx-auto" id="faq">
       <div className="text-center mb-12 md:mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.08] bg-slate-900/60 backdrop-blur-md text-slate-300 text-xs font-mono uppercase tracking-wider mb-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-          <span className="text-orange-400">Frequently Asked Questions</span>
-        </div>
+        <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-3">
+          Frequently Asked Questions
+        </p>
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-[-0.03em] text-white leading-tight">
           Everything you need to know before requesting your preview.
         </h2>

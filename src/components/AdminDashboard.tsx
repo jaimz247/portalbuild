@@ -72,6 +72,13 @@ import {
   OperationType,
 } from "../lib/firebase";
 import { jsPDF } from "jspdf";
+import PartnerSubmissionsView, {
+  PartnerReferral,
+  PartnerSignup,
+} from "./admin/PartnerSubmissionsView";
+import PreviewRequestsView, {
+  PreviewRequest,
+} from "./admin/PreviewRequestsView";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -149,7 +156,7 @@ export default function AdminDashboard() {
   const [adminNotes, setAdminNotes] = useState("");
   const [isSavingNotes, setIsSavingNotes] = useState(false);
   const [firestoreError, setFirestoreError] = useState<string | null>(null);
-  const [previewRequests, setPreviewRequests] = useState<any[]>(() => {
+  const [previewRequests, setPreviewRequests] = useState<PreviewRequest[]>(() => {
     try {
       const saved = localStorage.getItem("local_preview_requests");
       return saved ? JSON.parse(saved) : [];
@@ -157,6 +164,27 @@ export default function AdminDashboard() {
       return [];
     }
   });
+
+  const [partnerReferrals, setPartnerReferrals] = useState<PartnerReferral[]>(() => {
+    try {
+      const saved = localStorage.getItem("local_partner_referrals");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [partnerSignups, setPartnerSignups] = useState<PartnerSignup[]>(() => {
+    try {
+      const saved = localStorage.getItem("local_partner_signups");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [isTestingNotification, setIsTestingNotification] = useState(false);
+  const [testNotificationResult, setTestNotificationResult] = useState<string | null>(null);
 
   // === CUSTOM REVOLUTIONARY STATES ===
   interface CustomWebhook {
@@ -369,7 +397,7 @@ export default function AdminDashboard() {
   };
 
   // States for bulk select, archives, quick copies, and analytics views
-  const [activeTab, setActiveTab] = useState<"leads" | "analytics" | "audit" | "growth" | "workflow" | "team">(
+  const [activeTab, setActiveTab] = useState<"leads" | "previews" | "partners" | "analytics" | "audit" | "growth" | "workflow" | "team">(
     "leads",
   );
   const [isFocusViewActive, setIsFocusViewActive] = useState<boolean>(false);
@@ -1472,8 +1500,202 @@ export default function AdminDashboard() {
       },
     );
 
-    return () => unsubscribe();
+    // Sync partner referrals, partner signups, and preview requests from server & Firestore
+    const syncAllSubmissions = async () => {
+      try {
+        const res = await fetch("/api/admin/submissions");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.submissions) {
+            const serverRefs = json.submissions
+              .filter((s: any) => s.type === "partner_referral")
+              .map((s: any) => ({ ...s.data, id: s.id, status: s.status, createdAt: s.createdAt }));
+            const serverSigns = json.submissions
+              .filter((s: any) => s.type === "partner_signup")
+              .map((s: any) => ({ ...s.data, id: s.id, status: s.status, createdAt: s.createdAt }));
+            const serverPreviews = json.submissions
+              .filter((s: any) => s.type === "preview_request")
+              .map((s: any) => ({ ...s.data, id: s.id, status: s.status, createdAt: s.createdAt }));
+
+            if (serverRefs.length > 0) {
+              setPartnerReferrals(prev => {
+                const map = new Map();
+                serverRefs.forEach((r: any) => map.set(r.id, r));
+                prev.forEach(r => { if (!map.has(r.id)) map.set(r.id, r); });
+                return Array.from(map.values());
+              });
+            }
+            if (serverSigns.length > 0) {
+              setPartnerSignups(prev => {
+                const map = new Map();
+                serverSigns.forEach((s: any) => map.set(s.id, s));
+                prev.forEach(s => { if (!map.has(s.id)) map.set(s.id, s); });
+                return Array.from(map.values());
+              });
+            }
+            if (serverPreviews.length > 0) {
+              setPreviewRequests(prev => {
+                const map = new Map();
+                serverPreviews.forEach((p: any) => map.set(p.id, p));
+                prev.forEach(p => { if (!map.has(p.id)) map.set(p.id, p); });
+                return Array.from(map.values());
+              });
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Could not sync server submissions:", e);
+      }
+    };
+
+    syncAllSubmissions();
+
+    // Firestore listener for partner_referrals
+    let unsubReferrals = () => {};
+    try {
+      const qRef = query(collection(db, "partner_referrals"), orderBy("createdAt", "desc"));
+      unsubReferrals = onSnapshot(
+        qRef,
+        (snap) => {
+          const list: PartnerReferral[] = [];
+          snap.forEach((d) => list.push({ id: d.id, ...d.data() } as PartnerReferral));
+          if (list.length > 0) {
+            setPartnerReferrals(list);
+            localStorage.setItem("local_partner_referrals", JSON.stringify(list));
+          }
+        },
+        (err) => console.debug("Firestore partner_referrals notice:", err.message)
+      );
+    } catch (e) {}
+
+    // Firestore listener for partner_signups
+    let unsubSignups = () => {};
+    try {
+      const qSign = query(collection(db, "partner_signups"), orderBy("createdAt", "desc"));
+      unsubSignups = onSnapshot(
+        qSign,
+        (snap) => {
+          const list: PartnerSignup[] = [];
+          snap.forEach((d) => list.push({ id: d.id, ...d.data() } as PartnerSignup));
+          if (list.length > 0) {
+            setPartnerSignups(list);
+            localStorage.setItem("local_partner_signups", JSON.stringify(list));
+          }
+        },
+        (err) => console.debug("Firestore partner_signups notice:", err.message)
+      );
+    } catch (e) {}
+
+    // Firestore listener for preview_requests
+    let unsubPreviews = () => {};
+    try {
+      const qPrev = query(collection(db, "preview_requests"), orderBy("createdAt", "desc"));
+      unsubPreviews = onSnapshot(
+        qPrev,
+        (snap) => {
+          const list: PreviewRequest[] = [];
+          snap.forEach((d) => list.push({ id: d.id, ...d.data() } as PreviewRequest));
+          if (list.length > 0) {
+            setPreviewRequests(list);
+            localStorage.setItem("local_preview_requests", JSON.stringify(list));
+          }
+        },
+        (err) => console.debug("Firestore preview_requests notice:", err.message)
+      );
+    } catch (e) {}
+
+    return () => {
+      unsubscribe();
+      unsubReferrals();
+      unsubSignups();
+      unsubPreviews();
+    };
   }, [isAuth]);
+
+  const handleUpdateReferralStatus = async (id: string, newStatus: string) => {
+    setPartnerReferrals((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
+    );
+    try {
+      await updateDoc(doc(db, "partner_referrals", id), {
+        status: newStatus,
+        updatedAt: new Date().toISOString(),
+      }).catch(() => {});
+      await fetch("/api/admin/submissions/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      }).catch(() => {});
+      showToast(`Updated referral status to: ${newStatus}`);
+    } catch (e) {
+      console.warn("Could not update referral status:", e);
+    }
+  };
+
+  const handleUpdateSignupStatus = async (id: string, newStatus: string) => {
+    setPartnerSignups((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, status: newStatus } : s))
+    );
+    try {
+      await updateDoc(doc(db, "partner_signups", id), {
+        status: newStatus,
+        updatedAt: new Date().toISOString(),
+      }).catch(() => {});
+      await fetch("/api/admin/submissions/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      }).catch(() => {});
+      showToast(`Updated partner code status to: ${newStatus}`);
+    } catch (e) {
+      console.warn("Could not update signup status:", e);
+    }
+  };
+
+  const handleUpdatePreviewStatus = async (id: string, newStatus: string) => {
+    setPreviewRequests((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
+    );
+    try {
+      await updateDoc(doc(db, "preview_requests", id), {
+        status: newStatus,
+        updatedAt: new Date().toISOString(),
+      }).catch(() => {});
+      await fetch("/api/admin/submissions/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      }).catch(() => {});
+      showToast(`Updated preview build status to: ${newStatus}`);
+    } catch (e) {
+      console.warn("Could not update preview status:", e);
+    }
+  };
+
+  const handleTriggerTestNotification = async () => {
+    setIsTestingNotification(true);
+    setTestNotificationResult(null);
+    try {
+      const res = await fetch("/api/admin/test-notification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("✅ Notification verified! Check admin inboxes (jaimzz247@gmail.com, teamlead@getportalbuild.com).");
+        setTestNotificationResult("Delivered successfully to registered admin inboxes.");
+      } else {
+        showToast(`⚠️ Dispatch notice: ${data.error || "Completed"}`);
+        setTestNotificationResult(data.error || "Notice returned");
+      }
+    } catch (e: any) {
+      showToast("Dispatch test failed.");
+      setTestNotificationResult(e.message || "Failed");
+    } finally {
+      setIsTestingNotification(false);
+    }
+  };
 
   // Track notes textarea focus/editing
   useEffect(() => {
@@ -3323,109 +3545,177 @@ export default function AdminDashboard() {
                   )}
 
                   {/* Statistics Ticker Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
-                    <div className="bg-white/[0.01] border border-white/5 p-4 relative overflow-hidden">
-                      <div className="text-xs uppercase font-mono tracking-widest text-slate-400 font-bold mb-1">
-                        Total Leads
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 shrink-0">
+                    <div className="bg-white/[0.01] border border-white/5 p-3.5 relative overflow-hidden rounded-lg">
+                      <div className="text-[11px] uppercase font-mono tracking-widest text-slate-400 font-bold mb-1">
+                        Total Inbound
                       </div>
-                      <div className="text-2xl md:text-3xl font-bold font-sans text-white flex items-baseline gap-2">
-                        {totalSubmissions}
-                        <span className="text-[10px] text-slate-500 font-mono font-medium">
-                          apps
-                        </span>
+                      <div className="text-2xl font-bold font-sans text-white flex items-baseline gap-1.5">
+                        {applications.length + previewRequests.length + partnerReferrals.length + partnerSignups.length}
+                        <span className="text-[10px] text-slate-500 font-mono">entries</span>
                       </div>
-                      <BarChart3 className="w-10 h-10 text-white/5 absolute right-4 bottom-4" />
+                      <BarChart3 className="w-8 h-8 text-white/5 absolute right-3 bottom-3" />
                     </div>
 
-                    <div className="bg-white/[0.01] border border-white/5 p-4 relative overflow-hidden">
-                      <div className="text-xs uppercase font-mono tracking-widest text-slate-400 font-bold mb-1">
-                        Pending Review
+                    <div className="bg-white/[0.01] border border-white/5 p-3.5 relative overflow-hidden rounded-lg">
+                      <div className="text-[11px] uppercase font-mono tracking-widest text-orange-400 font-bold mb-1">
+                        Preview Leads
                       </div>
-                      <div className="text-2xl md:text-3xl font-bold font-sans text-amber-500 flex items-baseline gap-2">
-                        {pendingCount}
-                        <span className="text-[10px] text-slate-500 font-mono font-medium">
-                          pending
-                        </span>
+                      <div className="text-2xl font-bold font-sans text-orange-400 flex items-baseline gap-1.5">
+                        {previewRequests.length}
+                        <span className="text-[10px] text-slate-500 font-mono">cohorts</span>
                       </div>
-                      <Clock className="w-10 h-10 text-amber-500/5 absolute right-4 bottom-4" />
+                      <Sparkles className="w-8 h-8 text-orange-500/5 absolute right-3 bottom-3" />
                     </div>
 
-                    <div className="bg-white/[0.01] border border-white/5 p-4 relative overflow-hidden">
-                      <div className="text-xs uppercase font-mono tracking-widest text-slate-400 font-bold mb-1">
-                        Approved Pilot Sprints
+                    <div className="bg-white/[0.01] border border-white/5 p-3.5 relative overflow-hidden rounded-lg">
+                      <div className="text-[11px] uppercase font-mono tracking-widest text-blue-400 font-bold mb-1">
+                        Client Referrals
                       </div>
-                      <div className="text-2xl md:text-3xl font-bold font-sans text-emerald-500 flex items-baseline gap-2">
-                        {approvedCount}
-                        <span className="text-[10px] text-slate-500 font-mono font-medium">
-                          active
-                        </span>
+                      <div className="text-2xl font-bold font-sans text-blue-400 flex items-baseline gap-1.5">
+                        {partnerReferrals.length}
+                        <span className="text-[10px] text-slate-500 font-mono">referred</span>
                       </div>
-                      <CheckCircle2 className="w-10 h-10 text-emerald-500/5 absolute right-4 bottom-4" />
+                      <Users className="w-8 h-8 text-blue-500/5 absolute right-3 bottom-3" />
                     </div>
 
-                    <div className="bg-white/[0.01] border border-white/5 p-4 relative overflow-hidden">
-                      <div className="text-xs uppercase font-mono tracking-widest text-slate-400 font-bold mb-1">
-                        Qualifying Conversion
+                    <div className="bg-white/[0.01] border border-white/5 p-3.5 relative overflow-hidden rounded-lg">
+                      <div className="text-[11px] uppercase font-mono tracking-widest text-emerald-400 font-bold mb-1">
+                        Partner Signups
                       </div>
-                      <div className="text-2xl md:text-3xl font-bold font-sans text-orange-500 flex items-baseline gap-2">
-                        {conversionRate}%
-                        <span className="text-[10px] text-slate-500 font-mono font-medium">
-                          approved
-                        </span>
+                      <div className="text-2xl font-bold font-sans text-emerald-400 flex items-baseline gap-1.5">
+                        {partnerSignups.length}
+                        <span className="text-[10px] text-slate-500 font-mono">partners</span>
                       </div>
-                      <TrendingUp className="w-10 h-10 text-orange-500/5 absolute right-4 bottom-4" />
+                      <Award className="w-8 h-8 text-emerald-500/5 absolute right-3 bottom-3" />
+                    </div>
+
+                    <div className="bg-white/[0.01] border border-white/5 p-3.5 relative overflow-hidden rounded-lg col-span-2 sm:col-span-1">
+                      <div className="text-[11px] uppercase font-mono tracking-widest text-slate-400 font-bold mb-1">
+                        Applications
+                      </div>
+                      <div className="text-2xl font-bold font-sans text-white flex items-baseline gap-1.5">
+                        {applications.length}
+                        <span className="text-[10px] text-slate-500 font-mono">pre-approvals</span>
+                      </div>
+                      <CheckCircle2 className="w-8 h-8 text-white/5 absolute right-3 bottom-3" />
                     </div>
                   </div>
 
-                  {/* Tab Selector for Directory vs Analytics vs Audit */}
+                  {/* Notification System Live Banner */}
+                  <div className="bg-slate-900/60 border border-white/[0.08] px-4 py-2.5 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shrink-0">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <span className="inline-flex items-center gap-1.5 text-emerald-400 font-mono font-bold text-[11px] uppercase tracking-wider">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        Admin Notification Pipeline Active
+                      </span>
+                      <span className="text-slate-500 hidden sm:inline">|</span>
+                      <span className="text-slate-300 font-mono text-[11px]">
+                        Target Inboxes: <strong className="text-white">jaimzz247@gmail.com</strong>, <strong className="text-white">teamlead@getportalbuild.com</strong>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {testNotificationResult && (
+                        <span className="text-[11px] font-mono text-emerald-400 truncate max-w-xs">
+                          {testNotificationResult}
+                        </span>
+                      )}
+                      <button
+                        onClick={handleTriggerTestNotification}
+                        disabled={isTestingNotification}
+                        className="px-2.5 py-1 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 border border-orange-500/30 rounded text-[11px] font-mono flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        <Send className="w-3 h-3" />
+                        <span>{isTestingNotification ? "Dispatching..." : "Send Test Alert"}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Tab Selector for Directory vs Previews vs Partners vs Analytics vs Audit */}
                   <div className="flex border-b border-white/10 shrink-0 gap-1 overflow-x-auto scrollbar-none">
                     <button
                       onClick={() => setActiveTab("leads")}
-                      className={`px-6 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                      className={`px-4 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                         activeTab === "leads"
                           ? "border-orange-500 text-white bg-white/[0.02]"
                           : "border-transparent text-slate-500 hover:text-slate-300"
                       }`}
                     >
                       <Users className="w-4 h-4 text-orange-500" />
-                      <span>Leads Directory</span>
+                      <span>Applications</span>
+                      <span className="px-1.5 py-0.2 rounded text-[10px] bg-white/10 text-white font-mono">{applications.length}</span>
                     </button>
+
+                    <button
+                      onClick={() => setActiveTab("previews")}
+                      className={`px-4 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                        activeTab === "previews"
+                          ? "border-orange-500 text-white bg-white/[0.02]"
+                          : "border-transparent text-slate-500 hover:text-slate-300"
+                      }`}
+                    >
+                      <Sparkles className="w-4 h-4 text-orange-400" />
+                      <span>Cohort Previews</span>
+                      <span className="px-1.5 py-0.2 rounded text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 font-mono">
+                        {previewRequests.length}
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab("partners")}
+                      className={`px-4 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                        activeTab === "partners"
+                          ? "border-orange-500 text-white bg-white/[0.02]"
+                          : "border-transparent text-slate-500 hover:text-slate-300"
+                      }`}
+                    >
+                      <Award className="w-4 h-4 text-orange-400" />
+                      <span>Partner Submissions</span>
+                      <span className="px-1.5 py-0.2 rounded text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30 font-mono">
+                        {partnerReferrals.length + partnerSignups.length}
+                      </span>
+                    </button>
+
                     <button
                       onClick={() => setActiveTab("analytics")}
-                      className={`px-6 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                      className={`px-4 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                         activeTab === "analytics"
                           ? "border-orange-500 text-white bg-white/[0.02]"
                           : "border-transparent text-slate-500 hover:text-slate-300"
                       }`}
                     >
                       <BarChart3 className="w-4 h-4 text-orange-500" />
-                      <span>Analytics Dashboard</span>
+                      <span>Analytics</span>
                     </button>
+
                     <button
                       onClick={() => setActiveTab("growth")}
-                      className={`px-6 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                      className={`px-4 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                         activeTab === "growth"
                           ? "border-orange-500 text-white bg-white/[0.02]"
                           : "border-transparent text-slate-500 hover:text-slate-300"
                       }`}
                     >
                       <Trophy className="w-4 h-4 text-orange-500" />
-                      <span>Growth Tracker</span>
+                      <span>Growth</span>
                     </button>
+
                     <button
                       onClick={() => setActiveTab("workflow")}
-                      className={`px-6 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                      className={`px-4 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                         activeTab === "workflow"
                           ? "border-orange-500 text-white bg-white/[0.02]"
                           : "border-transparent text-slate-500 hover:text-slate-300"
                       }`}
                     >
                       <Target className="w-4 h-4 text-orange-500" />
-                      <span>Workflow Rules</span>
+                      <span>Workflow</span>
                     </button>
+
                     <button
                       onClick={() => setActiveTab("audit")}
-                      className={`px-6 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                      className={`px-4 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                         activeTab === "audit"
                           ? "border-orange-500 text-white bg-white/[0.02]"
                           : "border-transparent text-slate-500 hover:text-slate-300"
@@ -3434,9 +3724,10 @@ export default function AdminDashboard() {
                       <History className="w-4 h-4 text-orange-500" />
                       <span>Activity Log</span>
                     </button>
+
                     <button
                       onClick={() => setActiveTab("team")}
-                      className={`px-6 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                      className={`px-4 py-2.5 text-xs uppercase tracking-widest font-mono font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                         activeTab === "team"
                           ? "border-orange-500 text-white bg-white/[0.02]"
                           : "border-transparent text-slate-500 hover:text-slate-300"
@@ -5398,6 +5689,22 @@ export default function AdminDashboard() {
                         )}
                       </div>
                     </div>
+                  ) : activeTab === "previews" ? (
+                    <PreviewRequestsView
+                      requests={previewRequests}
+                      onUpdateStatus={handleUpdatePreviewStatus}
+                      onTriggerTestNotification={handleTriggerTestNotification}
+                      isTestingNotification={isTestingNotification}
+                    />
+                  ) : activeTab === "partners" ? (
+                    <PartnerSubmissionsView
+                      referrals={partnerReferrals}
+                      signups={partnerSignups}
+                      onUpdateReferralStatus={handleUpdateReferralStatus}
+                      onUpdateSignupStatus={handleUpdateSignupStatus}
+                      onTriggerTestNotification={handleTriggerTestNotification}
+                      isTestingNotification={isTestingNotification}
+                    />
                   ) : activeTab === "analytics" ? (
                     <FirstPartyAnalyticsDashboard
                       previewRequestsCount={previewRequests?.length || 0}
@@ -5995,10 +6302,10 @@ export default function AdminDashboard() {
                         <div>
                           <h2 className="text-sm font-bold tracking-tight text-white font-mono flex items-center gap-2">
                             <Shield className="w-4 h-4 text-orange-500" />
-                            <span>ADMIN ACCESS & PRIVILEGES CONTROLLER</span>
+                            <span>ADMIN ACCESS & CREDENTIALS CONTROLLER</span>
                           </h2>
                           <p className="text-[10px] text-slate-500 font-mono uppercase mt-1">
-                            Register teammates and configure dynamic query permissions & role overrides.
+                            Complete access credentials, portal shortcuts, and notification delivery routing.
                           </p>
                         </div>
                         
@@ -6008,6 +6315,60 @@ export default function AdminDashboard() {
                           ) : (
                             <span className="text-slate-400 font-bold">🔒 Team Credentials ({userPrivilege === "read_only" ? "Read-Only" : "Full Control"})</span>
                           )}
+                        </div>
+                      </div>
+
+                      {/* Access & Inspection Quick-Reference Card */}
+                      <div className="bg-slate-950/70 border border-white/[0.08] rounded-xl p-4 shrink-0 space-y-3">
+                        <div className="flex items-center justify-between border-b border-white/[0.06] pb-2">
+                          <span className="text-xs font-mono font-bold uppercase tracking-wider text-orange-400 flex items-center gap-1.5">
+                            <Key className="w-3.5 h-3.5" />
+                            Reconfirmed Portal Access Details
+                          </span>
+                          <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded font-bold">
+                            ALL FORMS LIVE
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
+                          <div className="bg-slate-900/60 p-2.5 rounded border border-white/[0.04]">
+                            <span className="text-slate-500 text-[10px] uppercase block">Direct Ingress URL</span>
+                            <span className="text-white font-bold">/admin</span>
+                            <span className="text-slate-400 block text-[10px] mt-0.5">or /#admin / ?admin=true</span>
+                          </div>
+
+                          <div className="bg-slate-900/60 p-2.5 rounded border border-white/[0.04]">
+                            <span className="text-slate-500 text-[10px] uppercase block">Keyboard Shortcut</span>
+                            <span className="text-orange-400 font-bold">Shift + A</span>
+                            <span className="text-slate-400 block text-[10px] mt-0.5">Instant modal from any page</span>
+                          </div>
+
+                          <div className="bg-slate-900/60 p-2.5 rounded border border-white/[0.04]">
+                            <span className="text-slate-500 text-[10px] uppercase block">Admin Passcodes</span>
+                            <span className="text-emerald-400 font-bold">elevate2026</span>
+                            <span className="text-slate-400 block text-[10px] mt-0.5">Secondary: portalbuild2025</span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono pt-1">
+                          <div className="bg-slate-900/60 p-2.5 rounded border border-white/[0.04]">
+                            <span className="text-slate-500 text-[10px] uppercase block">Authorized Google Sign-In</span>
+                            <span className="text-white font-semibold">elevatemensah@gmail.com</span>
+                          </div>
+
+                          <div className="bg-slate-900/60 p-2.5 rounded border border-white/[0.04] flex items-center justify-between">
+                            <div>
+                              <span className="text-slate-500 text-[10px] uppercase block">Active Notification Dispatch</span>
+                              <span className="text-emerald-400 font-semibold truncate block">jaimzz247@gmail.com, teamlead@getportalbuild.com</span>
+                            </div>
+                            <button
+                              onClick={handleTriggerTestNotification}
+                              disabled={isTestingNotification}
+                              className="ml-2 px-2.5 py-1 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 border border-orange-500/30 rounded text-[10px] font-mono shrink-0 cursor-pointer disabled:opacity-50"
+                            >
+                              {isTestingNotification ? "Testing..." : "Test Dispatch"}
+                            </button>
+                          </div>
                         </div>
                       </div>
 

@@ -21,7 +21,6 @@ import {
   Calendar,
   Layers,
   Calculator,
-  Sparkles,
   TrendingUp
 } from 'lucide-react';
 import { collection, doc, setDoc } from 'firebase/firestore';
@@ -366,8 +365,8 @@ export default function PartnersPage() {
   return (
     <div className="min-h-screen bg-[#020617] text-slate-100 font-sans selection:bg-orange-500/30 selection:text-orange-50">
       {/* Top Header Bar / Brand Lockup matching site */}
-      <header className="border-b border-white/[0.08] bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+      <header className="border-b border-white/[0.08] bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={handleBackHome}
@@ -385,6 +384,45 @@ export default function PartnersPage() {
               </span>
             </div>
           </div>
+
+          {/* Desktop Navigation Links */}
+          <nav aria-label="Partner page navigation" className="hidden lg:flex items-center gap-7 text-xs font-medium text-slate-300">
+            <button
+              type="button"
+              onClick={() => scrollToSection('how-it-works')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              How It Works
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection('demos')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Demos
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection('commission')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Commission
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection('calculator')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Calculator
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection('faq')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              FAQ
+            </button>
+          </nav>
 
           <div className="flex items-center gap-3">
             <button
@@ -408,10 +446,9 @@ export default function PartnersPage() {
       <section className="relative pt-16 sm:pt-24 pb-16 px-6 max-w-6xl mx-auto text-center">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[360px] bg-orange-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono mb-6">
-          <Zap className="w-3.5 h-3.5 text-orange-400" />
-          <span>PortalBuild Partner Programme</span>
-        </div>
+        <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-4 sm:mb-6">
+          PortalBuild Partner Programme
+        </p>
 
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-[1.12]">
           Your clients run cohorts. We build the portal underneath.
@@ -448,7 +485,7 @@ export default function PartnersPage() {
       </div>
 
       {/* SECTION 2 — HOW IT WORKS */}
-      <section className="py-16 sm:py-20 px-6 max-w-6xl mx-auto">
+      <section id="how-it-works" className="py-16 sm:py-20 px-6 max-w-6xl mx-auto scroll-mt-20">
         <div className="text-center max-w-xl mx-auto mb-12">
           <span className="text-xs font-mono uppercase tracking-wider text-orange-400">Step-by-Step Model</span>
           <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">
@@ -695,7 +732,7 @@ export default function PartnersPage() {
       </div>
 
       {/* SECTION 5 — WHAT YOU EARN */}
-      <section className="py-16 sm:py-20 px-6 max-w-6xl mx-auto">
+      <section id="commission" className="py-16 sm:py-20 px-6 max-w-6xl mx-auto scroll-mt-20">
         <div className="text-center max-w-xl mx-auto mb-10">
           <span className="text-xs font-mono uppercase tracking-wider text-orange-400">Compensation Model</span>
           <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">
@@ -798,17 +835,16 @@ export default function PartnersPage() {
         </div>
 
         {/* Interactive Earnings Calculator */}
-        <div className="mt-12 rounded-2xl border border-white/[0.1] bg-slate-900/70 backdrop-blur-xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+        <div id="calculator" className="mt-12 rounded-2xl border border-white/[0.1] bg-slate-900/70 backdrop-blur-xl p-6 sm:p-8 relative overflow-hidden shadow-2xl scroll-mt-20">
           {/* Top specular hairline edge */}
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-400/40 to-transparent pointer-events-none" />
 
           {/* Header of Calculator */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
             <div>
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono mb-2">
-                <Calculator className="w-3.5 h-3.5 text-orange-400" />
-                <span>Interactive Earnings Calculator</span>
-              </div>
+              <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-2">
+                Interactive Earnings Calculator
+              </p>
               <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                 Model your partner referral commission
               </h3>
@@ -970,7 +1006,7 @@ export default function PartnersPage() {
                     <div className="pt-2 border-t border-emerald-500/20 bg-emerald-950/20 -mx-3 px-3 py-2 rounded-lg border border-emerald-500/30">
                       <div className="flex items-center justify-between text-emerald-300 font-bold">
                         <span className="flex items-center gap-1.5">
-                          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                          <Award className="w-3.5 h-3.5 text-emerald-400" />
                           <span>3rd Client Milestone Bonus:</span>
                         </span>
                         <span>+$1,000</span>
@@ -1528,12 +1564,11 @@ export default function PartnersPage() {
       </div>
 
       {/* SECTION 10 — FAQ (ACCORDION) */}
-      <section className="py-16 sm:py-28 px-6 max-w-4xl mx-auto" id="faq">
+      <section className="py-16 sm:py-28 px-6 max-w-4xl mx-auto scroll-mt-20" id="faq">
         <div className="text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.08] bg-slate-900/60 backdrop-blur-md text-slate-300 text-xs font-mono uppercase tracking-wider mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-            <span className="text-orange-400">Frequently Asked Questions</span>
-          </div>
+          <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-3">
+            Frequently Asked Questions
+          </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-[-0.03em] text-white leading-tight">
             Everything you need to know about the partner programme.
           </h2>

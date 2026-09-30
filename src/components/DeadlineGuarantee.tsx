@@ -10,10 +10,9 @@ export default function DeadlineGuarantee() {
       />
 
       <div className="max-w-4xl mx-auto relative z-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/20 bg-orange-500/10 text-orange-400 text-xs font-mono uppercase tracking-wider mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-          <span>Delivery Guarantee // Day-7 SLA</span>
-        </div>
+        <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-3">
+          Delivery Guarantee & Day-7 SLA
+        </p>
         <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-[-0.03em] mb-4 leading-snug">
           Live 7 days before your start date, or you don't pay.
         </h3>

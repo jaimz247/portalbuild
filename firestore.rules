@@ -92,6 +92,38 @@ service cloud.firestore {
         && (!data.keys().contains('a') || (data.a is string && data.a.size() <= 200));
     }
 
+    // Partner Referral validation helper
+    function isValidPartnerReferral(data) {
+      return data.keys().hasAll(['name', 'email', 'clientProgramUrl', 'status', 'createdAt'])
+        && data.keys().size() <= 12
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 300
+        && data.clientProgramUrl is string && data.clientProgramUrl.size() > 0 && data.clientProgramUrl.size() <= 500
+        && data.status is string
+        && data.createdAt is string && data.createdAt.size() <= 60
+        // Optional Fields
+        && (!data.keys().contains('id') || (data.id is string && data.id.size() <= 128))
+        && (!data.keys().contains('referralCode') || (data.referralCode is string && data.referralCode.size() <= 50))
+        && (!data.keys().contains('cohortDate') || (data.cohortDate is string && data.cohortDate.size() <= 100))
+        && (!data.keys().contains('notes') || (data.notes is string && data.notes.size() <= 3000))
+        && (!data.keys().contains('previewRecipient') || (data.previewRecipient is string && data.previewRecipient.size() <= 50));
+    }
+
+    // Partner Signup validation helper
+    function isValidPartnerSignup(data) {
+      return data.keys().hasAll(['name', 'email', 'whatYouDo', 'groupClientsCount', 'status', 'createdAt'])
+        && data.keys().size() <= 10
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 300
+        && data.whatYouDo is string && data.whatYouDo.size() > 0 && data.whatYouDo.size() <= 300
+        && data.groupClientsCount is string && data.groupClientsCount.size() > 0 && data.groupClientsCount.size() <= 100
+        && data.status is string
+        && data.createdAt is string && data.createdAt.size() <= 60
+        // Optional Fields
+        && (!data.keys().contains('id') || (data.id is string && data.id.size() <= 128))
+        && (!data.keys().contains('websiteOrLinkedIn') || (data.websiteOrLinkedIn is string && data.websiteOrLinkedIn.size() <= 500));
+    }
+
     // Site Session validation helper (First-Party Telemetry)
     function isValidSiteSession(data) {
       return data.keys().hasAll(['sessionId', 'visitorId', 'deviceType', 'startedAt'])
@@ -143,6 +175,32 @@ service cloud.firestore {
         
       allow update: if isFullControlAdmin()
         && isValidPreviewRequest(incoming());
+
+      allow delete: if isFullControlAdmin();
+    }
+
+    match /partner_referrals/{referralId} {
+      allow get, list: if isAdmin();
+
+      allow create: if isValidId(referralId)
+        && isValidPartnerReferral(incoming())
+        && incoming().status == 'pending_partner_review';
+
+      allow update: if isFullControlAdmin()
+        && isValidPartnerReferral(incoming());
+
+      allow delete: if isFullControlAdmin();
+    }
+
+    match /partner_signups/{signupId} {
+      allow get, list: if isAdmin();
+
+      allow create: if isValidId(signupId)
+        && isValidPartnerSignup(incoming())
+        && incoming().status == 'pending_partner_approval';
+
+      allow update: if isFullControlAdmin()
+        && isValidPartnerSignup(incoming());
 
       allow delete: if isFullControlAdmin();
     }

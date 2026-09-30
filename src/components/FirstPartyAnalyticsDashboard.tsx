@@ -348,7 +348,7 @@ export default function FirstPartyAnalyticsDashboard({
 
     filteredEvents.forEach((e) => {
       const text = `${e.label} ${e.metadata || ''}`.toLowerCase();
-      if (text.includes('growth collective') || text.includes('accelerator')) growth++;
+      if (text.includes('growth collective') || text.includes('accelerator') || text.includes('aldermoor') || text.includes('certification') || text.includes('coaching')) growth++;
       if (text.includes('harbourline') || text.includes('leadership')) harbour++;
       if (text.includes('northline') || text.includes('agency')) northline++;
     });
@@ -361,7 +361,7 @@ export default function FirstPartyAnalyticsDashboard({
 
     return [
       { name: 'Harbourline (Exec Leadership)', views: harbour, fill: '#f97316' },
-      { name: 'Growth Collective (Founder Accel)', views: growth, fill: '#10b981' },
+      { name: 'Aldermoor (Coaching Institute)', views: growth, fill: '#10b981' },
       { name: 'Northline Collective (Agency)', views: northline, fill: '#8b5cf6' },
     ];
   }, [filteredEvents]);
@@ -767,7 +767,7 @@ export default function FirstPartyAnalyticsDashboard({
             </span>
           </div>
           <p className="mt-2 text-[11px] text-slate-500 font-mono">
-            Harbourline & Growth Collective test drives
+            Harbourline & Aldermoor test drives
           </p>
         </div>
       </div>

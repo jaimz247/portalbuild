@@ -61,11 +61,13 @@ const COHORT_OPTIONS = [
   'No date set yet',
 ];
 
+// Preserved for future restoration:
+// { name: 'The Growth Collective', type: 'Founder Accelerator', url: 'https://growthcollective.cohortroom.com' }
 const SAMPLE_PORTALS = [
   {
-    name: 'The Growth Collective',
-    type: 'Founder Accelerator',
-    url: 'https://growthcollective.cohortroom.com',
+    name: 'Aldermoor Coaching Institute',
+    type: 'Coaching Certification',
+    url: 'https://certification.cohortroom.com',
   },
   {
     name: 'Harbourline Institute',
@@ -534,10 +536,9 @@ export default function ApplicationForm() {
                         <Check className="w-8 h-8 stroke-[3]" />
                       </motion.div>
 
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono mb-3">
-                        <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-                        <span>PREVIEW BUILD QUEUED · 24-HOUR TARGET</span>
-                      </div>
+                      <p className="text-xs font-mono text-emerald-400 mb-3 tracking-wide">
+                        PREVIEW BUILD QUEUED · 24-HOUR TARGET
+                      </p>
                       <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                         Your custom portal is now in production.
                       </h2>
@@ -662,10 +663,9 @@ export default function ApplicationForm() {
                     {/* LEFT COLUMN: Value Proposition, Miniature Staging Teaser & Proof */}
                     <div className="md:col-span-5 bg-slate-900/80 border-b md:border-b-0 md:border-r border-white/[0.08] p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
                       <div>
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-orange-500/10 border border-orange-500/25 text-orange-400 text-[11px] font-mono uppercase tracking-wider mb-3.5">
-                          <Sparkles className="w-3 h-3" />
-                          <span>Free 24h Staging Preview</span>
-                        </div>
+                        <p className="text-[11px] font-mono uppercase tracking-wider text-orange-400 mb-3.5">
+                          Free 24h Staging Preview
+                        </p>
 
                         <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
                           See your cohort inside a custom-built, executive portal.

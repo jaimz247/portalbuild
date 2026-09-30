@@ -51,6 +51,48 @@
       },
       "required": ["email", "programUrl", "cohortStartDate", "status", "createdAt", "updatedAt"]
     },
+    "partner_referral": {
+      "title": "Partner Referral",
+      "description": "Partner program client referral submission",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "referralCode": { "type": "string" },
+        "clientProgramUrl": { "type": "string" },
+        "cohortDate": { "type": "string" },
+        "notes": { "type": "string" },
+        "previewRecipient": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["pending_partner_review", "contacted", "approved", "paid", "rejected"]
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "clientProgramUrl", "status", "createdAt"]
+    },
+    "partner_signup": {
+      "title": "Partner Signup",
+      "description": "Partner onboarding code and kit request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "whatYouDo": { "type": "string" },
+        "groupClientsCount": { "type": "string" },
+        "websiteOrLinkedIn": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["pending_partner_approval", "approved", "active", "rejected"]
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "whatYouDo", "groupClientsCount", "status", "createdAt"]
+    },
     "site_session": {
       "title": "Site Session",
       "description": "First-party anonymous visitor session telemetry",
@@ -113,6 +155,14 @@
     "/preview_requests/{requestId}": {
       "schema": "#/entities/preview_request",
       "description": "Submissions for free 24h interactive preview portals"
+    },
+    "/partner_referrals/{referralId}": {
+      "schema": "#/entities/partner_referral",
+      "description": "Submissions from partners referring cohort program clients"
+    },
+    "/partner_signups/{signupId}": {
+      "schema": "#/entities/partner_signup",
+      "description": "Partner onboarding and referral code requests"
     },
     "/site_sessions/{sessionId}": {
       "schema": "#/entities/site_session",

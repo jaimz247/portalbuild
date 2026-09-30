@@ -680,7 +680,7 @@ export const seedSampleAnalyticsIfEmpty = () => {
         visitorId: vId,
         eventType: 'demo_interaction',
         eventCategory: 'engagement',
-        label: i % 3 === 0 ? 'Explored Harbourline Institute' : 'Explored The Growth Collective',
+        label: i % 3 === 0 ? 'Explored Harbourline Institute' : 'Explored Aldermoor Coaching Institute',
         path: '/',
         timestamp: new Date(new Date(time).getTime() + 45000).toISOString(),
         isInternal,

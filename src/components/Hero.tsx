@@ -26,12 +26,10 @@ export default function Hero({ onOpenModal }: HeroProps) {
 
   return (
     <section className="py-12 md:py-24 px-6 max-w-6xl mx-auto text-center flex flex-col items-center relative">
-      {/* Category Descriptor - Refined Editorial Label */}
-      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/[0.08] bg-slate-900/40 text-xs text-slate-300 mb-8">
-        <span className="text-[11px] font-mono tracking-wide text-slate-300">
-          The member retention layer for high-ticket cohort programs
-        </span>
-      </div>
+      {/* Category Descriptor - Refined Editorial Kicker */}
+      <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-4 sm:mb-6">
+        The member retention layer for high-ticket cohort programs
+      </p>
 
       {/* H1 Headline */}
       <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-[-0.03em] text-white mb-6 leading-[1.06] max-w-4xl">

@@ -1,0 +1,80 @@
+[
+  {
+    "id": "partner_signup-1790763302801-5nq2r",
+    "type": "partner_signup",
+    "data": {
+      "name": "Elena Vance",
+      "email": "elena@growthpartners.io",
+      "whatYouDo": "Cohort Launch Consultant",
+      "groupClientsCount": "5-10 clients/year",
+      "websiteOrLinkedIn": "growthpartners.io",
+      "createdAt": "2026-09-30T10:15:02.801Z",
+      "status": "pending_partner_approval"
+    },
+    "createdAt": "2026-09-30T10:15:02.801Z",
+    "status": "pending_partner_approval"
+  },
+  {
+    "id": "partner_referral-1790763292579-ay3s1",
+    "type": "partner_referral",
+    "data": {
+      "name": "Alex Rivers",
+      "email": "alex@scaleagency.co",
+      "clientProgramUrl": "scaleagency.co/mastermind",
+      "referralCode": "SCALE50",
+      "cohortDate": "November 15, 2026",
+      "notes": "Client wants participant radar and onboarding portal for 45 founders.",
+      "previewRecipient": "to_client",
+      "createdAt": "2026-09-30T10:14:52.579Z",
+      "status": "pending_partner_review"
+    },
+    "createdAt": "2026-09-30T10:14:52.579Z",
+    "status": "pending_partner_review"
+  },
+  {
+    "id": "preview_request-1790763270127-pss9p",
+    "type": "preview_request",
+    "data": {
+      "email": "founder@accelerator.com",
+      "programUrl": "https://accelerator.com/masterclass",
+      "cohortStartDate": "2026-10-15",
+      "ref": "ALEX01",
+      "createdAt": "2026-09-30T10:14:30.127Z",
+      "status": "pending_preview"
+    },
+    "createdAt": "2026-09-30T10:14:30.127Z",
+    "status": "pending_preview"
+  },
+  {
+    "id": "partner_signup-1790763264281-5q0u1",
+    "type": "partner_signup",
+    "data": {
+      "name": "Jordan Kelly",
+      "email": "jordan@agency.io",
+      "whatYouDo": "Cohort & Community Strategist",
+      "groupClientsCount": "4 to 10 clients",
+      "websiteOrLinkedIn": "https://linkedin.com/in/jordankelly",
+      "createdAt": "2026-09-30T10:14:24.281Z",
+      "status": "pending_partner_approval"
+    },
+    "createdAt": "2026-09-30T10:14:24.281Z",
+    "status": "pending_partner_approval"
+  },
+  {
+    "id": "partner_referral-1790763261123-yh09d",
+    "type": "partner_referral",
+    "data": {
+      "name": "Alex Partner",
+      "email": "alex@growthstudio.co",
+      "clientProgramUrl": "https://masterycohort.com",
+      "referralCode": "ALEX01",
+      "cohortDate": "2026-11-01",
+      "notes": "Cohort of 25 enterprise founders currently in WhatsApp.",
+      "previewRecipient": "to_me",
+      "createdAt": "2026-09-30T10:14:21.123Z",
+      "status": "pending_partner_review"
+    },
+    "createdAt": "2026-09-30T10:14:21.123Z",
+    "status": "pending_partner_review"
+  }
+]

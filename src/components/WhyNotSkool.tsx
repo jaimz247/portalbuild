@@ -39,10 +39,9 @@ export default function WhyNotSkool() {
     <section className="py-16 md:py-28 px-6 max-w-6xl mx-auto" id="why-not-skool">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.08] bg-slate-900/60 backdrop-blur-md text-slate-300 text-xs font-mono uppercase tracking-wider mb-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-          <span className="text-orange-400">Platform Comparison</span>
-        </div>
+        <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-3">
+          Platform Architecture
+        </p>
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-[-0.03em] text-white leading-tight mb-4">
           Why Not Skool, Circle, or Kajabi?
         </h2>
@@ -58,7 +57,7 @@ export default function WhyNotSkool() {
             key={idx}
             className={`p-6 md:p-8 rounded-2xl flex flex-col justify-between transition-all duration-300 backdrop-blur-md relative overflow-hidden ${
               item.highlight
-                ? 'bg-slate-900/60 border border-emerald-500/40 shadow-[0_0_50px_-15px_rgba(16,185,129,0.2)] scale-[1.02] z-10'
+                ? 'bg-slate-900/80 border border-emerald-500/30 ring-1 ring-emerald-500/20 shadow-xl z-10'
                 : 'bg-slate-900/40 border border-white/[0.08] hover:border-white/[0.16]'
             }`}
           >

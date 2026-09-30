@@ -17,7 +17,6 @@ import StickyMobileCTA from './components/StickyMobileCTA';
 import ApplicationForm from './components/ApplicationForm';
 import ExitIntentTrigger from './components/ExitIntentTrigger';
 import FadeIn from './components/FadeIn';
-import CursorTracker from './components/CursorTracker';
 import SEO from './components/SEO';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import PrivacyPage from './pages/PrivacyPage';
@@ -254,7 +253,6 @@ export default function App() {
         description="One branded home for your program. One dashboard showing exactly who's falling behind. Live before your next cohort starts."
         url="https://getportalbuild.com"
       />
-      <CursorTracker />
       
       {/* Background glow accents */}
       <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-orange-500/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>

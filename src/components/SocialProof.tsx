@@ -72,10 +72,9 @@ export default function SocialProof({ isLoading }: SocialProofProps) {
   return (
     <section className="py-16 md:py-24 px-6 max-w-6xl mx-auto border-t border-b border-white/[0.08] bg-slate-900/30 transition-opacity duration-300" id="proof">
       <div className="flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.08] bg-slate-900/60 backdrop-blur-md text-slate-300 text-xs font-mono uppercase tracking-wider mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-          <span className="text-orange-400">Founding Client Opportunity</span>
-        </div>
+        <p className="text-xs font-mono uppercase tracking-wider text-orange-400 mb-3">
+          Founding Client Cohort
+        </p>
 
         <h3 className="text-xl md:text-2xl font-bold text-white tracking-[-0.02em] mb-8 max-w-2xl">
           Currently building case studies — apply to be a founding client.

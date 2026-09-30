@@ -10,23 +10,12 @@ initPerformanceTracker();
 const rootEl = document.getElementById('root');
 
 if (rootEl) {
-  if (rootEl.hasChildNodes()) {
-    hydrateRoot(
-      rootEl,
-      <StrictMode>
-        <LanguageProvider>
-          <App />
-        </LanguageProvider>
-      </StrictMode>
-    );
-  } else {
-    createRoot(rootEl).render(
-      <StrictMode>
-        <LanguageProvider>
-          <App />
-        </LanguageProvider>
-      </StrictMode>
-    );
-  }
+  createRoot(rootEl).render(
+    <StrictMode>
+      <LanguageProvider>
+        <App />
+      </LanguageProvider>
+    </StrictMode>
+  );
 }
 
