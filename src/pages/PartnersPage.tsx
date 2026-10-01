@@ -26,12 +26,16 @@ import {
   Moon,
   Plus,
   Minus,
-  Sparkles
+  Sparkles,
+  Info,
+  X
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { trackAction } from '../lib/tracker';
 import { useTheme } from '../context/ThemeContext';
+import EarningsSparkline from '../components/EarningsSparkline';
 
 const PLANS_CONFIG = {
   essential: {
@@ -88,7 +92,7 @@ const sanitizeRefCode = (val: string): string => {
 };
 
 export default function PartnersPage() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, isLight } = useTheme();
 
   const handleBackHome = () => {
     window.history.pushState({}, '', '/');
@@ -137,6 +141,7 @@ export default function PartnersPage() {
   // Interactive Earnings Calculator state
   const [calcPlan, setCalcPlan] = useState<PlanKey>('signature');
   const [calcClients, setCalcClients] = useState<number>(3);
+  const [isEarningsTooltipOpen, setIsEarningsTooltipOpen] = useState(false);
 
   // Prefill referral code from ?ref= or pb_ref in sessionStorage
   useEffect(() => {
@@ -1052,35 +1057,117 @@ export default function PartnersPage() {
               <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/[0.08] blur-[70px] rounded-full pointer-events-none" />
 
               <div className="space-y-6 relative z-10">
-                {/* Header Label & Micro-Indicator */}
-                <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
-                  <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                {/* Header Label & Micro-Indicator with Formula Tooltip Trigger */}
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 relative">
+                  <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-orange-500" />
-                    <span>Total Potential Commission</span>
-                  </span>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400">
+                      Total Potential Commission
+                    </span>
+                    {/* Subtle Icon-based Tooltip Trigger */}
+                    <button
+                      type="button"
+                      onClick={() => setIsEarningsTooltipOpen(!isEarningsTooltipOpen)}
+                      className={`p-1 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+                        isEarningsTooltipOpen
+                          ? 'bg-orange-500/20 text-orange-400 ring-1 ring-orange-500/40'
+                          : 'text-slate-500 hover:text-slate-200 hover:bg-white/[0.06]'
+                      }`}
+                      aria-label="Explain how estimated earnings are derived"
+                      title="Click to view earnings formula & payment mechanics"
+                    >
+                      <Info className="w-3.5 h-3.5" />
+                      <span className="text-[9px] font-mono uppercase tracking-wider hidden sm:inline">Formula</span>
+                    </button>
+                  </div>
+
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 shrink-0">
                     Guaranteed Payout
                   </span>
                 </div>
 
-                {/* High-Contrast Primary Number Display */}
-                <div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-black text-white font-mono tracking-tight leading-none drop-shadow-sm">
-                      ${totalCommission.toLocaleString()}
-                    </span>
-                    <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">
-                      USD
-                    </span>
+                {/* Animated Popover Tooltip explaining earnings mechanics */}
+                <AnimatePresence>
+                  {isEarningsTooltipOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      className="p-4 rounded-xl bg-slate-900/95 border border-orange-500/40 shadow-2xl space-y-3 relative z-30 backdrop-blur-xl"
+                    >
+                      <div className="flex items-center justify-between border-b border-white/[0.08] pb-2">
+                        <div className="flex items-center gap-2">
+                          <Calculator className="w-3.5 h-3.5 text-orange-400" />
+                          <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+                            Formula &amp; Payout Mechanics
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsEarningsTooltipOpen(false)}
+                          className="text-slate-400 hover:text-white p-1 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer"
+                          aria-label="Close tooltip"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="space-y-2 text-xs font-mono text-slate-300">
+                        <div className="p-2.5 rounded-lg bg-slate-950 border border-white/[0.08] text-orange-300 font-bold flex flex-wrap items-center justify-between gap-1 shadow-inner">
+                          <span>(${currentPlan.signingFee} upfront + ${currentPlan.retentionBonus} retain) × {calcClients} clients {milestoneBonus > 0 ? '+ $1,000 Milestone Bonus' : ''}</span>
+                          <span className="text-white font-extrabold text-sm">= ${totalCommission.toLocaleString()}</span>
+                        </div>
+                        <ul className="space-y-1.5 text-[11px] text-slate-400 leading-relaxed list-disc list-inside pt-1">
+                          <li>
+                            <strong className="text-white">Upfront Wire Payout:</strong> ${currentPlan.signingFee} per client, wired within 7 business days of client deposit.
+                          </li>
+                          <li>
+                            <strong className="text-white">Quarterly Retention:</strong> ${currentPlan.retentionBonus} per client, wired within 7 business days of their 3rd paid month.
+                          </li>
+                          <li>
+                            <strong className="text-white">Milestone Accelerator:</strong> One-off $1,000 cash bonus unlocked automatically upon your 3rd client signing.
+                          </li>
+                          <li>
+                            <strong className="text-white">Client Free Month:</strong> Your client receives their 1st month free ({currentPlan.clientFreeMonthValue} value) exclusively because they came through your intro.
+                          </li>
+                        </ul>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* High-Contrast Primary Number Display & D3 Sparkline Chart */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl sm:text-5xl lg:text-6xl font-black text-white font-mono tracking-tight leading-none drop-shadow-sm">
+                        ${totalCommission.toLocaleString()}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">
+                        USD
+                      </span>
+                    </div>
+
+                    <p className="text-xs font-mono text-slate-400 mt-2 flex items-center gap-2">
+                      <span>Yield:</span>
+                      <strong className="text-orange-400 font-bold font-mono">
+                        ${Math.round(totalCommission / calcClients).toLocaleString()}
+                      </strong>
+                      <span className="text-slate-500">average cash earned per client</span>
+                    </p>
                   </div>
 
-                  <p className="text-xs font-mono text-slate-400 mt-2 flex items-center gap-2">
-                    <span>Yield:</span>
-                    <strong className="text-orange-400 font-bold font-mono">
-                      ${Math.round(totalCommission / calcClients).toLocaleString()}
-                    </strong>
-                    <span className="text-slate-500">average cash earned per client</span>
-                  </p>
+                  {/* D3 Non-obtrusive Sparkline Chart */}
+                  <div className="shrink-0 p-2.5 rounded-xl bg-slate-950/70 border border-white/[0.08] shadow-inner self-start sm:self-auto flex items-center justify-center">
+                    <EarningsSparkline
+                      currentPlanId={calcPlan}
+                      signingFee={currentPlan.signingFee}
+                      retentionBonus={currentPlan.retentionBonus}
+                      activeClients={calcClients}
+                      isLight={isLight}
+                    />
+                  </div>
                 </div>
 
                 {/* Financial Statement / Structured Settlement Breakdown */}

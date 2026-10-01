@@ -152,6 +152,10 @@ html[data-theme="light"] {
 html.theme-light-active body,
 html[data-theme="light"] body {
   background-color: #f8fafc !important;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(249, 115, 22, 0.08), transparent 70%),
+    radial-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 24px 24px !important;
   color: #0f172a !important;
 }
 
@@ -160,18 +164,18 @@ html.theme-light-active .min-h-screen,
 html.theme-light-active [class*="bg-[#020617]"],
 html[data-theme="light"] .min-h-screen,
 html[data-theme="light"] [class*="bg-[#020617]"] {
-  background-color: #f8fafc !important;
+  background-color: transparent !important;
   color: #0f172a !important;
 }
 
 /* Selection */
 html.theme-light-active ::selection,
 html[data-theme="light"] ::selection {
-  background-color: rgba(234, 88, 12, 0.2) !important;
+  background-color: rgba(234, 88, 12, 0.18) !important;
   color: #0f172a !important;
 }
 
-/* 2. Elevated Cards & Structural Surfaces (Clean White with Hairline Borders) */
+/* 2. Elevated Cards & Structural Surfaces (Clean White with Hairline Borders & Multi-Stop Diffusion) */
 html.theme-light-active .bg-slate-950,
 html.theme-light-active .bg-slate-900,
 html.theme-light-active .bg-slate-900\/90,
@@ -211,7 +215,7 @@ html[data-theme="light"] .bg-black\/40,
 html[data-theme="light"] .bg-black\/50,
 html[data-theme="light"] .bg-black\/60 {
   background-color: #ffffff !important;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.05) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 4px 16px -2px rgba(15, 23, 42, 0.04), 0 12px 32px -4px rgba(15, 23, 42, 0.03) !important;
 }
 
 /* Secondary Inset Panels, Well Blocks, and Badges */
@@ -614,3 +618,74 @@ html.theme-light-active .custom-scrollbar::-webkit-scrollbar-thumb:hover,
 html[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(15, 23, 42, 0.3) !important;
 }
+
+/* 13. Interactive Earnings Calculator in Light Mode */
+html.theme-light-active #calculator,
+html[data-theme="light"] #calculator {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.07) !important;
+}
+
+html.theme-light-active #calculator .bg-slate-950,
+html[data-theme="light"] #calculator .bg-slate-950 {
+  background-color: #f1f5f9 !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html.theme-light-active #calculator [class*="bg-slate-950/60"],
+html.theme-light-active #calculator [class*="bg-slate-950/70"],
+html.theme-light-active #calculator [class*="bg-slate-950/80"],
+html[data-theme="light"] #calculator [class*="bg-slate-950/60"],
+html[data-theme="light"] #calculator [class*="bg-slate-950/70"],
+html[data-theme="light"] #calculator [class*="bg-slate-950/80"] {
+  background-color: #f8fafc !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html.theme-light-active #calculator .lg\:col-span-5,
+html[data-theme="light"] #calculator .lg\:col-span-5 {
+  background-color: #f8fafc !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05) !important;
+}
+
+html.theme-light-active #calculator .text-white,
+html[data-theme="light"] #calculator .text-white {
+  color: #0f172a !important;
+}
+
+html.theme-light-active #calculator button[class*="bg-slate-900"],
+html.theme-light-active #calculator button[class*="bg-slate-800"],
+html[data-theme="light"] #calculator button[class*="bg-slate-900"],
+html[data-theme="light"] #calculator button[class*="bg-slate-800"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(234, 88, 12, 0.4) !important;
+  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Tooltip Popover in Light Mode */
+html.theme-light-active #calculator [class*="bg-slate-900/95"],
+html[data-theme="light"] #calculator [class*="bg-slate-900/95"] {
+  background-color: #ffffff !important;
+  border-color: rgba(234, 88, 12, 0.4) !important;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.16), 0 4px 12px -2px rgba(15, 23, 42, 0.08) !important;
+}
+
+html.theme-light-active #calculator [class*="bg-slate-900/95"] .bg-slate-950,
+html[data-theme="light"] #calculator [class*="bg-slate-900/95"] .bg-slate-950 {
+  background-color: #fff7ed !important;
+  border-color: rgba(234, 88, 12, 0.25) !important;
+  color: #9a3412 !important;
+}
+
+/* Sparkline Container in Light Mode */
+html.theme-light-active #calculator .shrink-0.p-2\.5,
+html[data-theme="light"] #calculator .shrink-0.p-2\.5 {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.06) !important;
+}
+
+
