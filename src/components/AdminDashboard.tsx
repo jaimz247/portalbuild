@@ -1796,7 +1796,7 @@ export default function AdminDashboard() {
         } catch {}
         await signOut(auth);
         setPasscodeError(
-          "Access Denied. Only authorized admins can access the dashboard. Please use the 1-Click Passcode Bypass (elevate2026).",
+          "Access Denied. Only authorized accounts can access the dashboard. Please verify your credentials.",
         );
       }
     } catch (err: any) {
@@ -1804,7 +1804,7 @@ export default function AdminDashboard() {
       if (err && err.code) {
         if (err.code === "auth/popup-blocked") {
           setPasscodeError(
-            "Authentication popup was blocked by your browser. Please allow popups or use the 1-Click Passcode Bypass (elevate2026)."
+            "Authentication popup was blocked by your browser. Please allow popups or use the 1-Click Auto Unlock Bypass."
           );
         } else if (err.code === "auth/popup-closed-by-user") {
           setPasscodeError(
@@ -1812,13 +1812,13 @@ export default function AdminDashboard() {
           );
         } else if (err.code === "auth/operation-not-allowed") {
           setPasscodeError(
-            "Google Auth provider is not enabled in Firebase Auth. Please use the Passcode Bypass."
+            "Google Auth provider is not enabled in Firebase Auth. Please use passcode access."
           );
         } else {
           setPasscodeError(`Authentication error (${err.code}): ${err.message}`);
         }
       } else {
-        setPasscodeError("Google Sign-In failed. Please try again or use the Passcode Bypass.");
+        setPasscodeError("Google Sign-In failed. Please try again or use the 1-Click Auto Unlock Bypass.");
       }
     } finally {
       setIsAuthenticating(false);
@@ -1840,7 +1840,7 @@ export default function AdminDashboard() {
       } catch {}
       showToast("Passcode accepted! Unlocked administrative workspace.");
     } else {
-      setPasscodeError("Invalid administrative passcode. Please enter 'elevate2026' or 'portalbuild2025', or click 1-Click Auto Unlock Bypass.");
+      setPasscodeError("Invalid administrative passcode. Please check your passcode and try again.");
     }
   };
 
@@ -3500,7 +3500,7 @@ export default function AdminDashboard() {
                 <div className="max-w-lg mx-auto my-2 md:my-6 bg-slate-900/95 border border-white/[0.08] p-6 sm:p-7 shadow-2xl relative rounded-2xl backdrop-blur-xl">
                   <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-orange-500/80 via-amber-500/60 to-transparent rounded-t-2xl"></div>
  
-                  <div className="text-center mb-5">
+                  <div className="text-center mb-6">
                     <div className="w-12 h-12 rounded-xl border border-orange-500/20 mx-auto flex items-center justify-center mb-3 bg-orange-500/10 shadow-inner">
                       <Key className="w-6 h-6 text-orange-400" />
                     </div>
@@ -3508,7 +3508,7 @@ export default function AdminDashboard() {
                       Admin Authentication
                     </h2>
                     <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
-                      Choose your access method: 1-Click Instant Bypass, administrative passcode, or Google developer account.
+                      Enter your administrative passcode or sign in with an authorized Google account.
                     </p>
                   </div>
 
@@ -3519,31 +3519,7 @@ export default function AdminDashboard() {
                     </div>
                   )}
 
-                  {/* Method 1: 1-Click Instant Bypass (Highest UX Priority) */}
-                  <div className="bg-gradient-to-b from-orange-500/[0.12] to-orange-500/[0.04] border border-orange-500/30 p-4 rounded-xl text-center space-y-2.5 shadow-lg shadow-orange-950/20 mb-5">
-                    <div className="flex items-center justify-between text-[11px] font-mono font-semibold text-orange-300">
-                      <span className="flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-orange-400 animate-pulse" />
-                        <span>INSTANT DEVELOPER BYPASS</span>
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-mono border border-orange-500/30 font-bold">
-                        RECOMMENDED
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-300 text-left sm:text-center leading-relaxed">
-                      Skip credential entry. Click below to immediately activate the administrative workspace with full permissions.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleBypassUnlock}
-                      className="w-full py-3 px-4 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-400 hover:via-amber-400 hover:to-orange-500 active:scale-[0.99] text-white font-bold text-xs uppercase tracking-wider transition-all rounded-xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 min-h-[44px]"
-                    >
-                      <Zap className="w-4 h-4 fill-current text-white animate-bounce" />
-                      <span>1-Click Auto Unlock Bypass</span>
-                    </button>
-                  </div>
-
-                  {/* Method 2: Passcode Authentication */}
+                  {/* Method 1: Administrative Passcode Authentication */}
                   <div className="p-4 rounded-xl bg-slate-950/60 border border-white/[0.08] space-y-2.5 mb-4">
                     <div className="flex items-center justify-between">
                       <label className="text-xs font-semibold text-slate-200 flex items-center gap-1.5 font-mono">
@@ -3556,8 +3532,8 @@ export default function AdminDashboard() {
                     <form onSubmit={(e) => handlePasscodeLogin(e)} className="space-y-2.5">
                       <div className="flex gap-2">
                         <input
-                          type="text"
-                          placeholder="elevate2026 or portalbuild2025"
+                          type="password"
+                          placeholder="Enter administrative passcode..."
                           value={passcode}
                           onChange={(e) => setPasscode(e.target.value)}
                           className="flex-1 bg-slate-900 border border-white/[0.12] hover:border-white/20 focus:border-orange-500/60 focus:ring-1 focus:ring-orange-500/40 focus:outline-none px-3.5 py-2.5 text-xs text-white rounded-lg font-mono placeholder:text-slate-500"
@@ -3569,36 +3545,17 @@ export default function AdminDashboard() {
                           Unlock
                         </button>
                       </div>
-
-                      {/* 1-Tap Quick Fill Chips */}
-                      <div className="flex items-center gap-2 pt-0.5 flex-wrap">
-                        <span className="text-[10px] text-slate-400 font-mono">Quick Fill:</span>
-                        <button
-                          type="button"
-                          onClick={() => handlePasscodeLogin(undefined, "elevate2026")}
-                          className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/[0.06] hover:bg-white/[0.12] text-orange-300 border border-white/[0.08] hover:border-orange-500/40 transition-colors cursor-pointer"
-                        >
-                          🔑 elevate2026
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handlePasscodeLogin(undefined, "portalbuild2025")}
-                          className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/[0.06] hover:bg-white/[0.12] text-orange-300 border border-white/[0.08] hover:border-orange-500/40 transition-colors cursor-pointer"
-                        >
-                          🔑 portalbuild2025
-                        </button>
-                      </div>
                     </form>
                   </div>
 
-                  {/* Method 3: Official Google Sign-In for elevatemensah@gmail.com */}
+                  {/* Method 2: Official Google Sign-In */}
                   <div className="p-4 rounded-xl bg-slate-950/60 border border-white/[0.08] space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5 font-mono">
                         <Shield className="w-3.5 h-3.5 text-blue-400" />
                         <span>Google Developer Account</span>
                       </span>
-                      <span className="text-[10px] text-emerald-400 font-mono">elevatemensah@gmail.com</span>
+                      <span className="text-[10px] text-slate-400 font-mono">Authorized Admin Only</span>
                     </div>
 
                     <button
@@ -3625,7 +3582,7 @@ export default function AdminDashboard() {
                       )}
                     </button>
                     <p className="text-[10px] text-slate-400 leading-normal font-sans">
-                      Note: If popup blocking occurs within sandbox iframe frames, use the <strong>1-Click Bypass</strong> or <strong>Passcode</strong> above.
+                      Note: Authorized workspace administrator credentials required.
                     </p>
                   </div>
                 </div>
@@ -3638,9 +3595,8 @@ export default function AdminDashboard() {
                       <AlertCircle className="w-4 h-4 shrink-0 flex-none" />
                       <div className="flex-1">
                         Viewing local Sandbox/Demo Applications because live
-                        query failed (requires Google login as
-                        elevatemensah@gmail.com). Everything works perfectly as
-                        a dynamic prototype list!
+                        query failed (requires authorized Google admin login).
+                        Everything works perfectly as a dynamic prototype list!
                       </div>
                       <button
                         onClick={() => setFirestoreError(null)}
@@ -6463,21 +6419,21 @@ export default function AdminDashboard() {
 
                           <div className="bg-slate-900/60 p-2.5 rounded border border-white/[0.04]">
                             <span className="text-slate-500 text-[10px] uppercase block">Admin Passcodes</span>
-                            <span className="text-emerald-400 font-bold">elevate2026</span>
-                            <span className="text-slate-400 block text-[10px] mt-0.5">Secondary: portalbuild2025</span>
+                            <span className="text-emerald-400 font-bold font-mono">••••••••••••</span>
+                            <span className="text-slate-400 block text-[10px] mt-0.5">Configured &amp; Protected</span>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono pt-1">
                           <div className="bg-slate-900/60 p-2.5 rounded border border-white/[0.04]">
                             <span className="text-slate-500 text-[10px] uppercase block">Authorized Google Sign-In</span>
-                            <span className="text-white font-semibold">elevatemensah@gmail.com</span>
+                            <span className="text-white font-semibold">Primary Account Owner (Active)</span>
                           </div>
 
                           <div className="bg-slate-900/60 p-2.5 rounded border border-white/[0.04] flex items-center justify-between">
                             <div>
                               <span className="text-slate-500 text-[10px] uppercase block">Active Notification Dispatch</span>
-                              <span className="text-emerald-400 font-semibold truncate block">jaimzz247@gmail.com, teamlead@getportalbuild.com</span>
+                              <span className="text-emerald-400 font-semibold truncate block">Dispatch Service Configured</span>
                             </div>
                             <button
                               onClick={handleTriggerTestNotification}
@@ -6505,7 +6461,7 @@ export default function AdminDashboard() {
                               <div className="p-3 rounded border border-red-500/15 bg-red-500/5 flex items-start gap-2.5 text-[11px] text-red-300 font-mono leading-normal">
                                 <Lock className="w-4 h-4 shrink-0 text-red-400 mt-0.5" />
                                 <span>
-                                  Access Restricted. Only the primary account owner (elevatemensah@gmail.com) can issue new credentials or modify assignments.
+                                  Access Restricted. Only the primary account owner can issue new credentials or modify assignments.
                                 </span>
                               </div>
                             ) : (
@@ -6592,7 +6548,7 @@ export default function AdminDashboard() {
                             <div className="space-y-2 text-[9px] text-slate-500 font-sans leading-relaxed uppercase">
                               <p className="flex items-start gap-1">
                                 <span className="text-orange-500">●</span>
-                                <span><strong>Primary Owner</strong>: elevatemensah@gmail.com has total control, handles team management, database rules, log purges.</span>
+                                <span><strong>Primary Owner</strong>: Authorized workspace owner has total control, handles team management, database rules, log purges.</span>
                               </p>
                               <p className="flex items-start gap-1">
                                 <span className="text-amber-400">●</span>
@@ -6632,7 +6588,7 @@ export default function AdminDashboard() {
                                         SYSTEM OWNER
                                       </span>
                                     </h4>
-                                    <p className="text-[10px] text-slate-400 font-mono mt-0.5">elevatemensah@gmail.com</p>
+                                    <p className="text-[10px] text-slate-400 font-mono mt-0.5">Primary Account Owner (Active)</p>
                                   </div>
                                 </div>
                                 <span className="text-[8px] font-mono px-2 py-0.5 rounded bg-orange-500/10 border border-orange-500/20 font-bold uppercase text-orange-400">

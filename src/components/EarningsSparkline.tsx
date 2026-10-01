@@ -178,25 +178,72 @@ export default function EarningsSparkline({
         g.append('circle')
           .attr('cx', milestoneX)
           .attr('cy', milestoneY)
-          .attr('r', 1.5)
-          .attr('fill', '#34d399')
-          .attr('opacity', 0.7);
+          .attr('r', 2)
+          .attr('fill', '#10b981')
+          .attr('stroke', isLight ? '#ffffff' : '#020617')
+          .attr('stroke-width', 1)
+          .attr('opacity', 0.9);
       }
     }
+
+    // Interactive hover overlay across the sparkline
+    const bisect = d3.bisector((d: DataPoint) => d.clients).center;
+    const hoverGroup = g.append('g').style('display', 'none');
+
+    const hoverLine = hoverGroup
+      .append('line')
+      .attr('y1', 0)
+      .attr('y2', innerHeight)
+      .attr('stroke', isLight ? 'rgba(15,23,42,0.2)' : 'rgba(255,255,255,0.2)')
+      .attr('stroke-width', 1)
+      .attr('stroke-dasharray', '2 2');
+
+    const hoverDot = hoverGroup
+      .append('circle')
+      .attr('r', 3.5)
+      .attr('fill', '#f97316')
+      .attr('stroke', isLight ? '#ffffff' : '#0f172a')
+      .attr('stroke-width', 1.5);
+
+    svg
+      .append('rect')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('fill', 'transparent')
+      .style('cursor', 'crosshair')
+      .on('mouseenter', () => hoverGroup.style('display', null))
+      .on('mouseleave', () => hoverGroup.style('display', 'none'))
+      .on('mousemove', (event) => {
+        const [mx] = d3.pointer(event);
+        const adjustedX = mx - margin.left;
+        const x0 = xScale.invert(adjustedX);
+        const i = bisect(points, x0);
+        const d = points[i];
+        if (!d) return;
+
+        const px = xScale(d.clients);
+        const py = yScale(d.earnings);
+
+        hoverLine.attr('x1', px).attr('x2', px);
+        hoverDot.attr('cx', px).attr('cy', py);
+      });
   }, [currentPlanId, signingFee, retentionBonus, activeClients, isLight]);
 
   return (
-    <div className="relative inline-flex flex-col items-center">
+    <div className="relative inline-flex flex-col items-center group">
       <svg
         ref={svgRef}
         width={140}
         height={52}
-        className="overflow-visible select-none pointer-events-none"
+        className="overflow-visible select-none"
         aria-label={`Growth potential curve for ${activeClients} clients`}
       />
-      <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest -mt-0.5">
-        Trajectory {activeClients}x
-      </span>
+      <div className="flex items-center gap-1.5 -mt-0.5">
+        <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">
+          Trajectory {activeClients}x
+        </span>
+        <span className="w-1 h-1 rounded-full bg-emerald-400" />
+      </div>
     </div>
   );
 }

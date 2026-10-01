@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -142,6 +142,34 @@ export default function PartnersPage() {
   const [calcPlan, setCalcPlan] = useState<PlanKey>('signature');
   const [calcClients, setCalcClients] = useState<number>(3);
   const [isEarningsTooltipOpen, setIsEarningsTooltipOpen] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  // Close tooltip on outside click or Escape
+  useEffect(() => {
+    if (!isEarningsTooltipOpen) return;
+
+    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+      if (tooltipRef.current && !tooltipRef.current.contains(e.target as Node)) {
+        setIsEarningsTooltipOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsEarningsTooltipOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isEarningsTooltipOpen]);
 
   // Prefill referral code from ?ref= or pb_ref in sessionStorage
   useEffect(() => {
@@ -376,20 +404,20 @@ export default function PartnersPage() {
   const totalCommission = upfrontPayout + retentionPayout + milestoneBonus;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-100 font-sans selection:bg-orange-500/30 selection:text-orange-50">
+    <div className={`min-h-screen ${isLight ? 'bg-[#f8fafc] text-slate-900' : 'bg-[#020617] text-slate-100'} font-sans selection:bg-orange-500/30 selection:text-orange-50 partners-page transition-colors duration-300`}>
       {/* Top Header Bar / Brand Lockup matching site */}
-      <header className="border-b border-white/[0.08] bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+      <header className={`border-b ${isLight ? 'border-slate-200/80 bg-white/85' : 'border-white/[0.08] bg-slate-950/80'} backdrop-blur-md sticky top-0 z-50 transition-colors`}>
         <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={handleBackHome}
               aria-label="Back to PortalBuild Home"
-              className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/10 flex items-center justify-center shrink-0 shadow-sm transition-colors cursor-pointer"
+              className={`w-9 h-9 rounded-xl ${isLight ? 'bg-slate-100 hover:bg-slate-200 border-slate-200' : 'bg-slate-900 hover:bg-slate-800 border-white/10'} border flex items-center justify-center shrink-0 shadow-sm transition-colors cursor-pointer`}
             >
               <span className="w-3 h-3 rounded-sm bg-orange-500" />
             </button>
             <div className="flex flex-col text-left">
-              <span className="text-base font-bold tracking-tight text-white leading-tight">
+              <span className={`text-base font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'} leading-tight`}>
                 PortalBuild
               </span>
               <span className="text-[10px] font-mono text-slate-500 tracking-tight -mt-0.5">
@@ -399,39 +427,39 @@ export default function PartnersPage() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav aria-label="Partner page navigation" className="hidden lg:flex items-center gap-7 text-xs font-medium text-slate-300">
+          <nav aria-label="Partner page navigation" className={`hidden lg:flex items-center gap-7 text-xs font-medium ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             <button
               type="button"
               onClick={() => scrollToSection('how-it-works')}
-              className="hover:text-white transition-colors cursor-pointer"
+              className={`${isLight ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors cursor-pointer`}
             >
               How It Works
             </button>
             <button
               type="button"
               onClick={() => scrollToSection('demos')}
-              className="hover:text-white transition-colors cursor-pointer"
+              className={`${isLight ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors cursor-pointer`}
             >
               Demos
             </button>
             <button
               type="button"
               onClick={() => scrollToSection('commission')}
-              className="hover:text-white transition-colors cursor-pointer"
+              className={`${isLight ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors cursor-pointer`}
             >
               Commission
             </button>
             <button
               type="button"
               onClick={() => scrollToSection('calculator')}
-              className="hover:text-white transition-colors cursor-pointer"
+              className={`${isLight ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors cursor-pointer`}
             >
               Calculator
             </button>
             <button
               type="button"
               onClick={() => scrollToSection('faq')}
-              className="hover:text-white transition-colors cursor-pointer"
+              className={`${isLight ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors cursor-pointer`}
             >
               FAQ
             </button>
@@ -1090,6 +1118,7 @@ export default function PartnersPage() {
                 <AnimatePresence>
                   {isEarningsTooltipOpen && (
                     <motion.div
+                      ref={tooltipRef}
                       initial={{ opacity: 0, y: -6, scale: 0.97 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -6, scale: 0.97 }}

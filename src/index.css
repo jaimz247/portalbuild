@@ -623,8 +623,8 @@ html[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
 html.theme-light-active #calculator,
 html[data-theme="light"] #calculator {
   background-color: #ffffff !important;
-  border-color: rgba(15, 23, 42, 0.1) !important;
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.07) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
 }
 
 html.theme-light-active #calculator .bg-slate-950,
@@ -643,16 +643,43 @@ html[data-theme="light"] #calculator [class*="bg-slate-950/80"] {
   border-color: rgba(15, 23, 42, 0.08) !important;
 }
 
+/* High-Contrast Obsidian Bento for Total Potential Display */
 html.theme-light-active #calculator .lg\:col-span-5,
 html[data-theme="light"] #calculator .lg\:col-span-5 {
-  background-color: #f8fafc !important;
-  border-color: rgba(15, 23, 42, 0.1) !important;
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05) !important;
+  background: linear-gradient(180deg, #0b0f19 0%, #020617 100%) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.25) !important;
+  color: #f8fafc !important;
 }
 
-html.theme-light-active #calculator .text-white,
-html[data-theme="light"] #calculator .text-white {
-  color: #0f172a !important;
+html.theme-light-active #calculator .lg\:col-span-5 .text-white,
+html[data-theme="light"] #calculator .lg\:col-span-5 .text-white {
+  color: #ffffff !important;
+}
+
+html.theme-light-active #calculator .lg\:col-span-5 .text-slate-400,
+html[data-theme="light"] #calculator .lg\:col-span-5 .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+html.theme-light-active #calculator .lg\:col-span-5 .text-slate-500,
+html[data-theme="light"] #calculator .lg\:col-span-5 .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Non-bento headings and labels in calculator */
+html.theme-light-active #calculator .lg\:col-span-7 .text-white,
+html.theme-light-active #calculator h3.text-white,
+html[data-theme="light"] #calculator .lg\:col-span-7 .text-white,
+html[data-theme="light"] #calculator h3.text-white {
+  color: #090d16 !important;
+}
+
+html.theme-light-active #calculator .lg\:col-span-7 .text-slate-300,
+html.theme-light-active #calculator .lg\:col-span-7 .text-slate-400,
+html[data-theme="light"] #calculator .lg\:col-span-7 .text-slate-300,
+html[data-theme="light"] #calculator .lg\:col-span-7 .text-slate-400 {
+  color: #334155 !important;
 }
 
 html.theme-light-active #calculator button[class*="bg-slate-900"],
@@ -669,8 +696,21 @@ html[data-theme="light"] #calculator button[class*="bg-slate-800"] {
 html.theme-light-active #calculator [class*="bg-slate-900/95"],
 html[data-theme="light"] #calculator [class*="bg-slate-900/95"] {
   background-color: #ffffff !important;
-  border-color: rgba(234, 88, 12, 0.4) !important;
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.16), 0 4px 12px -2px rgba(15, 23, 42, 0.08) !important;
+  border-color: rgba(234, 88, 12, 0.35) !important;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.2), 0 4px 12px -2px rgba(15, 23, 42, 0.08) !important;
+  color: #0f172a !important;
+}
+
+html.theme-light-active #calculator [class*="bg-slate-900/95"] .text-white,
+html[data-theme="light"] #calculator [class*="bg-slate-900/95"] .text-white {
+  color: #090d16 !important;
+}
+
+html.theme-light-active #calculator [class*="bg-slate-900/95"] .text-slate-300,
+html.theme-light-active #calculator [class*="bg-slate-900/95"] .text-slate-400,
+html[data-theme="light"] #calculator [class*="bg-slate-900/95"] .text-slate-300,
+html[data-theme="light"] #calculator [class*="bg-slate-900/95"] .text-slate-400 {
+  color: #334155 !important;
 }
 
 html.theme-light-active #calculator [class*="bg-slate-900/95"] .bg-slate-950,
@@ -683,9 +723,70 @@ html[data-theme="light"] #calculator [class*="bg-slate-900/95"] .bg-slate-950 {
 /* Sparkline Container in Light Mode */
 html.theme-light-active #calculator .shrink-0.p-2\.5,
 html[data-theme="light"] #calculator .shrink-0.p-2\.5 {
+  background-color: rgba(2, 6, 23, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 14. Full Partners Page Surfaces in Light Mode */
+html.theme-light-active .partners-page,
+html[data-theme="light"] .partners-page {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html.theme-light-active .partners-page h1,
+html.theme-light-active .partners-page h2,
+html.theme-light-active .partners-page h3,
+html[data-theme="light"] .partners-page h1,
+html[data-theme="light"] .partners-page h2,
+html[data-theme="light"] .partners-page h3 {
+  color: #090d16 !important;
+}
+
+html.theme-light-active .partners-page [class*="bg-slate-900/40"],
+html.theme-light-active .partners-page [class*="bg-slate-900/50"],
+html.theme-light-active .partners-page [class*="bg-slate-900/60"],
+html.theme-light-active .partners-page [class*="bg-slate-900/70"],
+html.theme-light-active .partners-page [class*="bg-slate-900/80"],
+html[data-theme="light"] .partners-page [class*="bg-slate-900/40"],
+html[data-theme="light"] .partners-page [class*="bg-slate-900/50"],
+html[data-theme="light"] .partners-page [class*="bg-slate-900/60"],
+html[data-theme="light"] .partners-page [class*="bg-slate-900/70"],
+html[data-theme="light"] .partners-page [class*="bg-slate-900/80"] {
   background-color: #ffffff !important;
-  border-color: rgba(15, 23, 42, 0.1) !important;
-  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.06) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04) !important;
+}
+
+html.theme-light-active .partners-page table,
+html[data-theme="light"] .partners-page table {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html.theme-light-active .partners-page th,
+html[data-theme="light"] .partners-page th {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+
+html.theme-light-active .partners-page td,
+html[data-theme="light"] .partners-page td {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+  color: #0f172a !important;
+}
+
+html.theme-light-active .partners-page input,
+html.theme-light-active .partners-page textarea,
+html.theme-light-active .partners-page select,
+html[data-theme="light"] .partners-page input,
+html[data-theme="light"] .partners-page textarea,
+html[data-theme="light"] .partners-page select {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
 }
 
 
