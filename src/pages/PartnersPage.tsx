@@ -728,43 +728,104 @@ export default function PartnersPage() {
       {/* SECTION 4 — THE SCREEN THAT SELLS IT */}
       <section className="py-16 sm:py-20 px-6 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          {/* Left Column: Browser Frame with Cockpit Screenshot */}
+          {/* Left Column: Browser Frame with Cockpit Screenshot with Glassmorphism Overlays */}
           <div className="lg:col-span-7 space-y-2.5">
-            <div className="rounded-2xl border border-white/[0.12] bg-slate-950 p-2 shadow-2xl shadow-black/50 overflow-hidden group">
-              {/* Subtle Browser Chrome Header */}
-              <div className="flex items-center justify-between px-3 py-2 bg-slate-900/90 rounded-t-xl border-b border-white/[0.06] mb-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
-                </div>
-                <div className="flex-1 max-w-xs mx-auto text-center px-3 py-0.5 rounded-md bg-slate-950/70 border border-white/[0.06]">
-                  <span className="text-[11px] font-mono text-slate-400 select-all">certification.cohortroom.com</span>
-                </div>
-                <div className="w-8" />
-              </div>
+            <div className="relative">
+              {/* Ambient Glow Backdrop */}
+              <div
+                className="absolute -inset-2 rounded-3xl opacity-30 dark:opacity-20 blur-2xl pointer-events-none transition-all duration-700"
+                style={{
+                  background: 'radial-gradient(ellipse at 50% 30%, #10b981 0%, transparent 70%)',
+                }}
+              />
 
-              {/* Clickable Image Linking to Faculty View */}
-              <a
-                href="https://certification.cohortroom.com/faculty"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block relative overflow-hidden rounded-lg group/link cursor-pointer"
-                title="Open certification.cohortroom.com/faculty in a new tab"
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.99 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                className={`relative rounded-2xl border p-2 transition-all duration-300 overflow-hidden group ${
+                  isLight
+                    ? 'border-slate-200/90 bg-white shadow-xl shadow-slate-900/5'
+                    : 'border-white/[0.12] bg-slate-950 shadow-2xl shadow-black/50'
+                }`}
               >
-                <img
-                  src="/images/cockpit-screenshot.png"
-                  alt="Aldermoor Coaching Institute Cockpit Dashboard"
-                  className="w-full h-auto rounded-lg object-cover transition-transform duration-300 group-hover/link:scale-[1.01]"
-                  loading="lazy"
-                />
-              </a>
+                {/* Subtle Browser Chrome Header */}
+                <div className={`flex items-center justify-between px-3 py-2 rounded-t-xl border-b mb-1 transition-colors ${
+                  isLight
+                    ? 'bg-slate-100/90 border-slate-200/80 text-slate-700'
+                    : 'bg-slate-900/90 border-white/[0.06] text-slate-300'
+                }`}>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+                  </div>
+                  <div className={`flex-1 max-w-xs mx-auto text-center px-3 py-0.5 rounded-md border text-[11px] font-mono ${
+                    isLight
+                      ? 'bg-white border-slate-200 text-slate-700'
+                      : 'bg-slate-950/70 border-white/[0.06] text-slate-400'
+                  }`}>
+                    <span>certification.cohortroom.com/faculty</span>
+                  </div>
+                  <div className="w-8" />
+                </div>
+
+                {/* Clickable Image Linking to Faculty View with Glassmorphism Overlays */}
+                <a
+                  href="https://certification.cohortroom.com/faculty"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block relative overflow-hidden rounded-lg group/link cursor-pointer"
+                  title="Open certification.cohortroom.com/faculty in a new tab"
+                >
+                  {/* Floating Glassmorphism Badge */}
+                  <div className="absolute top-3 right-3 z-10 pointer-events-none">
+                    <div className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-xl border flex items-center gap-1.5 shadow-md ${
+                      isLight
+                        ? 'bg-white/85 text-slate-900 border-slate-200/90 shadow-slate-900/5'
+                        : 'bg-slate-950/85 text-white border-white/15 shadow-black/60'
+                    }`}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>Live Faculty Cockpit · Aldermoor ↗</span>
+                    </div>
+                  </div>
+
+                  <img
+                    src="/images/cockpit-screenshot.png"
+                    alt="Aldermoor Coaching Institute Cockpit Dashboard"
+                    className="w-full h-auto rounded-lg object-cover transition-transform duration-300 group-hover/link:scale-[1.01]"
+                    loading="lazy"
+                  />
+
+                  {/* Hover Glassmorphism Overlay */}
+                  <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[2px] opacity-0 group-hover/link:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 pointer-events-none">
+                    <div className={`px-5 py-3 rounded-xl border shadow-xl flex items-center gap-2.5 backdrop-blur-xl ${
+                      isLight
+                        ? 'bg-white/95 text-slate-900 border-emerald-500/30'
+                        : 'bg-slate-950/95 text-white border-emerald-500/40'
+                    }`}>
+                      <Sparkles className="w-4 h-4 text-emerald-500" />
+                      <span className="text-xs font-bold font-mono">Launch Aldermoor Faculty View ↗</span>
+                    </div>
+                  </div>
+                </a>
+              </motion.div>
             </div>
 
-            {/* Caption under the image */}
-            <p className="text-xs text-slate-400 font-mono text-center sm:text-left px-1">
-              The real founder view. Click to open it.
-            </p>
+            {/* Trust-Building Caption referencing Aldermoor */}
+            <div className={`p-3 rounded-xl border text-xs leading-relaxed transition-colors ${
+              isLight
+                ? 'bg-slate-50 border-slate-200/80 text-slate-600'
+                : 'bg-slate-950/60 border-white/[0.06] text-slate-400'
+            }`}>
+              <p>
+                <strong className={isLight ? 'text-slate-900' : 'text-slate-200'}>
+                  Live Production Cockpit · Aldermoor Coaching Institute
+                </strong>
+                {' (certification.cohortroom.com/faculty) — The exact interface cohort founders use to monitor trainee progression, ICF mentor session logs, and retention health.'}
+              </p>
+            </div>
           </div>
 
           {/* Right Column: Copy */}
